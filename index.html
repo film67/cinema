@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CineVault — Смотри всё</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #1a1a24;
+    --card: #16161f;
+    --accent: #e50914;
+    --accent2: #ff6b35;
+    --gold: #f5c518;
+    --text: #e8e8f0;
+    --text2: #9090a8;
+    --text3: #606075;
+    --border: rgba(255,255,255,0.07);
+    --glow: rgba(229,9,20,0.3);
+    --radius: 10px;
+    --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    font-size: 15px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top:0; left:0; right:0; z-index:1000;
+    height: 64px;
+    display: flex; align-items: center;
+    padding: 0 clamp(16px, 4vw, 60px);
+    background: linear-gradient(to bottom, rgba(10,10,15,0.98) 0%, rgba(10,10,15,0) 100%);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    gap: 24px;
+    transition: background 0.3s;
+  }
+  nav.scrolled {
+    background: rgba(10,10,15,0.98);
+  }
+  
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    cursor: pointer;
+    flex-shrink: 0;
+    text-shadow: 0 0 20px var(--glow);
+  }
+  
+  .logo span { color: var(--text); }
+  
+  .nav-links {
+    display: flex; gap: 6px;
+    list-style: none;
+  }
+  
+  .nav-links a {
+    text-decoration: none;
+    color: var(--text2);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: var(--transition);
+    letter-spacing: 0.3px;
+    cursor: pointer;
+  }
+  
+  .nav-links a:hover, .nav-links a.active {
+    color: var(--text);
+    background: var(--border);
+  }
+  
+  .nav-right {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 12px;
+  }
+  
+  .search-wrap {
+    position: relative;
+  }
+  
+  #searchInput {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    padding: 8px 36px 8px 14px;
+    width: 220px;
+    transition: var(--transition);
+    outline: none;
+  }
+  
+  #searchInput:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--glow);
+    width: 280px;
+  }
+  
+  #searchInput::placeholder { color: var(--text3); }
+  
+  .search-icon {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    color: var(--text3); font-size: 14px; pointer-events: none;
+  }
+  
+  .btn-fav {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex; align-items: center; gap: 6px;
+  }
+  
+  .btn-fav:hover { border-color: var(--accent); color: var(--text); }
+
+  /* ─── HERO ─── */
+  #hero {
+    position: relative;
+    height: 85vh; min-height: 520px;
+    display: flex; align-items: flex-end;
+    padding: 0 clamp(16px, 4vw, 60px) 60px;
+    overflow: hidden;
+    margin-top: 64px;
+  }
+  
+  #heroBg {
+    position: absolute; inset:0;
+    background-size: cover; background-position: center 20%;
+    transition: opacity 0.8s ease;
+  }
+  
+  #heroBg::after {
+    content:'';
+    position: absolute; inset:0;
+    background: linear-gradient(
+      to right,
+      rgba(10,10,15,0.95) 0%,
+      rgba(10,10,15,0.7) 40%,
+      rgba(10,10,15,0.1) 70%,
+      transparent 100%
+    ),
+    linear-gradient(
+      to top,
+      rgba(10,10,15,1) 0%,
+      rgba(10,10,15,0.4) 30%,
+      transparent 60%
+    );
+  }
+  
+  .hero-content {
+    position: relative; z-index:1;
+    max-width: 560px;
+    animation: heroIn 0.8s ease both;
+  }
+  
+  @keyframes heroIn {
+    from { opacity:0; transform: translateY(30px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+  
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+  }
+  
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 7vw, 72px);
+    line-height: 0.95;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+  }
+  
+  .hero-meta {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .hero-meta span {
+    font-size: 13px;
+    color: var(--text2);
+    display: flex; align-items: center; gap: 5px;
+  }
+  
+  .hero-meta .rating { color: var(--gold); font-weight: 700; }
+  
+  .hero-overview {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text2);
+    margin-bottom: 28px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+  
+  .btn-play {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 28px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    letter-spacing: 0.3px;
+  }
+  
+  .btn-play:hover {
+    background: #ff1a27;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px var(--glow);
+  }
+  
+  .btn-info {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(8px);
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .btn-info:hover { background: rgba(255,255,255,0.18); transform: translateY(-2px); }
+  
+  .hero-dots {
+    position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 8px; z-index:1;
+  }
+  
+  .hero-dot {
+    width: 6px; height: 6px;
+    border-radius: 3px;
+    background: var(--text3);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .hero-dot.active { background: var(--accent); width: 24px; }
+
+  /* ─── SECTIONS ─── */
+  #mainPage { padding: 60px clamp(16px,4vw,60px); }
+  
+  .section {
+    margin-bottom: 80px;
+  }
+  
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(28px, 5vw, 42px);
+    letter-spacing: 1px;
+    margin-bottom: 28px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  
+  .section-title::before { content:''; display: inline-block; width: 4px; height: 32px; background: var(--accent); }
+
+  /* ─── CARDS ─── */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
+  }
+  
+  .card {
+    position: relative;
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    group: "card";
+    aspect-ratio: 2/3;
+    background: var(--card);
+    border: 1px solid var(--border);
+    transition: var(--transition);
+  }
+  
+  .card:hover {
+    transform: translateY(-8px);
+    border-color: var(--accent);
+    box-shadow: 0 12px 30px var(--glow);
+  }
+  
+  .card-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .card:hover .card-img { transform: scale(1.05); }
+
+  .card-rating {
+    position: absolute; top: 8px; left: 8px;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(4px);
+    color: var(--gold);
+    font-size: 11px; font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 4px;
+    z-index: 5;
+  }
+  
+  .card-overlay {
+    position: absolute; inset:0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 16px;
+    opacity: 0;
+    transition: var(--transition);
+  }
+  
+  .card:hover .card-overlay { opacity: 1; }
+  
+  .card-title {
+    font-size: 13px; font-weight: 700; line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  
+  .card-meta {
+    font-size: 11px; color: var(--text2); margin-bottom: 8px;
+  }
+  
+  .card-btn {
+    background: var(--accent); color: #fff; border: none;
+    border-radius: 4px; padding: 6px 12px;
+    font-size: 11px; font-weight: 700;
+    cursor: pointer; transition: var(--transition);
+  }
+  
+  .card-btn:hover { background: #ff1a27; }
+  
+  .card-fav {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(0,0,0,0.6); color: var(--text);
+    border: none; border-radius: 50%; width: 36px; height: 36px;
+    font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: var(--transition);
+    z-index: 10;
+  }
+  
+  .card-fav:hover { background: rgba(0,0,0,0.9); }
+  
+  .card-fav.active { color: var(--accent); }
+
+  /* ─── MODAL ─── */
+  #modal {
+    position: fixed; inset: 0; z-index: 2000;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  
+  #modal.open {
+    opacity: 1; pointer-events: all;
+  }
+  
+  .modal-content {
+    background: var(--bg2);
+    border-radius: var(--radius);
+    width: 100%; max-width: 800px;
+    margin-top: 60px;
+    border: 1px solid var(--border);
+  }
+  
+  .modal-close {
+    position: absolute; top: 20px; right: 20px;
+    background: var(--bg3); color: var(--text);
+    border: none; border-radius: 50%; width: 40px; height: 40px;
+    font-size: 20px; cursor: pointer;
+    transition: var(--transition);
+    z-index: 10;
+  }
+  
+  .modal-close:hover { background: var(--accent); }
+  
+  .modal-header {
+    display: flex; gap: 20px;
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .modal-poster {
+    width: 140px; height: 200px;
+    border-radius: var(--radius);
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  
+  .modal-info {
+    flex: 1;
+  }
+  
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  
+  .modal-meta {
+    display: flex; gap: 12px; margin-bottom: 12px;
+    font-size: 12px; color: var(--text2);
+  }
+  
+  .modal-desc {
+    font-size: 13px; color: var(--text2);
+    line-height: 1.6; margin-bottom: 16px;
+  }
+  
+  .modal-btns {
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+  
+  .modal-btn {
+    flex: 1; min-width: 120px;
+    padding: 10px 16px;
+    border: none; border-radius: 6px;
+    font-weight: 600; cursor: pointer;
+    transition: var(--transition);
+    font-size: 12px;
+  }
+  
+  #modalWatchBtn {
+    background: var(--accent); color: #fff;
+  }
+  
+  #modalWatchBtn:hover { background: #ff1a27; }
+  
+  #modalFavBtn {
+    background: rgba(255,255,255,0.1); color: var(--text);
+  }
+  
+  #modalFavBtn:hover { background: rgba(255,255,255,0.18); }
+
+  .modal-body {
+    padding: 20px;
+  }
+  
+  #modalStats {
+    display: flex; gap: 20px; margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .stat {
+    font-size: 13px;
+  }
+  
+  #modalTags {
+    display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
+  }
+  
+  .tag {
+    background: var(--bg3); color: var(--text2);
+    padding: 4px 10px; border-radius: 4px;
+    font-size: 11px; font-weight: 500;
+  }
+
+  #playerWrap {
+    margin-bottom: 20px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+  }
+
+  #playerFrame {
+    width: 100%;
+    height: 500px;
+    border: none;
+    display: block;
+  }
+
+  #playerLoading {
+    display: flex;
+    align-items: center; justify-content: center;
+    flex-direction: column; gap: 12px;
+    height: 500px;
+    background: var(--bg3);
+    color: var(--text2);
+    font-size: 14px;
+    position: absolute; inset: 0;
+    z-index: 2;
+  }
+
+  #playerLoading .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  #playerSources {
+    display: none;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .source-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: var(--transition);
+  }
+
+  .source-btn:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .source-btn.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  #similarRow {
+    margin-top: 20px;
+  }
+
+  /* ─── SEARCH/FAV PAGES ─── */
+  #searchPage, #favPage {
+    display: none;
+    padding: 100px clamp(16px,4vw,60px) 60px;
+  }
+  
+  .search-header {
+    margin-bottom: 40px;
+  }
+  
+  .search-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(32px, 6vw, 48px);
+    margin-bottom: 8px;
+  }
+  
+  .search-count {
+    color: var(--text2); font-size: 13px;
+  }
+  
+  #searchResults, #favResults {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
+  }
+  
+  .empty-state {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 80px 20px;
+    color: var(--text2);
+  }
+  
+  .empty-state .icon { font-size: 64px; margin-bottom: 16px; }
+  
+  .empty-state p { font-size: 18px; margin-bottom: 8px; }
+  
+  .empty-state small { color: var(--text3); }
+
+  /* ─── SKELETON ─── */
+  .skeleton {
+    background: linear-gradient(90deg, var(--bg3) 25%, var(--card) 50%, var(--bg3) 75%);
+    background-size: 200% 100%;
+    animation: skeleton 2s infinite;
+  }
+  
+  @keyframes skeleton {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ─── TOAST ─── */
+  #toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: var(--accent); color: #fff;
+    padding: 12px 20px; border-radius: 6px;
+    font-size: 13px; font-weight: 600;
+    z-index: 3000;
+    opacity: 0; pointer-events: none;
+    transition: var(--transition);
+  }
+  
+  #toast.show { opacity: 1; pointer-events: all; }
+
+  /* ─── MOBILE RESPONSIVE ─── */
+  @media (max-width: 1024px) {
+    nav { padding: 0 16px; gap: 12px; }
+    
+    .nav-links { gap: 4px; }
+    .nav-links a { padding: 4px 8px; font-size: 12px; }
+    
+    #searchInput { width: 180px; }
+    #searchInput:focus { width: 240px; }
+    
+    #hero { min-height: 450px; padding: 0 16px 40px; }
+    
+    .hero-title { font-size: clamp(32px, 6vw, 56px); }
+    
+    #mainPage, #searchPage, #favPage { padding: 80px 16px 40px; }
+    
+    .cards, #searchResults, #favResults {
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 16px;
+    }
+    
+    .modal-header {
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .modal-poster {
+      width: 100%;
+      height: 300px;
+    }
+  }
+
+
+  /* ─── MOBILE MENU ─── */
+  .btn-menu {
+    display: none;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: var(--transition);
+    align-items: center; justify-content: center;
+  }
+  .btn-menu:hover { border-color: var(--accent); }
+
+  .btn-search-mobile {
+    display: none;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: var(--transition);
+    align-items: center; justify-content: center;
+  }
+  .btn-search-mobile:hover { border-color: var(--accent); color: var(--text); }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 56px; left: 0; right: 0;
+    background: rgba(10,10,15,0.98);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 16px 16px;
+    z-index: 999;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    text-decoration: none;
+    color: var(--text2);
+    font-size: 15px;
+    font-weight: 500;
+    padding: 10px 14px;
+    border-radius: 8px;
+    transition: var(--transition);
+    cursor: pointer;
+  }
+  .mobile-menu a:hover { color: var(--text); background: var(--border); }
+
+  .mobile-search-bar {
+    display: none;
+    position: fixed;
+    top: 56px; left: 0; right: 0;
+    background: rgba(10,10,15,0.98);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 16px;
+    z-index: 998;
+  }
+  .mobile-search-bar.open { display: block; }
+  .mobile-search-bar input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    font-size: 15px;
+    padding: 10px 16px;
+    outline: none;
+  }
+  .mobile-search-bar input:focus { border-color: var(--accent); }
+  .mobile-search-bar input::placeholder { color: var(--text3); }
+
+  @media (max-width: 768px) {
+    nav { height: 56px; padding: 0 12px; }
+    
+    .logo { font-size: 22px; }
+    
+    .nav-links { display: none; }
+    
+    #searchInput { display: none; }
+    
+    .btn-menu, .btn-search-mobile { display: flex; }
+    
+    .nav-right { gap: 8px; }
+    
+    .btn-fav { padding: 5px 10px; font-size: 11px; }
+    
+    #hero { min-height: 400px; padding: 0 12px 30px; }
+    
+    .hero-title { font-size: clamp(28px, 5vw, 40px); }
+    .hero-overview { font-size: 13px; }
+    .hero-btns { gap: 8px; }
+    .btn-play, .btn-info { padding: 10px 20px; font-size: 13px; }
+    
+    #mainPage, #searchPage, #favPage { padding: 70px 12px 40px; }
+    
+    .section-title { font-size: clamp(24px, 4vw, 32px); margin-bottom: 20px; }
+    
+    .cards, #searchResults, #favResults {
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 12px;
+    }
+    
+    .card-overlay { padding: 12px; }
+    .card-title { font-size: 12px; }
+    .card-meta { font-size: 10px; }
+    
+    .modal-content {
+      margin-top: 20px;
+      border-radius: 8px;
+    }
+    
+    .modal-header {
+      padding: 16px;
+      gap: 12px;
+    }
+    
+    .modal-poster { height: 250px; }
+    
+    .modal-title { font-size: 22px; }
+    .modal-desc { font-size: 12px; }
+    
+    .modal-btns { gap: 8px; }
+    .modal-btn { padding: 8px 12px; font-size: 11px; }
+    
+    #playerFrame { height: 300px; }
+    #playerLoading { height: 300px; }
+    
+    .section { margin-bottom: 40px; }
+    
+    .empty-state { padding: 40px 16px; }
+    .empty-state .icon { font-size: 48px; }
+    .empty-state p { font-size: 16px; }
+    
+    #toast { bottom: 16px; padding: 10px 16px; font-size: 12px; }
+  }
+
+  @media (max-width: 480px) {
+    nav { height: 48px; padding: 0 8px; }
+    
+    .logo { font-size: 18px; letter-spacing: 1px; }
+    
+    #hero { min-height: 350px; padding: 0 8px 20px; margin-top: 48px; }
+    
+    .hero-title { font-size: clamp(24px, 4vw, 32px); }
+    .hero-badge { font-size: 10px; padding: 3px 8px; }
+    .hero-meta { gap: 12px; margin-bottom: 16px; }
+    .hero-meta span { font-size: 12px; }
+    .hero-overview { font-size: 12px; margin-bottom: 20px; }
+    
+    .hero-btns { gap: 6px; flex-direction: column; }
+    .btn-play, .btn-info { width: 100%; padding: 10px 16px; font-size: 12px; }
+    
+    #mainPage, #searchPage, #favPage { padding: 60px 8px 30px; }
+    
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: clamp(20px, 3vw, 26px); margin-bottom: 16px; }
+    
+    .cards, #searchResults, #favResults {
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 10px;
+    }
+    
+    .card { aspect-ratio: 2/3; }
+    .card-overlay { padding: 10px; }
+    .card-title { font-size: 11px; }
+    .card-meta { font-size: 9px; margin-bottom: 6px; }
+    .card-btn { padding: 5px 10px; font-size: 10px; }
+    .card-fav { width: 32px; height: 32px; font-size: 16px; }
+    
+    #modal {
+      padding: 10px;
+      align-items: flex-start;
+    }
+    
+    .modal-content { margin-top: 30px; }
+    
+    .modal-header {
+      flex-direction: column;
+      padding: 12px;
+      gap: 12px;
+    }
+    
+    .modal-poster { width: 100%; height: 220px; }
+    
+    .modal-title { font-size: 18px; margin-bottom: 6px; }
+    .modal-meta { font-size: 11px; gap: 8px; }
+    .modal-desc { font-size: 11px; margin-bottom: 12px; }
+    
+    #modalStats { gap: 16px; margin-bottom: 16px; }
+    .stat { font-size: 12px; }
+    
+    #modalTags { gap: 6px; margin-bottom: 16px; }
+    .tag { padding: 3px 8px; font-size: 10px; }
+    
+    .modal-body { padding: 12px; }
+    
+    .modal-btns { flex-direction: column; gap: 6px; }
+    .modal-btn { padding: 8px 12px; font-size: 11px; }
+    
+    #playerFrame { height: 200px; }
+    #playerLoading { height: 200px; font-size: 12px; }
+    
+    #playerSources { gap: 6px; margin-bottom: 12px; }
+    .source-btn { padding: 6px 12px; font-size: 11px; }
+    
+    .search-title { font-size: clamp(24px, 4vw, 32px); }
+    .search-count { font-size: 12px; }
+    
+    .empty-state { padding: 30px 8px; }
+    .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+    .empty-state small { font-size: 11px; }
+    
+    #toast { bottom: 12px; left: 50%; transform: translateX(-50%); padding: 8px 12px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="logo" onclick="showPage('main')">CINE<span>VAULT</span></div>
+  <ul class="nav-links">
+    <li><a id="navMovies" onclick="filterAndShow('movie')">Фильмы</a></li>
+    <li><a id="navSeries" onclick="filterAndShow('tv')">Сериалы</a></li>
+    <li><a id="navAnime" onclick="filterAndShow('anime')">Аниме</a></li>
+    <li><a id="navDocs" onclick="filterAndShow('documentary')">Документалки</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="search-wrap">
+      <input id="searchInput" type="text" placeholder="Поиск..." oninput="onSearch(this.value)">
+      <span class="search-icon">🔍</span>
+    </div>
+    <button class="btn-search-mobile" onclick="toggleMobileSearch()" title="Поиск">🔍</button>
+    <button class="btn-fav" onclick="showPage('fav')">♡ Избранное</button>
+    <button class="btn-menu" onclick="toggleMobileMenu()" title="Меню">☰</button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a onclick="filterAndShow('movie'); closeMobileMenu()">🎬 Фильмы</a>
+  <a onclick="filterAndShow('tv'); closeMobileMenu()">📺 Сериалы</a>
+  <a onclick="filterAndShow('anime'); closeMobileMenu()">⛩ Аниме</a>
+  <a onclick="filterAndShow('documentary'); closeMobileMenu()">🎥 Документалки</a>
+  <a onclick="showPage('fav'); closeMobileMenu()">♡ Избранное</a>
+</div>
+
+<!-- MOBILE SEARCH -->
+<div class="mobile-search-bar" id="mobileSearchBar">
+  <input type="text" placeholder="Поиск фильмов и сериалов..." oninput="onSearch(this.value)" id="mobileSearchInput">
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div id="heroBg"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span>●</span> Новое</div>
+    <h1 class="hero-title" id="heroTitle">Netflix</h1>
+    <div class="hero-meta">
+      <span id="heroYear">2024</span>
+      <span id="heroRating" class="rating">8.5★</span>
+    </div>
+    <p class="hero-overview" id="heroOverview">Отличный фильм</p>
+    <div class="hero-btns">
+      <button class="btn-play">▶ Смотреть</button>
+      <button class="btn-info">ℹ Подробнее</button>
+    </div>
+  </div>
+  <div class="hero-dots" id="heroDots"></div>
+</section>
+
+<!-- MAIN PAGE -->
+<div id="mainPage">
+  <div class="section">
+    <h2 class="section-title">В тренде</h2>
+    <div class="cards" id="trendingRow"></div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Популярные Фильмы</h2>
+    <div class="cards" id="moviesRow"></div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Популярные Сериалы</h2>
+    <div class="cards" id="seriesRow"></div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Документалки</h2>
+    <div class="cards" id="docsRow"></div>
+  </div>
+</div>
+
+<!-- SEARCH PAGE -->
+<div id="searchPage">
+  <div class="search-header">
+    <h2 class="search-title">Поиск: <span id="searchQuery"></span></h2>
+    <p class="search-count" id="searchCount">0 результатов</p>
+  </div>
+  <div class="cards" id="searchResults"></div>
+</div>
+
+<!-- FAV PAGE -->
+<div id="favPage">
+  <div class="search-header">
+    <h2 class="search-title">Избранное</h2>
+  </div>
+  <div class="cards" id="favResults"></div>
+</div>
+
+<!-- MODAL -->
+<div id="modal">
+  <button class="modal-close" onclick="closeModal()">✕</button>
+  <div class="modal-content">
+    <div class="modal-header">
+      <img id="modalPoster" class="modal-poster" src="" alt="">
+      <div class="modal-info">
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <div class="modal-meta" id="modalStats"></div>
+        <p class="modal-desc" id="modalOverview"></p>
+        <div class="modal-btns">
+          <button class="modal-btn" id="modalWatchBtn">▶ Смотреть</button>
+          <button class="modal-btn" id="modalFavBtn">♡ В избранное</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div id="playerSources"></div>
+      <div id="playerWrap">
+        <div id="playerLoading"><div class="spinner"></div><span>Загрузка плеера...</span></div>
+        <iframe id="playerFrame" allowfullscreen></iframe>
+      </div>
+      <div id="modalTags"></div>
+      <div id="similarRow"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+// API & CONFIG
+// ═══════════════════════════════════════════════
+const API_KEY = '558568949e362ddf3eabb364c1222b93'; // Твой ключ
+const API_BASE = 'https://api.themoviedb.org/3';
+
+const SOURCES = [
+  {
+    name: 'VidSrc',
+    label: '🎬 VidSrc',
+    movie: (id) => `https://vidsrc.me/embed/movie?tmdb=${id}`,
+    tv: (id, season, episode) => `https://vidsrc.me/embed/tv?tmdb=${id}&season=${season}&episode=${episode}`
+  },
+  {
+    name: '2Embed',
+    label: '▶ 2Embed',
+    movie: (id) => `https://www.2embed.cc/embed/${id}`,
+    tv: (id, season, episode) => `https://www.2embed.cc/embedtv/${id}&s=${season}&e=${episode}`
+  },
+  {
+    name: 'VidSrc.to',
+    label: '🌐 VidSrc.to',
+    movie: (id) => `https://vidsrc.to/embed/movie/${id}`,
+    tv: (id, season, episode) => `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`
+  },
+  {
+    name: 'SuperEmbed',
+    label: '⚡ SuperEmbed',
+    movie: (id) => `https://multiembed.mov/?video_id=${id}&tmdb=1`,
+    tv: (id, season, episode) => `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${season}&e=${episode}`
+  }
+];
+
+let favorites = [];
+let currentItem = null;
+let currentSourceIdx = 0;
+let currentSeason = 1;
+let currentEpisode = 1;
+
+// ═══════════════════════════════════════════════
+// API CALLS
+// ═══════════════════════════════════════════════
+async function api(endpoint, params = {}) {
+  const url = new URL(API_BASE + endpoint);
+  url.searchParams.append('api_key', API_KEY);
+  url.searchParams.append('language', 'ru-RU');
+  Object.entries(params).forEach(([k, v]) => url.searchParams.append(k, v));
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`API Error: ${res.status}`);
+  return res.json();
+}
+
+// ═══════════════════════════════════════════════
+// INIT & LOAD DATA
+// ═══════════════════════════════════════════════
+async function init() {
+  // Load favorites
+  const saved = localStorage.getItem('cv_favs');
+  if (saved) favorites = JSON.parse(saved);
+
+  // Load hero
+  loadHero();
+
+  // Load sections
+  loadSection('trendingRow', '/trending/all/day', { page: 1 });
+  loadSection('moviesRow', '/movie/popular', { page: 1 });
+  loadSection('seriesRow', '/tv/popular', { page: 1 });
+  loadSection('docsRow', '/discover/movie', { with_genres: '99' });
+}
+
+async function loadHero() {
+  try {
+    const data = await api('/trending/all/day', { page: 1 });
+    const items = data.results.slice(0, 5);
+
+    function renderHero(idx) {
+      const item = items[idx];
+      const bg = item.backdrop_path || item.poster_path;
+      document.getElementById('heroBg').style.backgroundImage = `url(https://image.tmdb.org/t/p/w1280${bg})`;
+      document.getElementById('heroTitle').textContent = item.title || item.name;
+      document.getElementById('heroYear').textContent = (item.release_date || item.first_air_date || '').slice(0, 4);
+      document.getElementById('heroRating').textContent = (item.vote_average || 0).toFixed(1) + '★';
+      document.getElementById('heroOverview').textContent = item.overview;
+
+      // Buttons
+      document.querySelector('.btn-play').onclick = () => openModal(item);
+      document.querySelector('.btn-info').onclick = () => openModal(item);
+    }
+
+    // Dots
+    const dotsHtml = items.map((_, i) => `<div class="hero-dot ${i === 0 ? 'active' : ''}" onclick="document.querySelectorAll('.hero-dot')[${i}].click()"></div>`).join('');
+    document.getElementById('heroDots').innerHTML = dotsHtml;
+
+    // Initial render
+    renderHero(0);
+
+    // Auto-rotate
+    let heroIdx = 0;
+    setInterval(() => {
+      heroIdx = (heroIdx + 1) % items.length;
+      document.querySelectorAll('.hero-dot').forEach((d, i) => d.classList.toggle('active', i === heroIdx));
+      renderHero(heroIdx);
+    }, 6000);
+
+    // Dots click
+    document.querySelectorAll('.hero-dot').forEach((dot, i) => {
+      dot.onclick = () => {
+        heroIdx = i;
+        document.querySelectorAll('.hero-dot').forEach((d, j) => d.classList.toggle('active', j === i));
+        renderHero(i);
+      };
+    });
+  } catch (e) {
+    console.error('Hero load error:', e);
+  }
+}
+
+async function loadSection(containerId, endpoint, params = {}) {
+  loadSkeletons(containerId, 6);
+  try {
+    const data = await api(endpoint, params);
+    renderCards(containerId, data.results.slice(0, 6));
+  } catch (e) {
+    console.error('Section load error:', e);
+    document.getElementById(containerId).innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>Ошибка загрузки</p></div>';
+  }
+}
+
+function loadSkeletons(containerId, count) {
+  document.getElementById(containerId).innerHTML = Array(count).fill(0).map(() => 
+    `<div class="card skeleton"></div>`
+  ).join('');
+}
+
+function renderCards(containerId, items) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = items.map(item => {
+    const img = item.poster_path ? `https://image.tmdb.org/t/p/w342${item.poster_path}` : 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 342 513"%3E%3Crect fill="%23333" width="342" height="513"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%23999" font-size="14"%3ENo Image%3C/text%3E%3C/svg%3E';
+    const isFav = favorites.some(f => f.id === item.id);
+    const rating = item.vote_average ? item.vote_average.toFixed(1) : null;
+    return `
+      <div class="card" onclick="openModal(${JSON.stringify(item)})">
+        <img class="card-img" src="${img}" alt="">
+        ${rating ? `<div class="card-rating">★ ${rating}</div>` : ''}
+        <div class="card-overlay">
+          <div class="card-title">${item.title || item.name}</div>
+          <div class="card-meta">${(item.release_date || item.first_air_date || '').slice(0, 4)}</div>
+          <button class="card-btn">Подробнее</button>
+        </div>
+        <button class="card-fav ${isFav ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav(this, ${JSON.stringify(item)})">♥</button>
+      </div>
+    `;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════
+async function openModal(item) {
+  currentItem = item;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  const type = item.media_type || (item.first_air_date ? 'tv' : 'movie');
+  const poster = item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 750"%3E%3Crect fill="%23333" width="500" height="750"/%3E%3C/svg%3E';
+
+  document.getElementById('modalPoster').src = poster;
+  document.getElementById('modalTitle').textContent = item.title || item.name;
+  document.getElementById('modalOverview').textContent = item.overview || 'Нет описания';
+
+  const isFav = favorites.some(f => f.id === item.id);
+  const favBtn = document.getElementById('modalFavBtn');
+  favBtn.classList.toggle('active', isFav);
+  favBtn.textContent = isFav ? '♥ В избранном' : '♡ В избранное';
+
+  // Build player sources
+  const src = document.getElementById('playerSources');
+  src.style.display = 'flex';
+  src.innerHTML = SOURCES.map((s, i) =>
+    `<button class="source-btn ${i === 0 ? 'active' : ''}" onclick="selectSource(${i})">${s.label || s.name}</button>`
+  ).join('');
+
+  // Hide player until user clicks watch
+  document.getElementById('playerWrap').style.display = 'none';
+  document.getElementById('playerFrame').src = '';
+
+  // Watch button
+  document.getElementById('modalWatchBtn').onclick = () => {
+    startPlayer();
+  };
+
+  // Genres / tags
+  let tags = [];
+  try {
+    const details = await api(`/${type}/${item.id}`);
+    tags = (details.genres || []).map(g => `<span class="tag">${g.name}</span>`);
+    if (details.runtime) document.getElementById('modalStats').innerHTML += `<div class="stat">⏱ <strong>${details.runtime} мин.</strong></div>`;
+    if (details.number_of_seasons) document.getElementById('modalStats').innerHTML += `<div class="stat">📚 <strong>${details.number_of_seasons} сезонов</strong></div>`;
+  } catch (e) { }
+  document.getElementById('modalStats').innerHTML = `<div class="stat">⭐ <strong>${(item.vote_average || 0).toFixed(1)}</strong></div>` + document.getElementById('modalStats').innerHTML;
+  document.getElementById('modalTags').innerHTML = tags.join('');
+
+  // Similar
+  loadSkeletons('similarRow', 6);
+  try {
+    const sim = await api(`/${type}/${item.id}/similar`);
+    renderCards('similarRow', sim.results.slice(0, 6));
+  } catch (e) {
+    document.getElementById('similarRow').innerHTML = '';
+  }
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+  const frame = document.getElementById('playerFrame');
+  frame.onload = null;
+  frame.src = '';
+  document.getElementById('playerWrap').style.display = 'none';
+  document.getElementById('playerLoading').style.display = 'flex';
+  currentItem = null;
+}
+
+function startPlayer() {
+  if (!currentItem) return;
+  const wrap = document.getElementById('playerWrap');
+  wrap.style.display = 'block';
+  const loading = document.getElementById('playerLoading');
+  loading.style.display = 'flex';
+  const frame = document.getElementById('playerFrame');
+  frame.onload = () => { loading.style.display = 'none'; };
+  setTimeout(() => wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+  setPlayerSrc();
+}
+
+function setPlayerSrc() {
+  if (!currentItem) return;
+  const type = currentItem.media_type || (currentItem.first_air_date ? 'tv' : 'movie');
+  const id = currentItem.id;
+  const src = SOURCES[currentSourceIdx];
+  const url = type === 'tv'
+    ? src.tv(id, currentSeason, currentEpisode)
+    : src.movie(id);
+  document.getElementById('playerFrame').src = url;
+}
+
+function selectSource(idx) {
+  currentSourceIdx = idx;
+  document.querySelectorAll('.source-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+  if (document.getElementById('playerWrap').style.display !== 'none') {
+    const loading = document.getElementById('playerLoading');
+    loading.style.display = 'flex';
+    const frame = document.getElementById('playerFrame');
+    frame.onload = () => { loading.style.display = 'none'; };
+    setPlayerSrc();
+  }
+}
+
+// ═══════════════════════════════════════════════
+// FAVORITES
+// ═══════════════════════════════════════════════
+function toggleFav(btn, item) {
+  const idx = favorites.findIndex(f => f.id === item.id);
+  if (idx >= 0) {
+    favorites.splice(idx, 1);
+    btn.textContent = '♡';
+    btn.classList.remove('active');
+    showToast('Удалено из избранного');
+  } else {
+    favorites.push(item);
+    btn.textContent = '♥';
+    btn.classList.add('active');
+    showToast('Добавлено в избранное');
+  }
+  localStorage.setItem('cv_favs', JSON.stringify(favorites));
+}
+
+function toggleFavModal() {
+  if (!currentItem) return;
+  const idx = favorites.findIndex(f => f.id === currentItem.id);
+  const btn = document.getElementById('modalFavBtn');
+  if (idx >= 0) {
+    favorites.splice(idx, 1);
+    btn.classList.remove('active');
+    btn.textContent = '♡ В избранное';
+    showToast('Удалено из избранного');
+  } else {
+    favorites.push(currentItem);
+    btn.classList.add('active');
+    btn.textContent = '♥ В избранном';
+    showToast('Добавлено в избранное');
+  }
+  localStorage.setItem('cv_favs', JSON.stringify(favorites));
+}
+
+// Bind modal fav button
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('modalFavBtn').onclick = toggleFavModal;
+});
+
+// ═══════════════════════════════════════════════
+// SEARCH
+// ═══════════════════════════════════════════════
+let searchTimer = null;
+function onSearch(val) {
+  clearTimeout(searchTimer);
+  if (val.length < 2) {
+    if (!val) showPage('main');
+    return;
+  }
+  searchTimer = setTimeout(() => doSearch(val), 500);
+}
+
+async function doSearch(val) {
+  if (!val.trim()) return;
+  showPage('search');
+  document.getElementById('searchQuery').textContent = `"${val}"`;
+  document.getElementById('searchCount').textContent = 'Поиск...';
+  loadSkeletons('searchResults', 12);
+
+  try {
+    const [movies, series] = await Promise.all([
+      api('/search/movie', { query: val }),
+      api('/search/tv', { query: val }),
+    ]);
+    const combined = [
+      ...movies.results.map(m => ({ ...m, media_type: 'movie' })),
+      ...series.results.map(s => ({ ...s, media_type: 'tv' })),
+    ].sort((a, b) => b.popularity - a.popularity);
+
+    document.getElementById('searchCount').textContent = `Найдено: ${combined.length} результатов`;
+    renderCards('searchResults', combined.slice(0, 24));
+  } catch (e) {
+    document.getElementById('searchResults').innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>Ошибка поиска</p></div>';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// CATEGORY FILTER
+// ═══════════════════════════════════════════════
+async function filterAndShow(type) {
+  showPage('search');
+  const labels = { movie: 'Фильмы', tv: 'Сериалы', anime: 'Аниме', documentary: 'Документалки', trending: 'В тренде' };
+  document.getElementById('searchQuery').textContent = labels[type] || type;
+  document.getElementById('searchCount').textContent = 'Загрузка...';
+  loadSkeletons('searchResults', 12);
+
+  try {
+    let results = [];
+    if (type === 'trending') {
+      const r = await api('/trending/all/day', { page: 1 });
+      results = r.results;
+    } else if (type === 'anime') {
+      const r = await api('/search/tv', { query: 'anime', with_genres: '16', with_original_language: 'ja' });
+      results = r.results.map(i => ({ ...i, media_type: 'tv' }));
+    } else if (type === 'documentary') {
+      const r = await api('/discover/movie', { with_genres: '99' });
+      results = r.results.map(i => ({ ...i, media_type: 'movie' }));
+    } else if (type === 'movie') {
+      const r = await api('/movie/popular');
+      results = r.results.map(i => ({ ...i, media_type: 'movie' }));
+    } else if (type === 'tv') {
+      const r = await api('/tv/popular');
+      results = r.results.map(i => ({ ...i, media_type: 'tv' }));
+    }
+    document.getElementById('searchCount').textContent = `${results.length} результатов`;
+    renderCards('searchResults', results);
+  } catch (e) {
+    showToast('Ошибка загрузки');
+  }
+
+  // Nav highlight
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const map = { movie: 'navMovies', tv: 'navSeries', anime: 'navAnime', documentary: 'navDocs' };
+  if (map[type]) document.getElementById(map[type]).classList.add('active');
+}
+
+// ═══════════════════════════════════════════════
+// PAGES
+// ═══════════════════════════════════════════════
+function showPage(page) {
+  document.getElementById('mainPage').style.display = page === 'main' ? 'block' : 'none';
+  document.getElementById('searchPage').style.display = page === 'search' ? 'block' : 'none';
+  document.getElementById('favPage').style.display = page === 'fav' ? 'block' : 'none';
+
+  if (page === 'main') {
+    document.getElementById('searchInput').value = '';
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    document.getElementById('navMovies').classList.add('active');
+  }
+  if (page === 'fav') {
+    renderFavorites();
+  }
+  window.scrollTo(0, 0);
+}
+
+function renderFavorites() {
+  const c = document.getElementById('favResults');
+  if (!favorites.length) {
+    c.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <div class="icon">🎬</div>
+      <p>Избранное пусто</p>
+      <small>Нажмите ♡ на карточке, чтобы добавить</small>
+    </div>`;
+    return;
+  }
+  renderCards('favResults', favorites);
+}
+
+// ═══════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ═══════════════════════════════════════════════
+// NAV SCROLL
+// ═══════════════════════════════════════════════
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ═══════════════════════════════════════════════
+// KEYBOARD
+// ═══════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
+    e.preventDefault();
+    const input = document.getElementById('searchInput');
+    if (input) input.focus();
+  }
+});
+
+// ═══════════════════════════════════════════════
+// MOBILE MENU
+// ═══════════════════════════════════════════════
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  const search = document.getElementById('mobileSearchBar');
+  menu.classList.toggle('open');
+  if (search.classList.contains('open')) search.classList.remove('open');
+}
+
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+
+function toggleMobileSearch() {
+  const search = document.getElementById('mobileSearchBar');
+  const menu = document.getElementById('mobileMenu');
+  search.classList.toggle('open');
+  if (menu.classList.contains('open')) menu.classList.remove('open');
+  if (search.classList.contains('open')) {
+    setTimeout(() => document.getElementById('mobileSearchInput').focus(), 50);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// START
+// ═══════════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
