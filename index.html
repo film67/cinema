@@ -804,34 +804,23 @@ const API_BASE = 'https://api.themoviedb.org/3';
 // === ИСТОЧНИКИ (БЕЗ ТОКЕНОВ) ===
 const SOURCES = [
   {
-  name: 'Vidsrc',
-  label: '🌐 Зарубежный',
-  movie: (id) => `https://vidsrc.me/embed/movie?tmdb=${id}`,
-  tv: (id, s, e) => `https://vidsrc.me/embed/tv?tmdb=${id}&sea=${s}&number=${e}`
-},
-  {
     name: 'Player1',
-    label: '▶ Основной',
-    movie: (id) => `https://apimovie.ru/embed/${id}`,
-    tv: (id, s, e) => `https://apimovie.ru/embed/${id}?s=${s}&e=${e}`
-  },
-  {
-    name: 'Player2',
-    label: '🎬 Запасной',
-    movie: (id) => `https://videoframe.ru/embed/${id}`,
-    tv: (id, s, e) => `https://videoframe.ru/embed/${id}?season=${s}&episode=${e}`
+    label: '▶ Основной (VCDN)',
+    movie: (id) => `https://src.auto/embed/movie/${id}`,
+    tv: (id, s, e) => `https://src.auto/embed/tv/${id}/${s}/${e}`
   },
   {
     name: 'Kodik',
     label: '🏮 Kodik',
-    movie: (id) => `https://kodik.info/find?tmdb_id=${id}`,
-    tv: (id, s, e) => `https://kodik.info/find?tmdb_id=${id}&season=${s}&episode=${e}`
+    // Используем их основной поиск, он стабильнее
+    movie: (id) => `https://kodik.info/find-player?tmdbID=${id}`,
+    tv: (id, s, e) => `https://kodik.info/find-player?tmdbID=${id}&season=${s}&episode=${e}`
   },
   {
-    name: 'PlayerJS',
-    label: '▶ Запасной',
-    movie: (id) => `https://apimovie.ru/embed/${id}`,
-    tv: (id, s, e) => `https://apimovie.ru/embed/${id}?s=${s}&e=${e}`
+    name: 'Collaps',
+    label: '🎬 Запасной',
+    movie: (id) => `https://api.collaps.org/embed/tmdb/${id}`,
+    tv: (id, s, e) => `https://api.collaps.org/embed/tmdb/${id}?s=${s}&e=${e}`
   }
 ];
 
