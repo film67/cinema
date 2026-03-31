@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <meta name="referrer" content="no-referrer-when-downgrade">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CineVault — Смотри всё</title>
@@ -804,26 +805,25 @@ const API_BASE = 'https://api.themoviedb.org/3';
 // === ИСТОЧНИКИ (БЕЗ ТОКЕНОВ) ===
 const SOURCES = [
   {
-    name: 'Player1',
-    label: '▶ Основной (VCDN)',
-    movie: (id) => `https://src.auto/embed/movie/${id}`,
-    tv: (id, s, e) => `https://src.auto/embed/tv/${id}/${s}/${e}`
+    name: 'Kodik',
+    label: '🏮 Kodik (Аниме/Сериалы)',
+    // Используем зеркало aniqit.com, оно реже блокируется
+    movie: (id) => `https://aniqit.com/find?tmdb_id=${id}`,
+    tv: (id, s, e) => `https://aniqit.com/find?tmdb_id=${id}&season=${s}&episode=${e}`
   },
   {
-    name: 'Kodik',
-    label: '🏮 Kodik',
-    // Используем их основной поиск, он стабильнее
-    movie: (id) => `https://kodik.info/find-player?tmdbID=${id}`,
-    tv: (id, s, e) => `https://kodik.info/find-player?tmdbID=${id}&season=${s}&episode=${e}`
+    name: 'Vidsrc',
+    label: '🌐 Vidsrc (Фильмы)',
+    movie: (id) => `https://vidsrc.xyz/embed/movie?tmdb=${id}`,
+    tv: (id, s, e) => `https://vidsrc.xyz/embed/tv?tmdb=${id}&season=${s}&episode=${e}`
   },
   {
     name: 'Collaps',
-    label: '🎬 Запасной',
+    label: '💎 Collaps',
     movie: (id) => `https://api.collaps.org/embed/tmdb/${id}`,
     tv: (id, s, e) => `https://api.collaps.org/embed/tmdb/${id}?s=${s}&e=${e}`
   }
 ];
-
 // ═══════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════
