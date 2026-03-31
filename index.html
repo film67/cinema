@@ -804,6 +804,12 @@ const API_BASE = 'https://api.themoviedb.org/3';
 // === ИСТОЧНИКИ (БЕЗ ТОКЕНОВ) ===
 const SOURCES = [
   {
+  name: 'Vidsrc',
+  label: '🌐 Зарубежный',
+  movie: (id) => `https://vidsrc.me/embed/movie?tmdb=${id}`,
+  tv: (id, s, e) => `https://vidsrc.me/embed/tv?tmdb=${id}&sea=${s}&number=${e}`
+},
+  {
     name: 'Player1',
     label: '▶ Основной',
     movie: (id) => `https://apimovie.ru/embed/${id}`,
