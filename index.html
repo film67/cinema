@@ -1503,39 +1503,43 @@ async function loadCatalogPage(type, page, replace) {
   const year  = document.getElementById('yearSelect')?.value  || '';
 
   try {
+    // Оставляем только контент с латинскими/кириллическими названиями (ru/en перевод есть)
+    // Убираем: тайский, корейский, японский, китайский, арабский, хинди и др.
+    const isForeign = s => !s || /[฀-๿가-힯ᄀ-ᇿ぀-鿿豈-﫿＀-￯؀-ۿ֐-׿ऀ-ॿ]/.test(s);
+
     let results = [];
     let total   = 0;
 
     if (type === 'trending') {
       const r = await api('/trending/all/day', { page });
-      results = r.results; total = r.total_results || results.length;
+      results = r.results.filter(i => !isForeign(i.title || i.name));
+      total = r.total_results || results.length;
     } else if (type === 'anime') {
       const params = { with_genres:'16', with_original_language:'ja', sort_by: sort, page, 'vote_count.gte': 200 };
       if (genre) params.with_genres = genre + ',16';
       if (year)  params.first_air_date_year = year;
       const r = await api('/discover/tv', params);
-      const hasJP = s => /[　-鿿豈-﫿＀-￯]/.test(s);
-      results = r.results.filter(i => i.name && !hasJP(i.name)).map(i => ({ ...i, media_type:'tv' }));
+      results = r.results.filter(i => !isForeign(i.name)).map(i => ({ ...i, media_type:'tv' }));
       total   = r.total_results || 0;
     } else if (type === 'documentary') {
-      const params = { with_genres: genre || '99', sort_by: sort, page };
+      const params = { with_genres: genre || '99', sort_by: sort, page, 'vote_count.gte': 30 };
       if (year) params.primary_release_year = year;
       const r = await api('/discover/movie', params);
-      results = r.results.map(i => ({ ...i, media_type:'movie' }));
+      results = r.results.filter(i => !isForeign(i.title)).map(i => ({ ...i, media_type:'movie' }));
       total   = r.total_results || 0;
     } else if (type === 'movie') {
-      const params = { sort_by: sort, page, 'vote_count.gte': 50 };
+      const params = { sort_by: sort, page, 'vote_count.gte': 100 };
       if (genre) params.with_genres = genre;
       if (year)  params.primary_release_year = year;
       const r = await api('/discover/movie', params);
-      results = r.results.map(i => ({ ...i, media_type:'movie' }));
+      results = r.results.filter(i => !isForeign(i.title)).map(i => ({ ...i, media_type:'movie' }));
       total   = r.total_results || 0;
     } else if (type === 'tv') {
-      const params = { sort_by: sort, page, 'vote_count.gte': 20 };
+      const params = { sort_by: sort, page, 'vote_count.gte': 80 };
       if (genre) params.with_genres = genre;
       if (year)  params.first_air_date_year = year;
       const r = await api('/discover/tv', params);
-      results = r.results.map(i => ({ ...i, media_type:'tv' }));
+      results = r.results.filter(i => !isForeign(i.name)).map(i => ({ ...i, media_type:'tv' }));
       total   = r.total_results || 0;
     }
 
