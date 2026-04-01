@@ -101,7 +101,7 @@
     color: var(--text);
     font-family: 'Outfit', sans-serif;
     font-size: 13px;
-    padding: 8px 36px 8px 14px;
+    padding: 8px 14px;
     width: 210px;
     transition: var(--tr);
     outline: none;
@@ -113,10 +113,7 @@
     width: 270px;
   }
   #searchInput::placeholder { color: var(--text3); }
-  .search-icon {
-    position: absolute; right:10px; top:50%; transform:translateY(-50%);
-    color:var(--text3); font-size:13px; pointer-events:none;
-  }
+  .search-icon { display: none; }
   .btn-fav {
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.08);
@@ -504,13 +501,51 @@
     display: none;
     padding: 96px clamp(12px,4vw,56px) 60px;
   }
-  .page-header { margin-bottom: 36px; }
+  .page-header { margin-bottom: 24px; }
   .page-title {
     font-family:'Bebas Neue',sans-serif;
     font-size: clamp(30px,5vw,46px);
     margin-bottom: 6px;
   }
   .page-count { color:var(--text3); font-size:13px; }
+
+  /* ─── FILTER BAR ─── */
+  #filterBar {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 14px 0 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  #filterBar.visible { display: flex; }
+  .filter-label { font-size: 12px; color:var(--text3); font-weight:500; text-transform:uppercase; letter-spacing:0.5px; white-space:nowrap; }
+  .filter-select {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text); padding: 8px 14px;
+    border-radius: 8px; font-size: 13px;
+    font-family: 'Outfit', sans-serif; cursor:pointer; outline:none;
+    transition: var(--tr);
+    appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238888a8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+  }
+  .filter-select:focus, .filter-select:hover { border-color: rgba(229,9,20,0.4); }
+  .filter-sep { width:1px; height:22px; background:var(--border); }
+
+  /* Load more */
+  #loadMoreWrap { text-align:center; margin-top: 32px; }
+  .btn-load-more {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text2); padding: 12px 36px;
+    border-radius: 9px; font-size: 14px; font-weight: 600;
+    font-family: 'Outfit', sans-serif; cursor: pointer; transition: var(--tr);
+  }
+  .btn-load-more:hover { border-color: rgba(229,9,20,0.4); color: var(--text); }
+  .btn-load-more:disabled { opacity:0.4; cursor:default; }
 
   #searchResults, #favResults {
     display:grid; grid-template-columns: repeat(auto-fill, minmax(155px,1fr)); gap:18px;
@@ -727,10 +762,33 @@
 <!-- SEARCH PAGE -->
 <div id="searchPage">
   <div class="page-header">
-    <h2 class="page-title">Поиск: <span id="searchQuery"></span></h2>
+    <h2 class="page-title" id="pageTitle">Фильмы</h2>
     <p class="page-count" id="searchCount"></p>
   </div>
+  <!-- Фильтр-бар (только для каталога, не для поиска) -->
+  <div id="filterBar">
+    <span class="filter-label">Сортировка:</span>
+    <select class="filter-select" id="sortSelect" onchange="applyFilters()">
+      <option value="popularity.desc">По популярности</option>
+      <option value="vote_average.desc">По рейтингу</option>
+      <option value="primary_release_date.desc">Сначала новые</option>
+      <option value="primary_release_date.asc">Сначала старые</option>
+    </select>
+    <div class="filter-sep"></div>
+    <span class="filter-label">Жанр:</span>
+    <select class="filter-select" id="genreSelect" onchange="applyFilters()">
+      <option value="">Все жанры</option>
+    </select>
+    <div class="filter-sep"></div>
+    <span class="filter-label">Год:</span>
+    <select class="filter-select" id="yearSelect" onchange="applyFilters()">
+      <option value="">Все годы</option>
+    </select>
+  </div>
   <div id="searchResults"></div>
+  <div id="loadMoreWrap" style="display:none">
+    <button class="btn-load-more" id="loadMoreBtn" onclick="loadMoreCatalog()">Загрузить ещё</button>
+  </div>
 </div>
 
 <!-- FAV PAGE -->
@@ -1287,8 +1345,10 @@ function onSearch(val) {
 async function doSearch(val) {
   if (!val.trim()) return;
   showPage('search');
-  document.getElementById('searchQuery').textContent = `"${val}"`;
+  document.getElementById('pageTitle').textContent = `Результаты: "${val}"`;
   document.getElementById('searchCount').textContent = 'Поиск...';
+  document.getElementById('filterBar').classList.remove('visible');
+  document.getElementById('loadMoreWrap').style.display = 'none';
 
   const container = document.getElementById('searchResults');
   container.innerHTML = '';
@@ -1313,41 +1373,195 @@ async function doSearch(val) {
 }
 
 // ═══════════════════════════════════════════════════
+// CATALOG STATE
+// ═══════════════════════════════════════════════════
+let catalogType    = 'movie';   // текущий тип каталога
+let catalogPage    = 1;
+let catalogTotal   = 0;
+
+const GENRE_MOVIE = [
+  {id:28,name:'Боевик'},{id:12,name:'Приключения'},{id:16,name:'Анимация'},
+  {id:35,name:'Комедия'},{id:80,name:'Криминал'},{id:99,name:'Документальный'},
+  {id:18,name:'Драма'},{id:10751,name:'Семейный'},{id:14,name:'Фэнтези'},
+  {id:36,name:'История'},{id:27,name:'Ужасы'},{id:10402,name:'Музыка'},
+  {id:9648,name:'Детектив'},{id:10749,name:'Мелодрама'},{id:878,name:'Фантастика'},
+  {id:10770,name:'ТВ-фильм'},{id:53,name:'Триллер'},{id:10752,name:'Война'},{id:37,name:'Вестерн'}
+];
+const GENRE_TV = [
+  {id:10759,name:'Боевик/Приключения'},{id:16,name:'Аниме'},{id:35,name:'Комедия'},
+  {id:80,name:'Криминал'},{id:99,name:'Документальный'},{id:18,name:'Драма'},
+  {id:10751,name:'Семейный'},{id:10762,name:'Детский'},{id:9648,name:'Детектив'},
+  {id:10763,name:'Новости'},{id:10764,name:'Реалити'},{id:10765,name:'Фантастика/Фэнтези'},
+  {id:10766,name:'Мыльная опера'},{id:10767,name:'Ток-шоу'},{id:10768,name:'Война/Политика'}
+];
+
+function buildYearOptions() {
+  const cur = new Date().getFullYear();
+  let html = '<option value="">Все годы</option>';
+  for (let y = cur; y >= 1990; y--) html += `<option value="${y}">${y}</option>`;
+  return html;
+}
+
+function setGenreOptions(type) {
+  const genres = (type === 'tv' || type === 'anime') ? GENRE_TV : GENRE_MOVIE;
+  document.getElementById('genreSelect').innerHTML =
+    '<option value="">Все жанры</option>' +
+    genres.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
 // CATEGORY
 // ═══════════════════════════════════════════════════
 async function filterAndShow(type) {
+  catalogType  = type;
+  catalogPage  = 1;
+  catalogTotal = 0;
+
   showPage('search');
   const labels = { movie:'Фильмы', tv:'Сериалы', anime:'Аниме', documentary:'Документалки', trending:'В тренде' };
-  document.getElementById('searchQuery').textContent = labels[type] || type;
+  document.getElementById('pageTitle').textContent = labels[type] || type;
   document.getElementById('searchCount').textContent = 'Загрузка...';
-  loadSkeletons('searchResults', 12);
 
-  try {
-    let results = [];
-    if (type === 'trending') {
-      const r = await api('/trending/all/day');
-      results = r.results;
-    } else if (type === 'anime') {
-      const r = await api('/discover/tv', { with_genres:'16', with_original_language:'ja', sort_by:'popularity.desc' });
-      results = r.results.map(i => ({ ...i, media_type:'tv' }));
-    } else if (type === 'documentary') {
-      const r = await api('/discover/movie', { with_genres:'99' });
-      results = r.results.map(i => ({ ...i, media_type:'movie' }));
-    } else if (type === 'movie') {
-      const r = await api('/movie/popular');
-      results = r.results.map(i => ({ ...i, media_type:'movie' }));
-    } else if (type === 'tv') {
-      const r = await api('/tv/popular');
-      results = r.results.map(i => ({ ...i, media_type:'tv' }));
-    }
-    results.forEach(i => itemsMap.set(i.id, i));
-    document.getElementById('searchCount').textContent = `${results.length} результатов`;
-    renderCards('searchResults', results);
-  } catch { showToast('Ошибка загрузки', true); }
+  // Показываем фильтр-бар (кроме trending)
+  const filterBar = document.getElementById('filterBar');
+  if (type !== 'trending') {
+    filterBar.classList.add('visible');
+    setGenreOptions(type);
+    document.getElementById('yearSelect').innerHTML = buildYearOptions();
+    // Сбрасываем фильтры
+    document.getElementById('sortSelect').value  = 'popularity.desc';
+    document.getElementById('genreSelect').value = '';
+    document.getElementById('yearSelect').value  = '';
+    // Fix sort options for TV
+    const sortSel = document.getElementById('sortSelect');
+    sortSel.options[2].value = type === 'tv' || type === 'anime'
+      ? 'first_air_date.desc' : 'primary_release_date.desc';
+    sortSel.options[3].value = type === 'tv' || type === 'anime'
+      ? 'first_air_date.asc'  : 'primary_release_date.asc';
+  } else {
+    filterBar.classList.remove('visible');
+  }
+
+  loadSkeletons('searchResults', 20);
+  document.getElementById('loadMoreWrap').style.display = 'none';
+
+  await loadCatalogPage(type, 1, true);
 
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
   const map = { movie:'navMovies', tv:'navSeries', anime:'navAnime', documentary:'navDocs' };
   if (map[type]) document.getElementById(map[type]).classList.add('active');
+}
+
+async function applyFilters() {
+  catalogPage = 1;
+  loadSkeletons('searchResults', 20);
+  document.getElementById('loadMoreWrap').style.display = 'none';
+  await loadCatalogPage(catalogType, 1, true);
+}
+
+async function loadMoreCatalog() {
+  const btn = document.getElementById('loadMoreBtn');
+  btn.disabled = true;
+  btn.textContent = 'Загрузка...';
+  catalogPage++;
+  await loadCatalogPage(catalogType, catalogPage, false);
+  btn.disabled = false;
+  btn.textContent = 'Загрузить ещё';
+}
+
+async function loadCatalogPage(type, page, replace) {
+  const sort  = document.getElementById('sortSelect')?.value  || 'popularity.desc';
+  const genre = document.getElementById('genreSelect')?.value || '';
+  const year  = document.getElementById('yearSelect')?.value  || '';
+
+  try {
+    let results = [];
+    let total   = 0;
+
+    if (type === 'trending') {
+      const r = await api('/trending/all/day', { page });
+      results = r.results; total = r.total_results || results.length;
+    } else if (type === 'anime') {
+      const params = { with_genres:'16', with_original_language:'ja', sort_by: sort, page };
+      if (genre) params.with_genres = genre + ',16';
+      if (year)  params.first_air_date_year = year;
+      const r = await api('/discover/tv', params);
+      results = r.results.map(i => ({ ...i, media_type:'tv' }));
+      total   = r.total_results || 0;
+    } else if (type === 'documentary') {
+      const params = { with_genres: genre || '99', sort_by: sort, page };
+      if (year) params.primary_release_year = year;
+      const r = await api('/discover/movie', params);
+      results = r.results.map(i => ({ ...i, media_type:'movie' }));
+      total   = r.total_results || 0;
+    } else if (type === 'movie') {
+      const params = { sort_by: sort, page, 'vote_count.gte': 50 };
+      if (genre) params.with_genres = genre;
+      if (year)  params.primary_release_year = year;
+      const r = await api('/discover/movie', params);
+      results = r.results.map(i => ({ ...i, media_type:'movie' }));
+      total   = r.total_results || 0;
+    } else if (type === 'tv') {
+      const params = { sort_by: sort, page, 'vote_count.gte': 20 };
+      if (genre) params.with_genres = genre;
+      if (year)  params.first_air_date_year = year;
+      const r = await api('/discover/tv', params);
+      results = r.results.map(i => ({ ...i, media_type:'tv' }));
+      total   = r.total_results || 0;
+    }
+
+    catalogTotal = total;
+    results.forEach(i => itemsMap.set(i.id, i));
+
+    const container = document.getElementById('searchResults');
+    const shown = (page - 1) * 20 + results.length;
+    document.getElementById('searchCount').textContent = `Показано: ${shown} из ${total}`;
+
+    if (replace) {
+      renderCards('searchResults', results);
+    } else {
+      // Append cards
+      if (!results.length) return;
+      const frag = document.createElement('div');
+      frag.innerHTML = results.map(item => {
+        const img  = item.poster_path ? `https://image.tmdb.org/t/p/w342${item.poster_path}` : `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 342 513'%3E%3Crect fill='%2312121c' width='342' height='513'/%3E%3C/svg%3E`;
+        const isFav  = favorites.some(f => f.id === item.id);
+        const rating = item.vote_average ? item.vote_average.toFixed(1) : null;
+        const isTV   = item.media_type === 'tv' || !!item.first_air_date;
+        const year   = (item.release_date || item.first_air_date || '').slice(0,4);
+        const safeTitle = (item.title || item.name || '').replace(/"/g, '&quot;');
+        return `<div class="card" data-id="${item.id}" title="${safeTitle}">
+          <img class="card-img" src="${img}" alt="${safeTitle}" loading="lazy">
+          ${rating ? `<div class="card-rating">★ ${rating}</div>` : ''}
+          ${isTV ? `<div class="card-type-badge">Сериал</div>` : ''}
+          <div class="card-overlay">
+            <div class="card-title">${item.title || item.name || ''}</div>
+            <div class="card-meta">${year}</div>
+            <button class="card-btn">▶ Подробнее</button>
+          </div>
+          <button class="card-fav ${isFav?'active':''}" data-id="${item.id}">${isFav?'♥':'♡'}</button>
+        </div>`;
+      }).join('');
+      frag.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('click', e => { if (e.target.closest('.card-fav')) return; openModal(+card.dataset.id); });
+      });
+      frag.querySelectorAll('.card-fav').forEach(btn => {
+        btn.addEventListener('click', e => { e.stopPropagation(); const item = itemsMap.get(+btn.dataset.id); if (item) toggleFav(btn, item); });
+      });
+      while (frag.firstChild) container.appendChild(frag.firstChild);
+    }
+
+    // Show/hide load more
+    const loadMoreWrap = document.getElementById('loadMoreWrap');
+    if (shown < total && type !== 'trending') {
+      loadMoreWrap.style.display = 'block';
+    } else {
+      loadMoreWrap.style.display = 'none';
+    }
+
+  } catch(e) {
+    showToast('Ошибка загрузки', true);
+  }
 }
 
 // ═══════════════════════════════════════════════════
@@ -1359,6 +1573,8 @@ function showPage(page) {
   document.getElementById('favPage').style.display    = page === 'fav'    ? 'block' : 'none';
   if (page === 'main') {
     document.getElementById('searchInput').value = '';
+    document.getElementById('filterBar').classList.remove('visible');
+    document.getElementById('loadMoreWrap').style.display = 'none';
     document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
   }
   if (page === 'fav') renderFavorites();
