@@ -536,16 +536,17 @@
   .filter-select:focus, .filter-select:hover { border-color: rgba(229,9,20,0.4); }
   .filter-sep { width:1px; height:22px; background:var(--border); }
 
-  /* Load more */
-  #loadMoreWrap { text-align:center; margin-top: 32px; }
-  .btn-load-more {
-    background: var(--bg3); border: 1px solid var(--border);
-    color: var(--text2); padding: 12px 36px;
-    border-radius: 9px; font-size: 14px; font-weight: 600;
-    font-family: 'Outfit', sans-serif; cursor: pointer; transition: var(--tr);
+  /* infinite scroll spinner */
+  #infiniteSpinner {
+    display: none; justify-content:center; align-items:center;
+    padding: 32px; gap:10px; color:var(--text3); font-size:13px;
   }
-  .btn-load-more:hover { border-color: rgba(229,9,20,0.4); color: var(--text); }
-  .btn-load-more:disabled { opacity:0.4; cursor:default; }
+  #infiniteSpinner.show { display:flex; }
+  #infiniteSpinner .mini-spin {
+    width:22px; height:22px;
+    border:2px solid var(--border); border-top-color:var(--accent);
+    border-radius:50%; animation:spin 0.8s linear infinite;
+  }
 
   #searchResults, #favResults {
     display:grid; grid-template-columns: repeat(auto-fill, minmax(155px,1fr)); gap:18px;
@@ -638,8 +639,16 @@
   }
   @media (max-width:768px) {
     nav { height:54px; }
-    .nav-links, #searchInput { display:none; }
-    .btn-menu, .btn-search-mobile { display:flex; }
+    .nav-links { display:none; }
+    .btn-search-mobile { display:none; } /* убираем стикер-кнопку */
+    .btn-menu { display:flex; }
+    #searchInput {
+      display:block;
+      width: 140px;
+      font-size: 12px;
+      padding: 7px 11px;
+    }
+    #searchInput:focus { width: 180px; }
     .btn-fav { padding:5px 10px; font-size:11px; }
     #hero { min-height:420px; padding:0 12px 32px; }
     .hero-title { font-size:clamp(30px,6vw,46px); }
@@ -653,8 +662,15 @@
     .mobile-search-bar { top:54px; }
   }
   @media (max-width:480px) {
-    nav { height:48px; padding:0 10px; }
+    nav { height:48px; padding:0 10px; gap:8px; }
     .logo { font-size:20px; }
+    #searchInput {
+      width: 110px;
+      font-size: 11px;
+      padding: 6px 9px;
+    }
+    #searchInput:focus { width: 140px; }
+    .btn-fav { padding:4px 8px; font-size:10px; gap:4px; }
     #hero { min-height:360px; padding:0 10px 24px; margin-top:48px; }
     .hero-title { font-size:clamp(26px,5vw,36px); }
     .hero-btns { flex-direction:column; gap:8px; }
@@ -786,9 +802,9 @@
     </select>
   </div>
   <div id="searchResults"></div>
-  <div id="loadMoreWrap" style="display:none">
-    <button class="btn-load-more" id="loadMoreBtn" onclick="loadMoreCatalog()">Загрузить ещё</button>
-  </div>
+  <!-- Sentinel для infinite scroll — когда он появляется в видимой зоне, грузим следующую страницу -->
+  <div id="scrollSentinel" style="height:1px;margin-top:40px;"></div>
+  <div id="infiniteSpinner"><div class="mini-spin"></div><span>Загрузка...</span></div>
 </div>
 
 <!-- FAV PAGE -->
@@ -1294,7 +1310,7 @@ function updateFavBtn() {
   if (!btn) return;
   const has = favorites.length > 0;
   btn.classList.toggle('has-favs', has);
-  btn.textContent = has ? `♥ Избранное (${favorites.length})` : '♡ Избранное';
+  btn.textContent = has ? '♥ Избранное' : '♡ Избранное';
 }
 
 function toggleFav(btn, item) {
@@ -1348,7 +1364,7 @@ async function doSearch(val) {
   document.getElementById('pageTitle').textContent = `Результаты: "${val}"`;
   document.getElementById('searchCount').textContent = 'Поиск...';
   document.getElementById('filterBar').classList.remove('visible');
-  document.getElementById('loadMoreWrap').style.display = 'none';
+  catalogDone = true; // не грузим infinite scroll во время поиска
 
   const container = document.getElementById('searchResults');
   container.innerHTML = '';
@@ -1398,7 +1414,7 @@ const GENRE_TV = [
 function buildYearOptions() {
   const cur = new Date().getFullYear();
   let html = '<option value="">Все годы</option>';
-  for (let y = cur; y >= 1990; y--) html += `<option value="${y}">${y}</option>`;
+  for (let y = cur; y >= 1950; y--) html += `<option value="${y}">${y}</option>`;
   return html;
 }
 
@@ -1413,9 +1429,11 @@ function setGenreOptions(type) {
 // CATEGORY
 // ═══════════════════════════════════════════════════
 async function filterAndShow(type) {
-  catalogType  = type;
-  catalogPage  = 1;
-  catalogTotal = 0;
+  catalogType    = type;
+  catalogPage    = 1;
+  catalogTotal   = 0;
+  catalogLoading = false;
+  catalogDone    = false;
 
   showPage('search');
   const labels = { movie:'Фильмы', tv:'Сериалы', anime:'Аниме', documentary:'Документалки', trending:'В тренде' };
@@ -1443,7 +1461,6 @@ async function filterAndShow(type) {
   }
 
   loadSkeletons('searchResults', 20);
-  document.getElementById('loadMoreWrap').style.display = 'none';
 
   await loadCatalogPage(type, 1, true);
 
@@ -1454,22 +1471,33 @@ async function filterAndShow(type) {
 
 async function applyFilters() {
   catalogPage = 1;
+  catalogLoading = false;
+  catalogDone    = false;
   loadSkeletons('searchResults', 20);
-  document.getElementById('loadMoreWrap').style.display = 'none';
   await loadCatalogPage(catalogType, 1, true);
 }
 
-async function loadMoreCatalog() {
-  const btn = document.getElementById('loadMoreBtn');
-  btn.disabled = true;
-  btn.textContent = 'Загрузка...';
-  catalogPage++;
-  await loadCatalogPage(catalogType, catalogPage, false);
-  btn.disabled = false;
-  btn.textContent = 'Загрузить ещё';
-}
+// ─── Infinite scroll ───────────────────────────────
+let catalogLoading = false;   // идёт ли сейчас загрузка
+let catalogDone    = false;   // загружены ли все страницы
+
+const infiniteObserver = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting && !catalogLoading && !catalogDone) {
+    catalogPage++;
+    loadCatalogPage(catalogType, catalogPage, false);
+  }
+}, { rootMargin: '300px' }); // начинаем грузить за 300px до конца страницы
+
+infiniteObserver.observe(document.getElementById('scrollSentinel'));
 
 async function loadCatalogPage(type, page, replace) {
+  if (catalogLoading) return;
+  catalogLoading = true;
+
+  if (!replace) {
+    document.getElementById('infiniteSpinner').classList.add('show');
+  }
+
   const sort  = document.getElementById('sortSelect')?.value  || 'popularity.desc';
   const genre = document.getElementById('genreSelect')?.value || '';
   const year  = document.getElementById('yearSelect')?.value  || '';
@@ -1482,11 +1510,12 @@ async function loadCatalogPage(type, page, replace) {
       const r = await api('/trending/all/day', { page });
       results = r.results; total = r.total_results || results.length;
     } else if (type === 'anime') {
-      const params = { with_genres:'16', with_original_language:'ja', sort_by: sort, page };
+      const params = { with_genres:'16', with_original_language:'ja', sort_by: sort, page, 'vote_count.gte': 200 };
       if (genre) params.with_genres = genre + ',16';
       if (year)  params.first_air_date_year = year;
       const r = await api('/discover/tv', params);
-      results = r.results.map(i => ({ ...i, media_type:'tv' }));
+      const hasJP = s => /[　-鿿豈-﫿＀-￯]/.test(s);
+      results = r.results.filter(i => i.name && !hasJP(i.name)).map(i => ({ ...i, media_type:'tv' }));
       total   = r.total_results || 0;
     } else if (type === 'documentary') {
       const params = { with_genres: genre || '99', sort_by: sort, page };
@@ -1520,15 +1549,14 @@ async function loadCatalogPage(type, page, replace) {
     if (replace) {
       renderCards('searchResults', results);
     } else {
-      // Append cards
-      if (!results.length) return;
+      if (!results.length) { catalogDone = true; return; }
       const frag = document.createElement('div');
       frag.innerHTML = results.map(item => {
         const img  = item.poster_path ? `https://image.tmdb.org/t/p/w342${item.poster_path}` : `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 342 513'%3E%3Crect fill='%2312121c' width='342' height='513'/%3E%3C/svg%3E`;
         const isFav  = favorites.some(f => f.id === item.id);
         const rating = item.vote_average ? item.vote_average.toFixed(1) : null;
         const isTV   = item.media_type === 'tv' || !!item.first_air_date;
-        const year   = (item.release_date || item.first_air_date || '').slice(0,4);
+        const yr     = (item.release_date || item.first_air_date || '').slice(0,4);
         const safeTitle = (item.title || item.name || '').replace(/"/g, '&quot;');
         return `<div class="card" data-id="${item.id}" title="${safeTitle}">
           <img class="card-img" src="${img}" alt="${safeTitle}" loading="lazy">
@@ -1536,7 +1564,7 @@ async function loadCatalogPage(type, page, replace) {
           ${isTV ? `<div class="card-type-badge">Сериал</div>` : ''}
           <div class="card-overlay">
             <div class="card-title">${item.title || item.name || ''}</div>
-            <div class="card-meta">${year}</div>
+            <div class="card-meta">${yr}</div>
             <button class="card-btn">▶ Подробнее</button>
           </div>
           <button class="card-fav ${isFav?'active':''}" data-id="${item.id}">${isFav?'♥':'♡'}</button>
@@ -1551,16 +1579,16 @@ async function loadCatalogPage(type, page, replace) {
       while (frag.firstChild) container.appendChild(frag.firstChild);
     }
 
-    // Show/hide load more
-    const loadMoreWrap = document.getElementById('loadMoreWrap');
-    if (shown < total && type !== 'trending') {
-      loadMoreWrap.style.display = 'block';
-    } else {
-      loadMoreWrap.style.display = 'none';
+    // Если загрузили всё — помечаем как done
+    if (shown >= total || !results.length || page >= 500) {
+      catalogDone = true;
     }
 
   } catch(e) {
     showToast('Ошибка загрузки', true);
+  } finally {
+    catalogLoading = false;
+    document.getElementById('infiniteSpinner').classList.remove('show');
   }
 }
 
@@ -1574,7 +1602,7 @@ function showPage(page) {
   if (page === 'main') {
     document.getElementById('searchInput').value = '';
     document.getElementById('filterBar').classList.remove('visible');
-    document.getElementById('loadMoreWrap').style.display = 'none';
+    catalogDone = true; // останавливаем infinite scroll пока не в каталоге
     document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
   }
   if (page === 'fav') renderFavorites();
