@@ -4,7 +4,7 @@
   <meta name="referrer" content="no-referrer-when-downgrade">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>uziptv.vip — Смотри всё</title>
+<title>Kino.uziptv.vip — Смотри всё</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -57,30 +57,29 @@
   }
   .logo {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 1px;
     cursor: pointer;
     flex-shrink: 0;
     display: flex; align-items: baseline; gap: 0;
-    position: relative;
     line-height: 1;
+  }
+  .logo-kino {
+    color: rgba(255,255,255,0.55);
+    font-size: 24px;
+    letter-spacing: 1px;
   }
   .logo-main {
     color: var(--accent);
-    font-size: 28px;
+    font-size: 24px;
     letter-spacing: 1px;
-    text-shadow: 0 0 30px rgba(229,9,20,0.5);
+    text-shadow: 0 0 24px rgba(229,9,20,0.4);
   }
   .logo-dot { display: none; }
+  .logo-sep { display: none; }
   .logo-suffix {
-    color: rgba(255,255,255,0.45);
-    font-size: 16px;
-    letter-spacing: 0.5px;
-    font-family: 'Outfit', sans-serif;
-    font-weight: 300;
-    margin-left: 1px;
-    align-self: flex-end;
-    padding-bottom: 2px;
+    color: rgba(255,255,255,0.3);
+    font-size: 24px;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 1px;
   }
   .nav-links {
     display: flex; gap: 2px;
@@ -673,8 +672,7 @@
   }
   @media (max-width:480px) {
     nav { height:48px; padding:0 10px; gap:8px; }
-    .logo { font-size:22px; }
-    .logo-suffix { font-size: 13px; }
+    .logo-kino, .logo-main, .logo-suffix { font-size: 20px; }
     #searchInput {
       width: 110px;
       font-size: 11px;
@@ -703,7 +701,7 @@
 <!-- NAV -->
 <nav id="nav">
   <div class="logo" onclick="showPage('main')">
-    <span class="logo-main">UZIPTV</span><span class="logo-suffix">.vip</span>
+    <span class="logo-kino">KINO</span><span class="logo-main">UZIPTV</span><span class="logo-suffix">.vip</span>
   </div>
   <ul class="nav-links">
     <li><a id="navMovies" onclick="filterAndShow('movie')">Фильмы</a></li>
