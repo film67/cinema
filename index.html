@@ -917,10 +917,10 @@
           <span>Загрузка плеера...</span>
           <p>Если долго грузит — попробуйте другой источник</p>
         </div>
-        <iframe id="playerFrame"
-  allowfullscreen
+<iframe id="playerFrame"
   allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer"
-  referrerpolicy="no-referrer-when-downgrade">
+  referrerpolicy="no-referrer-when-downgrade"
+  style="width:100%; height:480px; border:none;">
 </iframe>
         
       </div>
@@ -946,15 +946,12 @@ const KODIK_TOKEN = '9386a8f4ef7abc8415155bb91edf3fe8';
 const SOURCES = [
   {
     name: 'Kodik',
-    label: '🏮 Kodik (Аниме/Сериалы)',
-    isKodik: true,
-    // Используем imdb_id для точности поиска[cite: 3]
-    movie: (id) => `https://kodikplayer.com/find-player?token=${KODIK_TOKEN}&imdb_id=${id}`,
-    tv: (id, s, e) => `https://kodikplayer.com/find-player?token=${KODIK_TOKEN}&imdb_id=${id}&season=${s}&episode=${e}`
+    label: 'Основной',
+    isKodik: true
   },
   {
     name: 'Vidsrc',
-    label: '🌐 Vidsrc',
+    label: 'Запасной',
     isKodik: false,
     movie: (id) => `https://vidsrc.me/embed/movie?tmdb=${id}`,
     tv: (id, s, e) => `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`
@@ -1292,9 +1289,10 @@ async function loadSimilar(itemId) {
 }
 
 function closeModal() {
+  const frame = document.getElementById('playerFrame');
+  frame.src = ''; // Останавливаем плеер полностью
   document.getElementById('modal').classList.remove('open');
   document.body.style.overflow = '';
-  document.getElementById('playerFrame').src = '';
   document.getElementById('playerWrap').style.display = 'none';
   currentItem = null;
 }
@@ -1316,48 +1314,72 @@ function startPlayer() {
   setTimeout(() => wrap.scrollIntoView({ behavior:'smooth', block:'nearest' }), 150);
 }
 
-// Поиск внешнего ID для Кодика[cite: 3]
-async function getImdbId(tmdbId, type) {
+
+// Функция для получения IMDb и КП ID (Kodik работает только по ним)
+// --- Вспомогательная функция для получения ID ---
+async function getExternalIds(tmdbId, type) {
   try {
+    // Делаем запрос к TMDB для получения внешних идентификаторов
     const response = await api(`/${type}/${tmdbId}/external_ids`);
-    return response.imdb_id;
+    return {
+      imdb: response.imdb_id,
+      kp: response.id_kinopoisk || response.kinopoisk_id // TMDB иногда меняет ключи
+    };
   } catch (e) {
-    console.error("External IDs error", e);
+    console.error("Ошибка получения внешних ID", e);
     return null;
   }
 }
-
+// --- Исправленная функция установки плеера ---
 async function setPlayerSrc() {
   if (!currentItem) return;
-  const type   = currentItem.media_type || (currentItem.first_air_date ? 'tv' : 'movie');
+  
+  const type = currentItem.media_type || (currentItem.first_air_date ? 'tv' : 'movie');
   const source = SOURCES[currentSource];
-  const frame   = document.getElementById('playerFrame');
+  const frame = document.getElementById('playerFrame');
   const loading = document.getElementById('playerLoading');
   
+  // Сбрасываем плеер и показываем загрузку
   loading.style.display = 'flex';
-  frame.src = ''; 
+  frame.src = 'about:blank'; 
 
-  let url;
+  let url = '';
+
   if (source.isKodik) {
-    // Для Kodik получаем IMDb ID[cite: 3]
-    const imdbId = currentItem.external_ids?.imdb_id || await getImdbId(currentItem.id, type);
+    // 1. Получаем ID Кинопоиска или IMDb
+    const ids = await getExternalIds(currentItem.id, type);
     
-    if (imdbId) {
-      url = type === 'tv' 
-        ? source.tv(imdbId, currentSeason, currentEpisode) 
-        : source.movie(imdbId);
+    // 2. Формируем URL для Kodik
+    if (ids && (ids.kp || ids.imdb)) {
+      // Приоритет Кинопоиску, потом IMDb
+      const idParam = ids.kp ? `kinopoisk_id=${ids.kp}` : `imdb_id=${ids.imdb}`;
+      
+      // Используем strict=1 для точного поиска
+      url = `https://kodikplayer.com/find-player?token=${KODIK_TOKEN}&${idParam}&strict=1`;
+      
+      // Если это сериал, добавляем сезон и серию
+      if (type === 'tv') {
+        url += `&season=${currentSeason}&episode=${currentEpisode}`;
+      }
     } else {
-      // Запасной вариант по названию, если IMDb не найден
-      url = `https://kodikplayer.com/find-player?token=${KODIK_TOKEN}&title=${encodeURIComponent(currentItem.title || currentItem.name)}`;
+      // Резервный вариант по названию (если ID не найдены)
+      const title = currentItem.title || currentItem.name;
+      url = `https://kodikplayer.com/find-player?token=${KODIK_TOKEN}&title=${encodeURIComponent(title)}&strict=1`;
     }
   } else {
-    // Vidsrc отлично работает с TMDB ID
+    // Логика для Vidsrc (они хорошо понимают TMDB ID напрямую)
     url = type === 'tv'
       ? source.tv(currentItem.id, currentSeason, currentEpisode)
       : source.movie(currentItem.id);
   }
 
-  setTimeout(() => { frame.src = url; }, 50);
+  // Небольшая задержка перед вставкой src для стабильности
+  setTimeout(() => { 
+    if (url) {
+      frame.src = url;
+      console.log("Загружен плеер:", url);
+    }
+  }, 50);
 
   frame.onload = () => { loading.style.display = 'none'; };
 }
