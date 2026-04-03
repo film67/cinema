@@ -1,21 +1,33 @@
 {
-  "name": "KINOUZIPTV.VIP",
+  "name": "KINO UZIPTV VIP — Фильмы и сериалы онлайн",
   "short_name": "KINOUZIPTV",
+  "description": "Смотрите фильмы, сериалы, аниме и документальные фильмы онлайн бесплатно",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#080810",
+  "background_color": "#080810",
+  "lang": "ru",
+  "scope": "/",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "maskable any"
     },
     {
       "src": "/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
-  "theme_color": "#f7f7f7",
-  "background_color": "#ff0000",
-  "display": "standalone"
+  "categories": ["entertainment", "video"]
 }
