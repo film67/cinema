@@ -1126,14 +1126,23 @@ function renderCards(containerId, items) {
 // ═══════════════════════════════════════════════════
 // MODAL
 // ═══════════════════════════════════════════════════
+// Счётчик открытий модала — чтобы отменять устаревшие async-запросы
+let modalGeneration = 0;
+
 async function openModal(itemId) {
+  // Каждый новый вызов openModal получает свой уникальный номер
+  const myGen = ++modalGeneration;
+
   currentSeason  = 1;
   currentEpisode = 1;
   currentSource  = 0;
   tvDetails      = null;
+  currentItem    = null;
 
+  const _frame = document.getElementById('playerFrame');
+  _frame.onload = null;
+  _frame.src    = '';
   document.getElementById('playerWrap').style.display = 'none';
-  document.getElementById('playerFrame').src = '';
   document.getElementById('playerLoading').style.display = 'flex';
   document.getElementById('episodeSelector').style.display = 'none';
   document.getElementById('playerSources').style.display = 'none';
@@ -1152,8 +1161,11 @@ async function openModal(itemId) {
 
   try {
     const type = item.media_type || (item.first_air_date ? 'tv' : 'movie');
-    // Запрашиваем внешние ID, чтобы получить IMDb ID[cite: 3]
     const details = await api(`/${type}/${itemId}`, { append_to_response: 'external_ids' });
+
+    // Если пока грузили — открыли другой фильм, выходим
+    if (myGen !== modalGeneration) return;
+
     item = { ...item, ...details, media_type: type };
     itemsMap.set(itemId, item);
     currentItem = item;
@@ -1167,6 +1179,7 @@ async function openModal(itemId) {
     console.error('Modal details error:', e);
   }
 
+  if (myGen !== modalGeneration) return;
   loadSimilar(itemId);
 }
 
@@ -1290,7 +1303,8 @@ async function loadSimilar(itemId) {
 
 function closeModal() {
   const frame = document.getElementById('playerFrame');
-  frame.src = ''; // Останавливаем плеер полностью
+  frame.onload = null;
+  frame.src = '';
   document.getElementById('modal').classList.remove('open');
   document.body.style.overflow = '';
   document.getElementById('playerWrap').style.display = 'none';
@@ -1315,73 +1329,79 @@ function startPlayer() {
 }
 
 
-// Функция для получения IMDb и КП ID (Kodik работает только по ним)
-// --- Вспомогательная функция для получения ID ---
-async function getExternalIds(tmdbId, type) {
+// --- Получение IMDb / КП ID ---
+async function getExternalIds(item, type) {
+  // Сначала берём из уже загруженных данных (openModal запрашивает append_to_response=external_ids)
+  if (item.imdb_id) {
+    return { imdb: item.imdb_id, kp: item.external_ids?.id_kinopoisk || null };
+  }
+  // Если вдруг нет — делаем отдельный запрос
   try {
-    // Делаем запрос к TMDB для получения внешних идентификаторов
-    const response = await api(`/${type}/${tmdbId}/external_ids`);
+    const response = await api(`/${type}/${item.id}/external_ids`);
     return {
-      imdb: response.imdb_id,
-      kp: response.id_kinopoisk || response.kinopoisk_id // TMDB иногда меняет ключи
+      imdb: response.imdb_id || null,
+      kp:   response.id_kinopoisk || response.kinopoisk_id || null
     };
   } catch (e) {
     console.error("Ошибка получения внешних ID", e);
     return null;
   }
 }
-// --- Исправленная функция установки плеера ---
+
+// --- Установка плеера (без гонки состояний) ---
 async function setPlayerSrc() {
   if (!currentItem) return;
-  
-  const type = currentItem.media_type || (currentItem.first_air_date ? 'tv' : 'movie');
-  const source = SOURCES[currentSource];
-  const frame = document.getElementById('playerFrame');
+
+  // Фиксируем snapshot текущего состояния ДО async-операций
+  const snapItem    = currentItem;
+  const snapSource  = currentSource;
+  const snapSeason  = currentSeason;
+  const snapEpisode = currentEpisode;
+
+  const type   = snapItem.media_type || (snapItem.first_air_date ? 'tv' : 'movie');
+  const source = SOURCES[snapSource];
+  const frame   = document.getElementById('playerFrame');
   const loading = document.getElementById('playerLoading');
-  
+
   // Сбрасываем плеер и показываем загрузку
   loading.style.display = 'flex';
-  frame.src = 'about:blank'; 
+  frame.src = '';
 
   let url = '';
 
   if (source.isKodik) {
-    // 1. Получаем ID Кинопоиска или IMDb
-    const ids = await getExternalIds(currentItem.id, type);
-    
-    // 2. Формируем URL для Kodik
+    // Получаем IMDb / КП ID (приоритет — уже загруженные данные)
+    const ids = await getExternalIds(snapItem, type);
+
+    // Проверяем: пользователь не переключился на другой фильм пока мы ждали?
+    if (currentItem !== snapItem || currentSource !== snapSource) return;
+
     if (ids && (ids.kp || ids.imdb)) {
-      // Приоритет Кинопоиску, потом IMDb
       const idParam = ids.kp ? `kinopoisk_id=${ids.kp}` : `imdb_id=${ids.imdb}`;
-      
-      // Используем strict=1 для точного поиска
       url = `https://kodikplayer.com/find-player?token=${KODIK_TOKEN}&${idParam}&strict=1`;
-      
-      // Если это сериал, добавляем сезон и серию
       if (type === 'tv') {
-        url += `&season=${currentSeason}&episode=${currentEpisode}`;
+        url += `&season=${snapSeason}&episode=${snapEpisode}`;
       }
     } else {
-      // Резервный вариант по названию (если ID не найдены)
-      const title = currentItem.title || currentItem.name;
+      // Резерв: поиск по названию
+      const title = snapItem.title || snapItem.name || '';
       url = `https://kodikplayer.com/find-player?token=${KODIK_TOKEN}&title=${encodeURIComponent(title)}&strict=1`;
     }
   } else {
-    // Логика для Vidsrc (они хорошо понимают TMDB ID напрямую)
+    // Vidsrc — работает напрямую по TMDB ID
     url = type === 'tv'
-      ? source.tv(currentItem.id, currentSeason, currentEpisode)
-      : source.movie(currentItem.id);
+      ? source.tv(snapItem.id, snapSeason, snapEpisode)
+      : source.movie(snapItem.id);
   }
 
-  // Небольшая задержка перед вставкой src для стабильности
-  setTimeout(() => { 
-    if (url) {
-      frame.src = url;
-      console.log("Загружен плеер:", url);
-    }
-  }, 50);
+  // Ещё раз убеждаемся, что пользователь не ушёл
+  if (currentItem !== snapItem || currentSource !== snapSource) return;
 
-  frame.onload = () => { loading.style.display = 'none'; };
+  if (url) {
+    frame.onload = () => { loading.style.display = 'none'; };
+    frame.src = url;
+    console.log("Загружен плеер:", url);
+  }
 }
 
 function selectSource(idx) {
