@@ -587,4 +587,1106 @@
     border: 1px solid var(--border);
     padding: 11px 20px; border-radius: 9px;
     font-size:13px; font-weight:500;
-    z-index:3000; opacity:
+    z-index:3000; opacity:0; pointer-events:none;
+    transition: all 0.3s;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    white-space: nowrap;
+  }
+  #toast.show { opacity:1; transform: translateX(-50%) translateY(0); }
+  #toast.error { border-color: rgba(229,9,20,0.4); }
+
+  /* ─── MOBILE NAV ─── */
+  .btn-menu, .btn-search-mobile {
+    display: none;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    border-radius: 8px; padding:6px 10px;
+    font-size: 18px; cursor:pointer;
+    align-items:center; justify-content:center;
+    transition: var(--tr);
+  }
+  .btn-menu:hover, .btn-search-mobile:hover { border-color:rgba(229,9,20,0.4); color:var(--text); }
+  .mobile-menu {
+    display:none; position:fixed;
+    top:62px; left:0; right:0;
+    background: rgba(8,8,16,0.97);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 14px 14px;
+    z-index:999; flex-direction:column; gap:3px;
+  }
+  .mobile-menu.open { display:flex; }
+  .mobile-menu a {
+    text-decoration:none; color:var(--text2); font-size:15px; font-weight:500;
+    padding: 10px 14px; border-radius:9px; transition:var(--tr); cursor:pointer;
+  }
+  .mobile-menu a:hover { color:var(--text); background:rgba(255,255,255,0.05); }
+  .mobile-search-bar {
+    display:none; position:fixed;
+    top:62px; left:0; right:0;
+    background: rgba(8,8,16,0.97);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 16px; z-index:998;
+  }
+  .mobile-search-bar.open { display:block; }
+  .mobile-search-bar input {
+    width:100%; background: var(--bg3);
+    border: 1px solid var(--border); border-radius:10px;
+    color:var(--text); font-family:'Outfit',sans-serif;
+    font-size:15px; padding:10px 16px; outline:none;
+  }
+  .mobile-search-bar input:focus { border-color:rgba(229,9,20,0.5); }
+  .mobile-search-bar input::placeholder { color:var(--text3); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width:1024px) {
+    .nav-links a { padding:4px 9px; font-size:12px; }
+    #searchInput { width:170px; }
+    #searchInput:focus { width:230px; }
+    .modal-poster { width:100px; height:150px; margin-top:-50px; }
+  }
+  @media (max-width:768px) {
+    nav { height:54px; }
+    .nav-links { display:none; }
+    .btn-search-mobile { display:none; } /* убираем стикер-кнопку */
+    .btn-menu { display:flex; }
+    #searchInput {
+      display:block;
+      width: 140px;
+      font-size: 12px;
+      padding: 7px 11px;
+    }
+    #searchInput:focus { width: 180px; }
+    .btn-fav { padding:5px 10px; font-size:11px; }
+    #hero { min-height:420px; padding:0 12px 32px; }
+    .hero-title { font-size:clamp(30px,6vw,46px); }
+    .modal-backdrop { height:180px; }
+    .modal-header { padding:0 16px 20px; }
+    .modal-poster { width:100px; height:150px; }
+    .modal-body { padding:0 16px 20px; }
+    #playerFrame, #playerLoading { height:320px; }
+    .cards, #searchResults, #favResults { grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:14px; }
+    .mobile-menu { top:54px; }
+    .mobile-search-bar { top:54px; }
+  }
+  @media (max-width:480px) {
+    nav { height:48px; padding:0 10px; gap:8px; }
+    .logo { font-size:22px; }
+    .logo-suffix { font-size: 13px; }
+    #searchInput {
+      width: 110px;
+      font-size: 11px;
+      padding: 6px 9px;
+    }
+    #searchInput:focus { width: 140px; }
+    .btn-fav { padding:4px 8px; font-size:10px; gap:4px; }
+    #hero { min-height:360px; padding:0 10px 24px; margin-top:48px; }
+    .hero-title { font-size:clamp(26px,5vw,36px); }
+    .hero-btns { flex-direction:column; gap:8px; }
+    .btn-play, .btn-info { width:100%; }
+    .cards, #searchResults, #favResults { grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:10px; }
+    .modal-content { margin-top:20px; border-radius:12px; }
+    .modal-backdrop { height:150px; }
+    .modal-header { flex-direction:column; gap:12px; padding:0 14px 16px; }
+    .modal-poster { width:100%; height:200px; margin-top:-40px; }
+    .modal-title { font-size:22px; }
+    #playerFrame, #playerLoading { height:220px; }
+    .modal-body { padding:0 14px 16px; }
+    .mobile-menu, .mobile-search-bar { top:48px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="logo" onclick="showPage('main')">
+    <span class="logo-main">UZIPTV</span><span class="logo-suffix">.vip</span>
+  </div>
+  <ul class="nav-links">
+    <li><a id="navMovies" onclick="filterAndShow('movie')">Фильмы</a></li>
+    <li><a id="navSeries" onclick="filterAndShow('tv')">Сериалы</a></li>
+    <li><a id="navAnime" onclick="filterAndShow('anime')">Аниме</a></li>
+    <li><a id="navDocs" onclick="filterAndShow('documentary')">Документалки</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="search-wrap">
+      <input id="searchInput" type="text" placeholder="Поиск..." oninput="onSearch(this.value)">
+      <span class="search-icon">🔍</span>
+    </div>
+    <button class="btn-search-mobile" onclick="toggleMobileSearch()">🔍</button>
+    <button class="btn-fav" id="favBtn" onclick="showPage('fav')">♡ Избранное</button>
+    <button class="btn-menu" onclick="toggleMobileMenu()">☰</button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a onclick="filterAndShow('movie'); closeMobileMenu()">Фильмы</a>
+  <a onclick="filterAndShow('tv'); closeMobileMenu()">Сериалы</a>
+  <a onclick="filterAndShow('anime'); closeMobileMenu()">Аниме</a>
+  <a onclick="filterAndShow('documentary'); closeMobileMenu()">Документалки</a>
+  <a onclick="showPage('fav'); closeMobileMenu()">Избранное</a>
+</div>
+<div class="mobile-search-bar" id="mobileSearchBar">
+  <input type="text" placeholder="Поиск фильмов и сериалов..." oninput="onSearch(this.value)" id="mobileSearchInput">
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div id="heroBg"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><div class="hero-badge-dot"></div> Сейчас в тренде</div>
+    <h1 class="hero-title" id="heroTitle">Загрузка...</h1>
+    <div class="hero-meta">
+      <span id="heroYear">2024</span>
+      <span id="heroRating" class="hero-rating">★ 8.5</span>
+      <span id="heroType">Фильм</span>
+    </div>
+    <p class="hero-overview" id="heroOverview"></p>
+    <div class="hero-btns">
+      <button class="btn-play" id="heroPlayBtn">▶ Смотреть</button>
+      <button class="btn-info" id="heroInfoBtn">ℹ Подробнее</button>
+    </div>
+  </div>
+  <div class="hero-dots" id="heroDots"></div>
+</section>
+
+<!-- MAIN PAGE -->
+<div id="mainPage">
+  <div class="section">
+    <div class="section-header">
+      <h2 class="section-title">В тренде</h2>
+      <span class="section-more" onclick="filterAndShow('trending')">Все →</span>
+    </div>
+    <div class="cards" id="trendingRow"></div>
+  </div>
+  <div class="section">
+    <div class="section-header">
+      <h2 class="section-title">Популярные Фильмы</h2>
+      <span class="section-more" onclick="filterAndShow('movie')">Все →</span>
+    </div>
+    <div class="cards" id="moviesRow"></div>
+  </div>
+  <div class="section">
+    <div class="section-header">
+      <h2 class="section-title">Популярные Сериалы</h2>
+      <span class="section-more" onclick="filterAndShow('tv')">Все →</span>
+    </div>
+    <div class="cards" id="seriesRow"></div>
+  </div>
+  <div class="section">
+    <div class="section-header">
+      <h2 class="section-title">Аниме</h2>
+      <span class="section-more" onclick="filterAndShow('anime')">Все →</span>
+    </div>
+    <div class="cards" id="animeRow"></div>
+  </div>
+</div>
+
+<!-- SEARCH PAGE -->
+<div id="searchPage">
+  <div class="page-header">
+    <h2 class="page-title" id="pageTitle">Фильмы</h2>
+    <p class="page-count" id="searchCount"></p>
+  </div>
+  <!-- Фильтр-бар (только для каталога, не для поиска) -->
+  <div id="filterBar">
+    <span class="filter-label">Сортировка:</span>
+    <select class="filter-select" id="sortSelect" onchange="applyFilters()">
+      <option value="popularity.desc">По популярности</option>
+      <option value="vote_average.desc">По рейтингу</option>
+      <option value="primary_release_date.desc">Сначала новые</option>
+      <option value="primary_release_date.asc">Сначала старые</option>
+    </select>
+    <div class="filter-sep"></div>
+    <span class="filter-label">Жанр:</span>
+    <select class="filter-select" id="genreSelect" onchange="applyFilters()">
+      <option value="">Все жанры</option>
+    </select>
+    <div class="filter-sep"></div>
+    <span class="filter-label">Год:</span>
+    <select class="filter-select" id="yearSelect" onchange="applyFilters()">
+      <option value="">Все годы</option>
+    </select>
+  </div>
+  <div id="searchResults"></div>
+  <!-- Sentinel для infinite scroll — когда он появляется в видимой зоне, грузим следующую страницу -->
+  <div id="scrollSentinel" style="height:1px;margin-top:40px;"></div>
+  <div id="infiniteSpinner"><div class="mini-spin"></div><span>Загрузка...</span></div>
+</div>
+
+<!-- FAV PAGE -->
+<div id="favPage">
+  <div class="page-header">
+    <h2 class="page-title">Избранное</h2>
+  </div>
+  <div id="favResults"></div>
+</div>
+
+<!-- MODAL -->
+<div id="modal" onclick="handleModalBgClick(event)">
+  <button class="modal-close" onclick="closeModal()">✕</button>
+  <div class="modal-content" id="modalContent">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-header">
+      <img id="modalPoster" class="modal-poster" src="" alt="">
+      <div class="modal-info">
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <div class="modal-meta" id="modalMeta"></div>
+        <p class="modal-desc" id="modalOverview"></p>
+        <div class="modal-btns">
+          <button class="modal-btn" id="modalWatchBtn">▶ Смотреть</button>
+          <button class="modal-btn" id="modalFavBtn">♡ В избранное</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div id="playerSources"></div>
+      <div id="episodeSelector">
+        <span class="ep-label">Сезон:</span>
+        <select class="ep-select" id="seasonSelect" onchange="onSeasonChange()"></select>
+        <span class="ep-label">Серия:</span>
+        <select class="ep-select" id="episodeSelect" onchange="onEpisodeChange()"></select>
+      </div>
+      <div id="playerWrap" style="display:none">
+        <div id="playerLoading">
+          <div class="spinner"></div>
+          <span>Загрузка плеера...</span>
+          <p>Если долго грузит — попробуйте другой источник</p>
+        </div>
+        <iframe id="playerFrame"
+  allowfullscreen
+  allow="autoplay; fullscreen; picture-in-picture"
+  sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-presentation">
+</iframe>
+        
+      </div>
+      <div class="modal-tags" id="modalTags"></div>
+      <div class="similar-title" id="similarTitle" style="display:none">Похожее</div>
+      <div id="similarRow"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════
+const API_KEY  = '558568949e362ddf3eabb364c1222b93';
+const API_BASE = 'https://api.themoviedb.org/3';
+
+// ────────────────────────────────────────────────────
+// ────────────────────────────────────────────────────
+// ПЛЕЕРЫ (Collaps + Kodik)
+// ────────────────────────────────────────────────────
+// Вставь сюда свои токены:
+
+// === ИСТОЧНИКИ (БЕЗ ТОКЕНОВ) ===
+const SOURCES = [
+  {
+    name: 'Kodik',
+    label: '🏮 Kodik (Аниме/Сериалы)',
+    // Используем зеркало aniqit.com, оно реже блокируется
+    movie: (id) => `https://aniqit.com/find?tmdb_id=${id}`,
+    tv: (id, s, e) => `https://aniqit.com/find?tmdb_id=${id}&season=${s}&episode=${e}`
+  },
+  {
+    name: 'Vidsrc',
+    label: '🌐 Vidsrc (Фильмы)',
+    movie: (id) => `https://vidsrc.xyz/embed/movie?tmdb=${id}`,
+    tv: (id, s, e) => `https://vidsrc.xyz/embed/tv?tmdb=${id}&season=${s}&episode=${e}`
+  },
+  {
+    name: 'Collaps',
+    label: '💎 Collaps',
+    movie: (id) => `https://api.collaps.org/embed/tmdb/${id}`,
+    tv: (id, s, e) => `https://api.collaps.org/embed/tmdb/${id}?s=${s}&e=${e}`
+  }
+];
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+let favorites     = [];
+let currentItem   = null;
+let currentSource = 0;
+let currentSeason  = 1;
+let currentEpisode = 1;
+let tvDetails     = null; // кешируем детали сериала для сезонов
+
+// ─── Хранилище объектов карточек (КЛЮЧЕВОЕ исправление бага клика) ───
+// Вместо JSON.stringify в onclick — используем Map с числовым ключом.
+// Это исправляет баг, когда overview/title содержат кавычки, апострофы и спецсимволы.
+const itemsMap = new Map();
+
+// ═══════════════════════════════════════════════════
+// TMDB API
+// ═══════════════════════════════════════════════════
+async function api(endpoint, params = {}) {
+  const url = new URL(API_BASE + endpoint);
+  url.searchParams.set('api_key', API_KEY);
+  url.searchParams.set('language', 'ru-RU');
+  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`API ${res.status}`);
+  return res.json();
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+async function init() {
+  try { favorites = JSON.parse(localStorage.getItem('cv_favs') || '[]'); } catch {}
+  updateFavBtn();
+  loadHero();
+  loadSection('trendingRow', '/trending/all/day');
+  loadSection('moviesRow',   '/movie/popular');
+  loadSection('seriesRow',   '/tv/popular');
+  loadAnime();
+}
+
+async function loadAnime() {
+  loadSkeletons('animeRow', 6);
+  try {
+    const r = await api('/discover/tv', { with_genres:'16', with_original_language:'ja', sort_by:'popularity.desc' });
+    renderCards('animeRow', r.results.slice(0, 6).map(i => ({ ...i, media_type:'tv' })));
+  } catch {}
+}
+
+// ═══════════════════════════════════════════════════
+// HERO
+// ═══════════════════════════════════════════════════
+async function loadHero() {
+  try {
+    const data = await api('/trending/all/day');
+    const items = data.results.slice(0, 5);
+    let heroIdx = 0;
+
+    function render(idx) {
+      const item = items[idx];
+      const bg = item.backdrop_path || item.poster_path;
+      if (bg) document.getElementById('heroBg').style.backgroundImage = `url(https://image.tmdb.org/t/p/w1280${bg})`;
+      document.getElementById('heroTitle').textContent    = item.title || item.name || '';
+      document.getElementById('heroYear').textContent     = (item.release_date || item.first_air_date || '').slice(0,4);
+      document.getElementById('heroRating').textContent   = '★ ' + (item.vote_average||0).toFixed(1);
+      document.getElementById('heroType').textContent     = item.media_type === 'tv' ? 'Сериал' : 'Фильм';
+      document.getElementById('heroOverview').textContent = item.overview || '';
+      document.getElementById('heroPlayBtn').onclick = () => openModal(item.id);
+      document.getElementById('heroInfoBtn').onclick = () => openModal(item.id);
+    }
+
+    // Dots
+    document.getElementById('heroDots').innerHTML = items.map((_, i) =>
+      `<div class="hero-dot ${i===0?'active':''}" data-i="${i}"></div>`
+    ).join('');
+    document.querySelectorAll('.hero-dot').forEach(dot => {
+      dot.onclick = () => {
+        heroIdx = +dot.dataset.i;
+        document.querySelectorAll('.hero-dot').forEach((d,j)=>d.classList.toggle('active',j===heroIdx));
+        render(heroIdx);
+      };
+    });
+
+    // Store all hero items in map
+    items.forEach(item => itemsMap.set(item.id, item));
+    render(0);
+
+    setInterval(() => {
+      heroIdx = (heroIdx + 1) % items.length;
+      document.querySelectorAll('.hero-dot').forEach((d,j)=>d.classList.toggle('active',j===heroIdx));
+      render(heroIdx);
+    }, 6000);
+  } catch(e) { console.error('Hero error:', e); }
+}
+
+// ═══════════════════════════════════════════════════
+// SECTIONS
+// ═══════════════════════════════════════════════════
+async function loadSection(containerId, endpoint, params = {}) {
+  loadSkeletons(containerId, 6);
+  try {
+    const data = await api(endpoint, params);
+    const items = data.results.slice(0,6);
+    items.forEach(i => itemsMap.set(i.id, i));
+    renderCards(containerId, items);
+  } catch(e) {
+    document.getElementById(containerId).innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>Ошибка загрузки</p></div>';
+  }
+}
+
+function loadSkeletons(containerId, count) {
+  document.getElementById(containerId).innerHTML = Array(count).fill(0).map(()=>`<div class="card skeleton"></div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER CARDS — без JSON в onclick (исправление бага)
+// ═══════════════════════════════════════════════════
+function renderCards(containerId, items) {
+  const container = document.getElementById(containerId);
+  if (!items || !items.length) {
+    container.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="icon">🎬</div><p>Ничего не найдено</p></div>';
+    return;
+  }
+  items.forEach(item => itemsMap.set(item.id, item));
+
+  container.innerHTML = items.map(item => {
+    const img   = item.poster_path
+      ? `https://image.tmdb.org/t/p/w342${item.poster_path}`
+      : `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 342 513'%3E%3Crect fill='%2312121c' width='342' height='513'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%2344445a' font-size='14' font-family='sans-serif'%3EНет фото%3C/text%3E%3C/svg%3E`;
+    const isFav  = favorites.some(f => f.id === item.id);
+    const rating = item.vote_average ? item.vote_average.toFixed(1) : null;
+    const isTV   = item.media_type === 'tv' || !!item.first_air_date;
+    const year   = (item.release_date || item.first_air_date || '').slice(0,4);
+
+    // Безопасный title для title-атрибута
+    const safeTitle = (item.title || item.name || '').replace(/"/g, '&quot;');
+
+    return `
+      <div class="card" data-id="${item.id}" title="${safeTitle}">
+        <img class="card-img" src="${img}" alt="${safeTitle}" loading="lazy">
+        ${rating ? `<div class="card-rating">★ ${rating}</div>` : ''}
+        ${isTV ? `<div class="card-type-badge">Сериал</div>` : ''}
+        <div class="card-overlay">
+          <div class="card-title">${item.title || item.name || ''}</div>
+          <div class="card-meta">${year}</div>
+          <button class="card-btn">▶ Подробнее</button>
+        </div>
+        <button class="card-fav ${isFav?'active':''}" data-id="${item.id}">
+          ${isFav ? '♥' : '♡'}
+        </button>
+      </div>
+    `;
+  }).join('');
+
+  // Вешаем обработчики после рендера — безопасно, без eval
+  container.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', e => {
+      if (e.target.closest('.card-fav')) return; // не открываем модал при клике на фаворит
+      openModal(+card.dataset.id);
+    });
+  });
+  container.querySelectorAll('.card-fav').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const item = itemsMap.get(+btn.dataset.id);
+      if (item) toggleFav(btn, item);
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// MODAL — открываем по ID, данные берём из Map или TMDB
+// ═══════════════════════════════════════════════════
+async function openModal(itemId) {
+  // Сброс
+  currentSeason  = 1;
+  currentEpisode = 1;
+  currentSource  = 0;
+  tvDetails      = null;
+
+  document.getElementById('playerWrap').style.display = 'none';
+  document.getElementById('playerFrame').src = '';
+  document.getElementById('playerLoading').style.display = 'flex';
+  document.getElementById('episodeSelector').style.display = 'none';
+  document.getElementById('playerSources').style.display = 'none';
+  document.getElementById('modalTags').innerHTML = '';
+  document.getElementById('modalMeta').innerHTML = '';
+  document.getElementById('similarRow').innerHTML = '';
+  document.getElementById('similarTitle').style.display = 'none';
+  document.getElementById('modalBackdrop').style.backgroundImage = '';
+
+  // Открываем модал
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Предварительно показываем из кеша
+  let item = itemsMap.get(itemId) || { id: itemId };
+  currentItem = item;
+  fillModalBasic(item);
+
+  // Загружаем полные данные
+  try {
+    const type = item.media_type || (item.first_air_date ? 'tv' : 'movie');
+    const details = await api(`/${type}/${itemId}`);
+    item = { ...item, ...details, media_type: type };
+    itemsMap.set(itemId, item);
+    currentItem = item;
+    fillModalFull(item);
+
+    // Если сериал — загружаем первый сезон для episodes
+    if (type === 'tv') {
+      tvDetails = details;
+      buildEpisodeSelector(details);
+    }
+  } catch(e) {
+    console.error('Modal details error:', e);
+  }
+
+  // Похожие
+  loadSimilar(itemId);
+}
+
+function fillModalBasic(item) {
+  const type    = item.media_type || (item.first_air_date ? 'tv' : 'movie');
+  const poster  = item.poster_path
+    ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+    : `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 750'%3E%3Crect fill='%2312121c' width='500' height='750'/%3E%3C/svg%3E`;
+  const backdrop = item.backdrop_path
+    ? `url(https://image.tmdb.org/t/p/w1280${item.backdrop_path})`
+    : (item.poster_path ? `url(https://image.tmdb.org/t/p/w780${item.poster_path})` : '');
+
+  document.getElementById('modalPoster').src = poster;
+  document.getElementById('modalTitle').textContent = item.title || item.name || '';
+  document.getElementById('modalOverview').textContent = item.overview || 'Описание загружается...';
+  if (backdrop) document.getElementById('modalBackdrop').style.backgroundImage = backdrop;
+
+  const isFav = favorites.some(f => f.id === item.id);
+  const favBtn = document.getElementById('modalFavBtn');
+  favBtn.classList.toggle('active', isFav);
+  favBtn.textContent = isFav ? '♥ В избранном' : '♡ В избранное';
+  favBtn.onclick = toggleFavModal;
+
+  const year = (item.release_date || item.first_air_date || '').slice(0,4);
+  const rating = item.vote_average ? item.vote_average.toFixed(1) : null;
+  document.getElementById('modalMeta').innerHTML = [
+    year ? `<span class="modal-meta-item">📅 ${year}</span>` : '',
+    rating ? `<span class="modal-meta-item modal-rating">★ ${rating}</span>` : '',
+    `<span class="modal-meta-item">${type === 'tv' ? '📺 Сериал' : '🎬 Фильм'}</span>`
+  ].filter(Boolean).join('');
+
+  // Источники
+  const src = document.getElementById('playerSources');
+  src.style.display = 'flex';
+  src.innerHTML = SOURCES.map((s, i) =>
+    `<button class="source-btn ${i===0?'active':''}" onclick="selectSource(${i})">${s.label}</button>`
+  ).join('');
+
+  // Кнопка смотреть
+  document.getElementById('modalWatchBtn').onclick = startPlayer;
+}
+
+function fillModalFull(item) {
+  // Обновляем описание если было пустое
+  if (item.overview) document.getElementById('modalOverview').textContent = item.overview;
+
+  // Мета
+  const year = (item.release_date || item.first_air_date || '').slice(0,4);
+  const rating = item.vote_average ? item.vote_average.toFixed(1) : null;
+  const type = item.media_type;
+  const extras = [
+    item.runtime ? `⏱ ${item.runtime} мин.` : '',
+    item.number_of_seasons ? `📚 ${item.number_of_seasons} сезонов` : '',
+    item.number_of_episodes ? `🎞 ${item.number_of_episodes} эп.` : '',
+  ].filter(Boolean);
+
+  document.getElementById('modalMeta').innerHTML = [
+    year ? `<span class="modal-meta-item">📅 ${year}</span>` : '',
+    rating ? `<span class="modal-meta-item modal-rating">★ ${rating}</span>` : '',
+    `<span class="modal-meta-item">${type === 'tv' ? '📺 Сериал' : '🎬 Фильм'}</span>`,
+    ...extras.map(e => `<span class="modal-meta-item">${e}</span>`)
+  ].filter(Boolean).join('');
+
+  // Жанры
+  const tags = (item.genres || []).map(g => `<span class="tag">${g.name}</span>`);
+  document.getElementById('modalTags').innerHTML = tags.join('');
+
+  // Бэкдроп
+  if (item.backdrop_path) {
+    document.getElementById('modalBackdrop').style.backgroundImage = `url(https://image.tmdb.org/t/p/w1280${item.backdrop_path})`;
+  }
+}
+
+function buildEpisodeSelector(details) {
+  const seasons = (details.seasons || []).filter(s => s.season_number > 0);
+  if (!seasons.length) return;
+
+  const seasonSel  = document.getElementById('seasonSelect');
+  const episodeSel = document.getElementById('episodeSelect');
+  const selector   = document.getElementById('episodeSelector');
+
+  seasonSel.innerHTML = seasons.map(s =>
+    `<option value="${s.season_number}">${s.name || 'Сезон '+s.season_number} (${s.episode_count} эп.)</option>`
+  ).join('');
+  seasonSel.value = 1;
+
+  // Заполняем серии первого сезона
+  fillEpisodes(seasons[0].episode_count || 12);
+  selector.style.display = 'flex';
+}
+
+function fillEpisodes(count) {
+  const el = document.getElementById('episodeSelect');
+  el.innerHTML = Array.from({length: count}, (_, i) =>
+    `<option value="${i+1}">Серия ${i+1}</option>`
+  ).join('');
+  el.value = currentEpisode;
+}
+
+async function onSeasonChange() {
+  currentSeason  = +document.getElementById('seasonSelect').value;
+  currentEpisode = 1;
+  // Загрузить кол-во серий сезона
+  try {
+    const type = currentItem.media_type || 'tv';
+    const data = await api(`/${type}/${currentItem.id}/season/${currentSeason}`);
+    fillEpisodes(data.episodes ? data.episodes.length : 12);
+  } catch {
+    fillEpisodes(12);
+  }
+  if (document.getElementById('playerWrap').style.display !== 'none') setPlayerSrc();
+}
+
+function onEpisodeChange() {
+  currentEpisode = +document.getElementById('episodeSelect').value;
+  if (document.getElementById('playerWrap').style.display !== 'none') setPlayerSrc();
+}
+
+async function loadSimilar(itemId) {
+  try {
+    const type = currentItem.media_type || (currentItem.first_air_date ? 'tv' : 'movie');
+    const sim  = await api(`/${type}/${itemId}/similar`);
+    const results = (sim.results || []).slice(0,6);
+    if (!results.length) return;
+    results.forEach(i => itemsMap.set(i.id, i));
+    document.getElementById('similarTitle').style.display = 'block';
+    renderCards('similarRow', results);
+  } catch {}
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+  document.getElementById('playerFrame').src = '';
+  document.getElementById('playerWrap').style.display = 'none';
+  currentItem = null;
+}
+
+function handleModalBgClick(e) {
+  if (e.target === document.getElementById('modal')) closeModal();
+}
+
+// ═══════════════════════════════════════════════════
+// PLAYER
+// ═══════════════════════════════════════════════════
+function startPlayer() {
+  if (!currentItem) return;
+  const wrap    = document.getElementById('playerWrap');
+  const loading = document.getElementById('playerLoading');
+  wrap.style.display    = 'block';
+  loading.style.display = 'flex';
+  setPlayerSrc();
+  setTimeout(() => wrap.scrollIntoView({ behavior:'smooth', block:'nearest' }), 150);
+}
+
+function setPlayerSrc() {
+  if (!currentItem) return;
+  const type   = currentItem.media_type || (currentItem.first_air_date ? 'tv' : 'movie');
+  const id     = currentItem.id;
+  const source = SOURCES[currentSource];
+  const url    = type === 'tv'
+    ? source.tv(id, currentSeason, currentEpisode)
+    : source.movie(id);
+
+  const frame   = document.getElementById('playerFrame');
+  const loading = document.getElementById('playerLoading');
+  loading.style.display = 'flex';
+  frame.onload = () => { loading.style.display = 'none'; };
+  frame.src = url;
+}
+
+function selectSource(idx) {
+  currentSource = idx;
+  document.querySelectorAll('.source-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+  if (document.getElementById('playerWrap').style.display !== 'none') {
+    document.getElementById('playerLoading').style.display = 'flex';
+    setPlayerSrc();
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// FAVORITES
+// ═══════════════════════════════════════════════════
+function saveFavs() {
+  localStorage.setItem('cv_favs', JSON.stringify(favorites));
+  updateFavBtn();
+}
+
+function updateFavBtn() {
+  const btn = document.getElementById('favBtn');
+  if (!btn) return;
+  const has = favorites.length > 0;
+  btn.classList.toggle('has-favs', has);
+  btn.textContent = has ? '♥ Избранное' : '♡ Избранное';
+}
+
+function toggleFav(btn, item) {
+  const idx = favorites.findIndex(f => f.id === item.id);
+  if (idx >= 0) {
+    favorites.splice(idx, 1);
+    btn.textContent = '♡';
+    btn.classList.remove('active');
+    showToast('Удалено из избранного');
+  } else {
+    favorites.push(item);
+    btn.textContent = '♥';
+    btn.classList.add('active');
+    showToast('Добавлено в избранное ♥');
+  }
+  saveFavs();
+}
+
+function toggleFavModal() {
+  if (!currentItem) return;
+  const idx = favorites.findIndex(f => f.id === currentItem.id);
+  const btn = document.getElementById('modalFavBtn');
+  if (idx >= 0) {
+    favorites.splice(idx, 1);
+    btn.classList.remove('active');
+    btn.textContent = '♡ В избранное';
+    showToast('Удалено из избранного');
+  } else {
+    favorites.push(currentItem);
+    btn.classList.add('active');
+    btn.textContent = '♥ В избранном';
+    showToast('Добавлено в избранное ♥');
+  }
+  saveFavs();
+}
+
+// ═══════════════════════════════════════════════════
+// SEARCH
+// ═══════════════════════════════════════════════════
+let searchTimer = null;
+function onSearch(val) {
+  clearTimeout(searchTimer);
+  if (!val.trim()) { showPage('main'); return; }
+  if (val.length < 2) return;
+  searchTimer = setTimeout(() => doSearch(val), 480);
+}
+
+async function doSearch(val) {
+  if (!val.trim()) return;
+  showPage('search');
+  document.getElementById('pageTitle').textContent = `Результаты: "${val}"`;
+  document.getElementById('searchCount').textContent = 'Поиск...';
+  document.getElementById('filterBar').classList.remove('visible');
+  catalogDone = true; // не грузим infinite scroll во время поиска
+
+  const container = document.getElementById('searchResults');
+  container.innerHTML = '';
+  loadSkeletons('searchResults', 12);
+
+  try {
+    const [movies, series] = await Promise.all([
+      api('/search/movie', { query: val }),
+      api('/search/tv',    { query: val }),
+    ]);
+    const combined = [
+      ...movies.results.map(m => ({ ...m, media_type:'movie' })),
+      ...series.results.map(s => ({ ...s, media_type:'tv' })),
+    ].sort((a,b) => b.popularity - a.popularity);
+
+    combined.forEach(i => itemsMap.set(i.id, i));
+    document.getElementById('searchCount').textContent = `Найдено: ${combined.length} результатов`;
+    renderCards('searchResults', combined.slice(0,24));
+  } catch(e) {
+    document.getElementById('searchResults').innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>Ошибка поиска</p></div>';
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// CATALOG STATE
+// ═══════════════════════════════════════════════════
+let catalogType    = 'movie';   // текущий тип каталога
+let catalogPage    = 1;
+let catalogTotal   = 0;
+
+const GENRE_MOVIE = [
+  {id:28,name:'Боевик'},{id:12,name:'Приключения'},{id:16,name:'Анимация'},
+  {id:35,name:'Комедия'},{id:80,name:'Криминал'},{id:99,name:'Документальный'},
+  {id:18,name:'Драма'},{id:10751,name:'Семейный'},{id:14,name:'Фэнтези'},
+  {id:36,name:'История'},{id:27,name:'Ужасы'},{id:10402,name:'Музыка'},
+  {id:9648,name:'Детектив'},{id:10749,name:'Мелодрама'},{id:878,name:'Фантастика'},
+  {id:10770,name:'ТВ-фильм'},{id:53,name:'Триллер'},{id:10752,name:'Война'},{id:37,name:'Вестерн'}
+];
+const GENRE_TV = [
+  {id:10759,name:'Боевик/Приключения'},{id:16,name:'Аниме'},{id:35,name:'Комедия'},
+  {id:80,name:'Криминал'},{id:99,name:'Документальный'},{id:18,name:'Драма'},
+  {id:10751,name:'Семейный'},{id:10762,name:'Детский'},{id:9648,name:'Детектив'},
+  {id:10763,name:'Новости'},{id:10764,name:'Реалити'},{id:10765,name:'Фантастика/Фэнтези'},
+  {id:10766,name:'Мыльная опера'},{id:10767,name:'Ток-шоу'},{id:10768,name:'Война/Политика'}
+];
+
+function buildYearOptions() {
+  const cur = new Date().getFullYear();
+  let html = '<option value="">Все годы</option>';
+  for (let y = cur; y >= 1950; y--) html += `<option value="${y}">${y}</option>`;
+  return html;
+}
+
+function setGenreOptions(type) {
+  const genres = (type === 'tv' || type === 'anime') ? GENRE_TV : GENRE_MOVIE;
+  document.getElementById('genreSelect').innerHTML =
+    '<option value="">Все жанры</option>' +
+    genres.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// CATEGORY
+// ═══════════════════════════════════════════════════
+async function filterAndShow(type) {
+  catalogType    = type;
+  catalogPage    = 1;
+  catalogTotal   = 0;
+  catalogLoading = false;
+  catalogDone    = false;
+
+  showPage('search');
+  const labels = { movie:'Фильмы', tv:'Сериалы', anime:'Аниме', documentary:'Документалки', trending:'В тренде' };
+  document.getElementById('pageTitle').textContent = labels[type] || type;
+  document.getElementById('searchCount').textContent = 'Загрузка...';
+
+  // Показываем фильтр-бар (кроме trending)
+  const filterBar = document.getElementById('filterBar');
+  if (type !== 'trending') {
+    filterBar.classList.add('visible');
+    setGenreOptions(type);
+    document.getElementById('yearSelect').innerHTML = buildYearOptions();
+    // Сбрасываем фильтры
+    document.getElementById('sortSelect').value  = 'popularity.desc';
+    document.getElementById('genreSelect').value = '';
+    document.getElementById('yearSelect').value  = '';
+    // Fix sort options for TV
+    const sortSel = document.getElementById('sortSelect');
+    sortSel.options[2].value = type === 'tv' || type === 'anime'
+      ? 'first_air_date.desc' : 'primary_release_date.desc';
+    sortSel.options[3].value = type === 'tv' || type === 'anime'
+      ? 'first_air_date.asc'  : 'primary_release_date.asc';
+  } else {
+    filterBar.classList.remove('visible');
+  }
+
+  loadSkeletons('searchResults', 20);
+
+  await loadCatalogPage(type, 1, true);
+
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const map = { movie:'navMovies', tv:'navSeries', anime:'navAnime', documentary:'navDocs' };
+  if (map[type]) document.getElementById(map[type]).classList.add('active');
+}
+
+async function applyFilters() {
+  catalogPage = 1;
+  catalogLoading = false;
+  catalogDone    = false;
+  loadSkeletons('searchResults', 20);
+  await loadCatalogPage(catalogType, 1, true);
+}
+
+// ─── Infinite scroll ───────────────────────────────
+let catalogLoading = false;   // идёт ли сейчас загрузка
+let catalogDone    = false;   // загружены ли все страницы
+
+const infiniteObserver = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting && !catalogLoading && !catalogDone) {
+    catalogPage++;
+    loadCatalogPage(catalogType, catalogPage, false);
+  }
+}, { rootMargin: '300px' }); // начинаем грузить за 300px до конца страницы
+
+infiniteObserver.observe(document.getElementById('scrollSentinel'));
+
+async function loadCatalogPage(type, page, replace) {
+  if (catalogLoading) return;
+  catalogLoading = true;
+
+  if (!replace) {
+    document.getElementById('infiniteSpinner').classList.add('show');
+  }
+
+  const sort  = document.getElementById('sortSelect')?.value  || 'popularity.desc';
+  const genre = document.getElementById('genreSelect')?.value || '';
+  const year  = document.getElementById('yearSelect')?.value  || '';
+
+  try {
+    // Оставляем только контент с латинскими/кириллическими названиями (ru/en перевод есть)
+    // Убираем: тайский, корейский, японский, китайский, арабский, хинди и др.
+    const isForeign = s => !s || /[฀-๿가-힯ᄀ-ᇿ぀-鿿豈-﫿＀-￯؀-ۿ֐-׿ऀ-ॿ]/.test(s);
+
+    let results = [];
+    let total   = 0;
+
+    if (type === 'trending') {
+      const r = await api('/trending/all/day', { page });
+      results = r.results.filter(i => !isForeign(i.title || i.name));
+      total = r.total_results || results.length;
+    } else if (type === 'anime') {
+      const params = { with_genres:'16', with_original_language:'ja', sort_by: sort, page, 'vote_count.gte': 200 };
+      if (genre) params.with_genres = genre + ',16';
+      if (year)  params.first_air_date_year = year;
+      const r = await api('/discover/tv', params);
+      results = r.results.filter(i => !isForeign(i.name)).map(i => ({ ...i, media_type:'tv' }));
+      total   = r.total_results || 0;
+    } else if (type === 'documentary') {
+      const params = { with_genres: genre || '99', sort_by: sort, page, 'vote_count.gte': 30 };
+      if (year) params.primary_release_year = year;
+      const r = await api('/discover/movie', params);
+      results = r.results.filter(i => !isForeign(i.title)).map(i => ({ ...i, media_type:'movie' }));
+      total   = r.total_results || 0;
+    } else if (type === 'movie') {
+      const params = { sort_by: sort, page, 'vote_count.gte': 100 };
+      if (genre) params.with_genres = genre;
+      if (year)  params.primary_release_year = year;
+      const r = await api('/discover/movie', params);
+      results = r.results.filter(i => !isForeign(i.title)).map(i => ({ ...i, media_type:'movie' }));
+      total   = r.total_results || 0;
+    } else if (type === 'tv') {
+      const params = { sort_by: sort, page, 'vote_count.gte': 80 };
+      if (genre) params.with_genres = genre;
+      if (year)  params.first_air_date_year = year;
+      const r = await api('/discover/tv', params);
+      results = r.results.filter(i => !isForeign(i.name)).map(i => ({ ...i, media_type:'tv' }));
+      total   = r.total_results || 0;
+    }
+
+    catalogTotal = total;
+    results.forEach(i => itemsMap.set(i.id, i));
+
+    const container = document.getElementById('searchResults');
+    const shown = (page - 1) * 20 + results.length;
+    document.getElementById('searchCount').textContent = `Показано: ${shown} из ${total}`;
+
+    if (replace) {
+      renderCards('searchResults', results);
+    } else {
+      if (!results.length) { catalogDone = true; return; }
+      const frag = document.createElement('div');
+      frag.innerHTML = results.map(item => {
+        const img  = item.poster_path ? `https://image.tmdb.org/t/p/w342${item.poster_path}` : `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 342 513'%3E%3Crect fill='%2312121c' width='342' height='513'/%3E%3C/svg%3E`;
+        const isFav  = favorites.some(f => f.id === item.id);
+        const rating = item.vote_average ? item.vote_average.toFixed(1) : null;
+        const isTV   = item.media_type === 'tv' || !!item.first_air_date;
+        const yr     = (item.release_date || item.first_air_date || '').slice(0,4);
+        const safeTitle = (item.title || item.name || '').replace(/"/g, '&quot;');
+        return `<div class="card" data-id="${item.id}" title="${safeTitle}">
+          <img class="card-img" src="${img}" alt="${safeTitle}" loading="lazy">
+          ${rating ? `<div class="card-rating">★ ${rating}</div>` : ''}
+          ${isTV ? `<div class="card-type-badge">Сериал</div>` : ''}
+          <div class="card-overlay">
+            <div class="card-title">${item.title || item.name || ''}</div>
+            <div class="card-meta">${yr}</div>
+            <button class="card-btn">▶ Подробнее</button>
+          </div>
+          <button class="card-fav ${isFav?'active':''}" data-id="${item.id}">${isFav?'♥':'♡'}</button>
+        </div>`;
+      }).join('');
+      frag.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('click', e => { if (e.target.closest('.card-fav')) return; openModal(+card.dataset.id); });
+      });
+      frag.querySelectorAll('.card-fav').forEach(btn => {
+        btn.addEventListener('click', e => { e.stopPropagation(); const item = itemsMap.get(+btn.dataset.id); if (item) toggleFav(btn, item); });
+      });
+      while (frag.firstChild) container.appendChild(frag.firstChild);
+    }
+
+    // Если загрузили всё — помечаем как done
+    if (shown >= total || !results.length || page >= 500) {
+      catalogDone = true;
+    }
+
+  } catch(e) {
+    showToast('Ошибка загрузки', true);
+  } finally {
+    catalogLoading = false;
+    document.getElementById('infiniteSpinner').classList.remove('show');
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// PAGES
+// ═══════════════════════════════════════════════════
+function showPage(page) {
+  document.getElementById('mainPage').style.display   = page === 'main'   ? 'block' : 'none';
+  document.getElementById('searchPage').style.display = page === 'search' ? 'block' : 'none';
+  document.getElementById('favPage').style.display    = page === 'fav'    ? 'block' : 'none';
+  if (page === 'main') {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('filterBar').classList.remove('visible');
+    catalogDone = true; // останавливаем infinite scroll пока не в каталоге
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  }
+  if (page === 'fav') renderFavorites();
+  window.scrollTo(0,0);
+}
+
+function renderFavorites() {
+  if (!favorites.length) {
+    document.getElementById('favResults').innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1">
+        <div class="icon">🎬</div><p>Избранное пусто</p>
+        <small>Нажмите ♡ на карточке чтобы добавить</small>
+      </div>`;
+    return;
+  }
+  favorites.forEach(i => itemsMap.set(i.id, i));
+  renderCards('favResults', favorites);
+}
+
+// ═══════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════
+let toastTimer = null;
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.toggle('error', isError);
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+// ═══════════════════════════════════════════════════
+// SCROLL + KEYBOARD
+// ═══════════════════════════════════════════════════
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === '/' && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    document.getElementById('searchInput')?.focus();
+  }
+});
+
+// ═══════════════════════════════════════════════════
+// MOBILE MENU
+// ═══════════════════════════════════════════════════
+function toggleMobileMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+  document.getElementById('mobileSearchBar').classList.remove('open');
+}
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+function toggleMobileSearch() {
+  document.getElementById('mobileSearchBar').classList.toggle('open');
+  document.getElementById('mobileMenu').classList.remove('open');
+  if (document.getElementById('mobileSearchBar').classList.contains('open')) {
+    setTimeout(() => document.getElementById('mobileSearchInput').focus(), 60);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// START
+// ═══════════════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
