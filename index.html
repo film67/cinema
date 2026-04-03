@@ -945,17 +945,19 @@ const KODIK_TOKEN = '9386a8f4ef7abc8415155bb91edf3fe8';
 // ─── ИСТОЧНИКИ ─────────────────────────────────────
 const SOURCES = [
   {
-name: 'Kodik',
+    name: 'Kodik',
     label: '🏮 Kodik (Аниме/Сериалы)',
-    // Используем официальный поиск Kodik с твоим API токеном
-    movie: (id) => `https://kodikplayer.com/find-player?token=9386a8f4ef7abc8415155bb91edf3fe8&tmdbID=${id}`,
-    tv: (id, s, e) => `https://kodikplayer.com/find-player?token=9386a8f4ef7abc8415155bb91edf3fe8&tmdbID=${id}&season=${s}&episode=${e}`
+    isKodik: true,
+    // Используем imdb_id для точности поиска[cite: 3]
+    movie: (id) => `https://kodikplayer.com/find-player?token=${KODIK_TOKEN}&imdb_id=${id}`,
+    tv: (id, s, e) => `https://kodikplayer.com/find-player?token=${KODIK_TOKEN}&imdb_id=${id}&season=${s}&episode=${e}`
   },
   {
     name: 'Vidsrc',
-    label: '\u{1F310} Vidsrc',
+    label: '🌐 Vidsrc',
+    isKodik: false,
     movie: (id) => `https://vidsrc.me/embed/movie?tmdb=${id}`,
-    tv:    (id, s, e) => `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`
+    tv: (id, s, e) => `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`
   },
 ];
 // ═══════════════════════════════════════════════════
@@ -968,9 +970,7 @@ let currentSeason  = 1;
 let currentEpisode = 1;
 let tvDetails     = null; // кешируем детали сериала для сезонов
 
-// ─── Хранилище объектов карточек (КЛЮЧЕВОЕ исправление бага клика) ───
-// Вместо JSON.stringify в onclick — используем Map с числовым ключом.
-// Это исправляет баг, когда overview/title содержат кавычки, апострофы и спецсимволы.
+// ─── Хранилище объектов карточек ───
 const itemsMap = new Map();
 
 // ═══════════════════════════════════════════════════
@@ -1073,7 +1073,7 @@ function loadSkeletons(containerId, count) {
 }
 
 // ═══════════════════════════════════════════════════
-// RENDER CARDS — без JSON в onclick (исправление бага)
+// RENDER CARDS
 // ═══════════════════════════════════════════════════
 function renderCards(containerId, items) {
   const container = document.getElementById(containerId);
@@ -1092,7 +1092,6 @@ function renderCards(containerId, items) {
     const isTV   = item.media_type === 'tv' || !!item.first_air_date;
     const year   = (item.release_date || item.first_air_date || '').slice(0,4);
 
-    // Безопасный title для title-атрибута
     const safeTitle = (item.title || item.name || '').replace(/"/g, '&quot;');
 
     return `
@@ -1112,10 +1111,9 @@ function renderCards(containerId, items) {
     `;
   }).join('');
 
-  // Вешаем обработчики после рендера — безопасно, без eval
   container.querySelectorAll('.card').forEach(card => {
     card.addEventListener('click', e => {
-      if (e.target.closest('.card-fav')) return; // не открываем модал при клике на фаворит
+      if (e.target.closest('.card-fav')) return;
       openModal(+card.dataset.id);
     });
   });
@@ -1129,10 +1127,9 @@ function renderCards(containerId, items) {
 }
 
 // ═══════════════════════════════════════════════════
-// MODAL — открываем по ID, данные берём из Map или TMDB
+// MODAL
 // ═══════════════════════════════════════════════════
 async function openModal(itemId) {
-  // Сброс
   currentSeason  = 1;
   currentEpisode = 1;
   currentSource  = 0;
@@ -1149,25 +1146,22 @@ async function openModal(itemId) {
   document.getElementById('similarTitle').style.display = 'none';
   document.getElementById('modalBackdrop').style.backgroundImage = '';
 
-  // Открываем модал
   document.getElementById('modal').classList.add('open');
   document.body.style.overflow = 'hidden';
 
-  // Предварительно показываем из кеша
   let item = itemsMap.get(itemId) || { id: itemId };
   currentItem = item;
   fillModalBasic(item);
 
-  // Загружаем полные данные
   try {
     const type = item.media_type || (item.first_air_date ? 'tv' : 'movie');
-    const details = await api(`/${type}/${itemId}`);
+    // Запрашиваем внешние ID, чтобы получить IMDb ID[cite: 3]
+    const details = await api(`/${type}/${itemId}`, { append_to_response: 'external_ids' });
     item = { ...item, ...details, media_type: type };
     itemsMap.set(itemId, item);
     currentItem = item;
     fillModalFull(item);
 
-    // Если сериал — загружаем первый сезон для episodes
     if (type === 'tv') {
       tvDetails = details;
       buildEpisodeSelector(details);
@@ -1176,7 +1170,6 @@ async function openModal(itemId) {
     console.error('Modal details error:', e);
   }
 
-  // Похожие
   loadSimilar(itemId);
 }
 
@@ -1208,22 +1201,18 @@ function fillModalBasic(item) {
     `<span class="modal-meta-item">${type === 'tv' ? '📺 Сериал' : '🎬 Фильм'}</span>`
   ].filter(Boolean).join('');
 
-  // Источники
   const src = document.getElementById('playerSources');
   src.style.display = 'flex';
   src.innerHTML = SOURCES.map((s, i) =>
     `<button class="source-btn ${i===0?'active':''}" onclick="selectSource(${i})">${s.label}</button>`
   ).join('');
 
-  // Кнопка смотреть
   document.getElementById('modalWatchBtn').onclick = startPlayer;
 }
 
 function fillModalFull(item) {
-  // Обновляем описание если было пустое
   if (item.overview) document.getElementById('modalOverview').textContent = item.overview;
 
-  // Мета
   const year = (item.release_date || item.first_air_date || '').slice(0,4);
   const rating = item.vote_average ? item.vote_average.toFixed(1) : null;
   const type = item.media_type;
@@ -1240,11 +1229,9 @@ function fillModalFull(item) {
     ...extras.map(e => `<span class="modal-meta-item">${e}</span>`)
   ].filter(Boolean).join('');
 
-  // Жанры
   const tags = (item.genres || []).map(g => `<span class="tag">${g.name}</span>`);
   document.getElementById('modalTags').innerHTML = tags.join('');
 
-  // Бэкдроп
   if (item.backdrop_path) {
     document.getElementById('modalBackdrop').style.backgroundImage = `url(https://image.tmdb.org/t/p/w1280${item.backdrop_path})`;
   }
@@ -1255,7 +1242,6 @@ function buildEpisodeSelector(details) {
   if (!seasons.length) return;
 
   const seasonSel  = document.getElementById('seasonSelect');
-  const episodeSel = document.getElementById('episodeSelect');
   const selector   = document.getElementById('episodeSelector');
 
   seasonSel.innerHTML = seasons.map(s =>
@@ -1263,7 +1249,6 @@ function buildEpisodeSelector(details) {
   ).join('');
   seasonSel.value = 1;
 
-  // Заполняем серии первого сезона
   fillEpisodes(seasons[0].episode_count || 12);
   selector.style.display = 'flex';
 }
@@ -1279,7 +1264,6 @@ function fillEpisodes(count) {
 async function onSeasonChange() {
   currentSeason  = +document.getElementById('seasonSelect').value;
   currentEpisode = 1;
-  // Загрузить кол-во серий сезона
   try {
     const type = currentItem.media_type || 'tv';
     const data = await api(`/${type}/${currentItem.id}/season/${currentSeason}`);
@@ -1332,95 +1316,50 @@ function startPlayer() {
   setTimeout(() => wrap.scrollIntoView({ behavior:'smooth', block:'nearest' }), 150);
 }
 
-// ─── Kodik: поиск по API с токеном ────────────────
-async function getKodikUrl(type, tmdbId) {
-  // 1) Получаем IMDB ID из кэша или TMDB external_ids
-  let imdbId = currentItem && currentItem.imdb_id;
-  if (!imdbId) {
-    try {
-      const ext = await api(`/${type}/${tmdbId}/external_ids`);
-      imdbId = ext.imdb_id;
-      if (currentItem) currentItem.imdb_id = imdbId || null;
-    } catch(e) { console.warn('external_ids fail', e); }
-  }
-
-  // 2) Поиск через Kodik API
-  const baseUrl = 'https://kodikapi.com/search';
-  const doSearch = async (params) => {
-    try {
-      params.token = KODIK_TOKEN;
-      params.with_material_data = 'true';
-      const url = baseUrl + '?' + new URLSearchParams(params);
-      const r = await fetch(url);
-      if (!r.ok) return null;
-      const d = await r.json();
-      if (d.results && d.results.length > 0) return 'https:' + d.results[0].link;
-    } catch(e) { console.warn('Kodik search fail:', e); }
+// Поиск внешнего ID для Кодика[cite: 3]
+async function getImdbId(tmdbId, type) {
+  try {
+    const response = await api(`/${type}/${tmdbId}/external_ids`);
+    return response.imdb_id;
+  } catch (e) {
+    console.error("External IDs error", e);
     return null;
-  };
-
-  let link = null;
-
-  // Приоритет 1: по IMDB ID
-  if (imdbId) {
-    link = await doSearch({ imdb_id: imdbId });
   }
-
-  // Приоритет 2: по названию + году
-  if (!link && currentItem) {
-    const title = currentItem.title || currentItem.name || '';
-    const year  = (currentItem.release_date || currentItem.first_air_date || '').slice(0, 4);
-    if (title) {
-      link = await doSearch({ title, ...(year ? { year } : {}) });
-    }
-  }
-
-
-  // Для сериалов через API добавляем параметры серии
-  if (link && !link.includes('kodik-api.com') && type === 'tv') {
-    link += (link.includes('?') ? '&' : '?') + `season=${currentSeason}&episode=${currentEpisode}`;
-  }
-
-  return link;
 }
-
-let _loadingTimer = null;
 
 async function setPlayerSrc() {
   if (!currentItem) return;
   const type   = currentItem.media_type || (currentItem.first_air_date ? 'tv' : 'movie');
-  const id     = currentItem.id;
   const source = SOURCES[currentSource];
-
   const frame   = document.getElementById('playerFrame');
   const loading = document.getElementById('playerLoading');
+  
   loading.style.display = 'flex';
-  frame.src = '';  // сбросить текущее
-
-  clearTimeout(_loadingTimer);
+  frame.src = ''; 
 
   let url;
   if (source.isKodik) {
-    url = await getKodikUrl(type, id);
+    // Для Kodik получаем IMDb ID[cite: 3]
+    const imdbId = currentItem.external_ids?.imdb_id || await getImdbId(currentItem.id, type);
+    
+    if (imdbId) {
+      url = type === 'tv' 
+        ? source.tv(imdbId, currentSeason, currentEpisode) 
+        : source.movie(imdbId);
+    } else {
+      // Запасной вариант по названию, если IMDb не найден
+      url = `https://kodikplayer.com/find-player?token=${KODIK_TOKEN}&title=${encodeURIComponent(currentItem.title || currentItem.name)}`;
+    }
   } else {
+    // Vidsrc отлично работает с TMDB ID
     url = type === 'tv'
-      ? source.tv(id, currentSeason, currentEpisode)
-      : source.movie(id);
+      ? source.tv(currentItem.id, currentSeason, currentEpisode)
+      : source.movie(currentItem.id);
   }
 
-  if (!url) {
-    showToast('Источник недоступен — попробуйте другой', true);
-    loading.style.display = 'none';
-    return;
-  }
+  setTimeout(() => { frame.src = url; }, 50);
 
-  frame.onload = () => {
-    loading.style.display = 'none';
-    clearTimeout(_loadingTimer);
-  };
-  // Авто-скрыть спиннер через 12 сек если onload не сработал
-  _loadingTimer = setTimeout(() => { loading.style.display = 'none'; }, 12000);
-  frame.src = url;
+  frame.onload = () => { loading.style.display = 'none'; };
 }
 
 function selectSource(idx) {
@@ -1498,7 +1437,7 @@ async function doSearch(val) {
   document.getElementById('pageTitle').textContent = `Результаты: "${val}"`;
   document.getElementById('searchCount').textContent = 'Поиск...';
   document.getElementById('filterBar').classList.remove('visible');
-  catalogDone = true; // не грузим infinite scroll во время поиска
+  catalogDone = true;
 
   const container = document.getElementById('searchResults');
   container.innerHTML = '';
@@ -1525,7 +1464,7 @@ async function doSearch(val) {
 // ═══════════════════════════════════════════════════
 // CATALOG STATE
 // ═══════════════════════════════════════════════════
-let catalogType    = 'movie';   // текущий тип каталога
+let catalogType    = 'movie';
 let catalogPage    = 1;
 let catalogTotal   = 0;
 
@@ -1574,17 +1513,14 @@ async function filterAndShow(type) {
   document.getElementById('pageTitle').textContent = labels[type] || type;
   document.getElementById('searchCount').textContent = 'Загрузка...';
 
-  // Показываем фильтр-бар (кроме trending)
   const filterBar = document.getElementById('filterBar');
   if (type !== 'trending') {
     filterBar.classList.add('visible');
     setGenreOptions(type);
     document.getElementById('yearSelect').innerHTML = buildYearOptions();
-    // Сбрасываем фильтры
     document.getElementById('sortSelect').value  = 'popularity.desc';
     document.getElementById('genreSelect').value = '';
     document.getElementById('yearSelect').value  = '';
-    // Fix sort options for TV
     const sortSel = document.getElementById('sortSelect');
     sortSel.options[2].value = type === 'tv' || type === 'anime'
       ? 'first_air_date.desc' : 'primary_release_date.desc';
@@ -1595,7 +1531,6 @@ async function filterAndShow(type) {
   }
 
   loadSkeletons('searchResults', 20);
-
   await loadCatalogPage(type, 1, true);
 
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
@@ -1612,15 +1547,15 @@ async function applyFilters() {
 }
 
 // ─── Infinite scroll ───────────────────────────────
-let catalogLoading = false;   // идёт ли сейчас загрузка
-let catalogDone    = false;   // загружены ли все страницы
+let catalogLoading = false;
+let catalogDone    = false;
 
 const infiniteObserver = new IntersectionObserver(entries => {
   if (entries[0].isIntersecting && !catalogLoading && !catalogDone) {
     catalogPage++;
     loadCatalogPage(catalogType, catalogPage, false);
   }
-}, { rootMargin: '300px' }); // начинаем грузить за 300px до конца страницы
+}, { rootMargin: '300px' });
 
 infiniteObserver.observe(document.getElementById('scrollSentinel'));
 
@@ -1637,8 +1572,6 @@ async function loadCatalogPage(type, page, replace) {
   const year  = document.getElementById('yearSelect')?.value  || '';
 
   try {
-    // Оставляем только контент с латинскими/кириллическими названиями (ru/en перевод есть)
-    // Убираем: тайский, корейский, японский, китайский, арабский, хинди и др.
     const isForeign = s => !s || /[฀-๿가-힯ᄀ-ᇿ぀-鿿豈-﫿＀-￯؀-ۿ֐-׿ऀ-ॿ]/.test(s);
 
     let results = [];
@@ -1717,7 +1650,6 @@ async function loadCatalogPage(type, page, replace) {
       while (frag.firstChild) container.appendChild(frag.firstChild);
     }
 
-    // Если загрузили всё — помечаем как done
     if (shown >= total || !results.length || page >= 500) {
       catalogDone = true;
     }
@@ -1740,7 +1672,7 @@ function showPage(page) {
   if (page === 'main') {
     document.getElementById('searchInput').value = '';
     document.getElementById('filterBar').classList.remove('visible');
-    catalogDone = true; // останавливаем infinite scroll пока не в каталоге
+    catalogDone = true;
     document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
   }
   if (page === 'fav') renderFavorites();
@@ -1806,9 +1738,6 @@ function toggleMobileSearch() {
   }
 }
 
-// ═══════════════════════════════════════════════════
-// START
-// ═══════════════════════════════════════════════════
 init();
 </script>
 </body>
