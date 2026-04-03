@@ -945,9 +945,11 @@ const KODIK_TOKEN = '9386a8f4ef7abc8415155bb91edf3fe8';
 // ─── ИСТОЧНИКИ ─────────────────────────────────────
 const SOURCES = [
   {
-    name: 'Kodik',
-    label: '\u{1F3EE} Kodik',
-    isKodik: true   // async — ищем через API с токеном
+name: 'Kodik',
+    label: '🏮 Kodik (Аниме/Сериалы)',
+    // Используем официальный поиск Kodik с твоим API токеном
+    movie: (id) => `https://kodikplayer.com/find-player?token=9386a8f4ef7abc8415155bb91edf3fe8&tmdbID=${id}`,
+    tv: (id, s, e) => `https://kodikplayer.com/find-player?token=9386a8f4ef7abc8415155bb91edf3fe8&tmdbID=${id}&season=${s}&episode=${e}`
   },
   {
     name: 'Vidsrc',
@@ -955,18 +957,6 @@ const SOURCES = [
     movie: (id) => `https://vidsrc.me/embed/movie?tmdb=${id}`,
     tv:    (id, s, e) => `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`
   },
-  {
-    name: 'Vidsrc2',
-    label: '\u{1F310} Vidsrc #2',
-    movie: (id) => `https://vidsrc.pro/embed/movie/${id}`,
-    tv:    (id, s, e) => `https://vidsrc.pro/embed/tv/${id}/${s}/${e}`
-  },
-  {
-    name: 'Collaps',
-    label: '\u{1F48E} Collaps',
-    movie: (id) => `https://collaps.cc/embed/tmdb/${id}`,
-    tv:    (id, s, e) => `https://collaps.cc/embed/tmdb/${id}?s=${s}&e=${e}`
-  }
 ];
 // ═══════════════════════════════════════════════════
 // STATE
@@ -1385,17 +1375,9 @@ async function getKodikUrl(type, tmdbId) {
     }
   }
 
-  // Fallback: aniqit.com (зеркало Kodik без токена)
-  if (!link) {
-    if (type === 'tv') {
-      link = `https://aniqit.com/find?tmdb_id=${tmdbId}&season=${currentSeason}&episode=${currentEpisode}`;
-    } else {
-      link = `https://aniqit.com/find?tmdb_id=${tmdbId}`;
-    }
-  }
 
   // Для сериалов через API добавляем параметры серии
-  if (link && !link.includes('aniqit.com') && type === 'tv') {
+  if (link && !link.includes('kodik-api.com') && type === 'tv') {
     link += (link.includes('?') ? '&' : '?') + `season=${currentSeason}&episode=${currentEpisode}`;
   }
 
