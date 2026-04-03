@@ -919,8 +919,8 @@
         </div>
         <iframe id="playerFrame"
   allowfullscreen
-  allow="autoplay; fullscreen; picture-in-picture"
-  sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-presentation">
+  allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer"
+  referrerpolicy="no-referrer-when-downgrade">
 </iframe>
         
       </div>
@@ -942,30 +942,30 @@ const API_KEY     = '558568949e362ddf3eabb364c1222b93';
 const API_BASE    = 'https://api.themoviedb.org/3';
 const KODIK_TOKEN = '9386a8f4ef7abc8415155bb91edf3fe8';
 
-// ────────────────────────────────────────────────────
-// ────────────────────────────────────────────────────
-// ПЛЕЕРЫ (Collaps + Kodik)
-// ────────────────────────────────────────────────────
-// Вставь сюда свои токены:
-
-// === ИСТОЧНИКИ ===
+// ─── ИСТОЧНИКИ ─────────────────────────────────────
 const SOURCES = [
   {
     name: 'Kodik',
-    label: '🏮 Kodik',
-    isKodik: true  // асинхронный источник — URL ищем через API
+    label: '\u{1F3EE} Kodik',
+    isKodik: true   // async — ищем через API с токеном
   },
   {
     name: 'Vidsrc',
-    label: '🌐 Vidsrc',
-    movie: (id) => `https://vidsrc.xyz/embed/movie?tmdb=${id}`,
-    tv: (id, s, e) => `https://vidsrc.xyz/embed/tv?tmdb=${id}&season=${s}&episode=${e}`
+    label: '\u{1F310} Vidsrc',
+    movie: (id) => `https://vidsrc.me/embed/movie?tmdb=${id}`,
+    tv:    (id, s, e) => `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`
+  },
+  {
+    name: 'Vidsrc2',
+    label: '\u{1F310} Vidsrc #2',
+    movie: (id) => `https://vidsrc.pro/embed/movie/${id}`,
+    tv:    (id, s, e) => `https://vidsrc.pro/embed/tv/${id}/${s}/${e}`
   },
   {
     name: 'Collaps',
-    label: '💎 Collaps',
-    movie: (id) => `https://api.collaps.org/embed/tmdb/${id}`,
-    tv: (id, s, e) => `https://api.collaps.org/embed/tmdb/${id}?s=${s}&e=${e}`
+    label: '\u{1F48E} Collaps',
+    movie: (id) => `https://collaps.cc/embed/tmdb/${id}`,
+    tv:    (id, s, e) => `https://collaps.cc/embed/tmdb/${id}?s=${s}&e=${e}`
   }
 ];
 // ═══════════════════════════════════════════════════
@@ -1342,39 +1342,67 @@ function startPlayer() {
   setTimeout(() => wrap.scrollIntoView({ behavior:'smooth', block:'nearest' }), 150);
 }
 
-// ─── Kodik: поиск через API по IMDB ID ───
+// ─── Kodik: поиск по API с токеном ────────────────
 async function getKodikUrl(type, tmdbId) {
-  try {
-    // Берём imdb_id из кэша или запрашиваем у TMDB
-    let imdbId = currentItem && currentItem.imdb_id;
-    if (!imdbId) {
+  // 1) Получаем IMDB ID из кэша или TMDB external_ids
+  let imdbId = currentItem && currentItem.imdb_id;
+  if (!imdbId) {
+    try {
       const ext = await api(`/${type}/${tmdbId}/external_ids`);
       imdbId = ext.imdb_id;
-      if (currentItem) currentItem.imdb_id = imdbId;
-    }
-    if (!imdbId) {
-      // Fallback: поиск по названию
-      const title = currentItem && (currentItem.title || currentItem.name);
-      const year  = currentItem && (currentItem.release_date || currentItem.first_air_date || '').slice(0,4);
-      if (!title) return null;
-      const params = new URLSearchParams({ token: KODIK_TOKEN, title, with_material_data: 'true' });
-      if (year) params.set('year', year);
-      const r = await fetch(`https://kodikapi.com/search?${params}`);
-      const d = await r.json();
-      return (d.results && d.results.length) ? 'https:' + d.results[0].link : null;
-    }
-    const params = new URLSearchParams({ token: KODIK_TOKEN, imdb_id: imdbId, with_material_data: 'true' });
-    const resp = await fetch(`https://kodikapi.com/search?${params}`);
-    const data = await resp.json();
-    if (data.results && data.results.length) {
-      return 'https:' + data.results[0].link;
-    }
-    return null;
-  } catch(e) {
-    console.error('Kodik error:', e);
-    return null;
+      if (currentItem) currentItem.imdb_id = imdbId || null;
+    } catch(e) { console.warn('external_ids fail', e); }
   }
+
+  // 2) Поиск через Kodik API
+  const baseUrl = 'https://kodikapi.com/search';
+  const doSearch = async (params) => {
+    try {
+      params.token = KODIK_TOKEN;
+      params.with_material_data = 'true';
+      const url = baseUrl + '?' + new URLSearchParams(params);
+      const r = await fetch(url);
+      if (!r.ok) return null;
+      const d = await r.json();
+      if (d.results && d.results.length > 0) return 'https:' + d.results[0].link;
+    } catch(e) { console.warn('Kodik search fail:', e); }
+    return null;
+  };
+
+  let link = null;
+
+  // Приоритет 1: по IMDB ID
+  if (imdbId) {
+    link = await doSearch({ imdb_id: imdbId });
+  }
+
+  // Приоритет 2: по названию + году
+  if (!link && currentItem) {
+    const title = currentItem.title || currentItem.name || '';
+    const year  = (currentItem.release_date || currentItem.first_air_date || '').slice(0, 4);
+    if (title) {
+      link = await doSearch({ title, ...(year ? { year } : {}) });
+    }
+  }
+
+  // Fallback: aniqit.com (зеркало Kodik без токена)
+  if (!link) {
+    if (type === 'tv') {
+      link = `https://aniqit.com/find?tmdb_id=${tmdbId}&season=${currentSeason}&episode=${currentEpisode}`;
+    } else {
+      link = `https://aniqit.com/find?tmdb_id=${tmdbId}`;
+    }
+  }
+
+  // Для сериалов через API добавляем параметры серии
+  if (link && !link.includes('aniqit.com') && type === 'tv') {
+    link += (link.includes('?') ? '&' : '?') + `season=${currentSeason}&episode=${currentEpisode}`;
+  }
+
+  return link;
 }
+
+let _loadingTimer = null;
 
 async function setPlayerSrc() {
   if (!currentItem) return;
@@ -1385,26 +1413,31 @@ async function setPlayerSrc() {
   const frame   = document.getElementById('playerFrame');
   const loading = document.getElementById('playerLoading');
   loading.style.display = 'flex';
+  frame.src = '';  // сбросить текущее
+
+  clearTimeout(_loadingTimer);
 
   let url;
   if (source.isKodik) {
     url = await getKodikUrl(type, id);
-    if (!url) {
-      showToast('Kodik: контент не найден — попробуйте другой источник', true);
-      loading.style.display = 'none';
-      return;
-    }
-    // Для сериалов добавляем сезон и серию
-    if (type === 'tv') {
-      url += (url.includes('?') ? '&' : '?') + `season=${currentSeason}&episode=${currentEpisode}`;
-    }
   } else {
     url = type === 'tv'
       ? source.tv(id, currentSeason, currentEpisode)
       : source.movie(id);
   }
 
-  frame.onload = () => { loading.style.display = 'none'; };
+  if (!url) {
+    showToast('Источник недоступен — попробуйте другой', true);
+    loading.style.display = 'none';
+    return;
+  }
+
+  frame.onload = () => {
+    loading.style.display = 'none';
+    clearTimeout(_loadingTimer);
+  };
+  // Авто-скрыть спиннер через 12 сек если onload не сработал
+  _loadingTimer = setTimeout(() => { loading.style.display = 'none'; }, 12000);
   frame.src = url;
 }
 
@@ -1412,7 +1445,6 @@ function selectSource(idx) {
   currentSource = idx;
   document.querySelectorAll('.source-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
   if (document.getElementById('playerWrap').style.display !== 'none') {
-    document.getElementById('playerLoading').style.display = 'flex';
     setPlayerSrc();
   }
 }
