@@ -59,19 +59,13 @@
 
 <!-- ─── SEO: Favicon и иконки ─── -->
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-
-<!-- ─── PWA: Манифест (иконка приложения на телефоне) ─── -->
-<link rel="manifest" href="/site.webmanifest">
 
 <!-- ─── SEO: Тема браузера ─── -->
 <meta name="theme-color" content="#080810">
 <meta name="msapplication-TileColor" content="#080810">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="KINOUZIPTV">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -944,8 +938,9 @@
 // ═══════════════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════════════
-const API_KEY  = '558568949e362ddf3eabb364c1222b93';
-const API_BASE = 'https://api.themoviedb.org/3';
+const API_KEY     = '558568949e362ddf3eabb364c1222b93';
+const API_BASE    = 'https://api.themoviedb.org/3';
+const KODIK_TOKEN = '9386a8f4ef7abc8415155bb91edf3fe8';
 
 // ────────────────────────────────────────────────────
 // ────────────────────────────────────────────────────
@@ -953,18 +948,16 @@ const API_BASE = 'https://api.themoviedb.org/3';
 // ────────────────────────────────────────────────────
 // Вставь сюда свои токены:
 
-// === ИСТОЧНИКИ (БЕЗ ТОКЕНОВ) ===
+// === ИСТОЧНИКИ ===
 const SOURCES = [
   {
     name: 'Kodik',
-    label: '🏮 Kodik (Аниме/Сериалы)',
-    // Используем зеркало aniqit.com, оно реже блокируется
-    movie: (id) => `https://aniqit.com/find?tmdb_id=${id}`,
-    tv: (id, s, e) => `https://aniqit.com/find?tmdb_id=${id}&season=${s}&episode=${e}`
+    label: '🏮 Kodik',
+    isKodik: true  // асинхронный источник — URL ищем через API
   },
   {
     name: 'Vidsrc',
-    label: '🌐 Vidsrc (Фильмы)',
+    label: '🌐 Vidsrc',
     movie: (id) => `https://vidsrc.xyz/embed/movie?tmdb=${id}`,
     tv: (id, s, e) => `https://vidsrc.xyz/embed/tv?tmdb=${id}&season=${s}&episode=${e}`
   },
@@ -1349,18 +1342,68 @@ function startPlayer() {
   setTimeout(() => wrap.scrollIntoView({ behavior:'smooth', block:'nearest' }), 150);
 }
 
-function setPlayerSrc() {
+// ─── Kodik: поиск через API по IMDB ID ───
+async function getKodikUrl(type, tmdbId) {
+  try {
+    // Берём imdb_id из кэша или запрашиваем у TMDB
+    let imdbId = currentItem && currentItem.imdb_id;
+    if (!imdbId) {
+      const ext = await api(`/${type}/${tmdbId}/external_ids`);
+      imdbId = ext.imdb_id;
+      if (currentItem) currentItem.imdb_id = imdbId;
+    }
+    if (!imdbId) {
+      // Fallback: поиск по названию
+      const title = currentItem && (currentItem.title || currentItem.name);
+      const year  = currentItem && (currentItem.release_date || currentItem.first_air_date || '').slice(0,4);
+      if (!title) return null;
+      const params = new URLSearchParams({ token: KODIK_TOKEN, title, with_material_data: 'true' });
+      if (year) params.set('year', year);
+      const r = await fetch(`https://kodikapi.com/search?${params}`);
+      const d = await r.json();
+      return (d.results && d.results.length) ? 'https:' + d.results[0].link : null;
+    }
+    const params = new URLSearchParams({ token: KODIK_TOKEN, imdb_id: imdbId, with_material_data: 'true' });
+    const resp = await fetch(`https://kodikapi.com/search?${params}`);
+    const data = await resp.json();
+    if (data.results && data.results.length) {
+      return 'https:' + data.results[0].link;
+    }
+    return null;
+  } catch(e) {
+    console.error('Kodik error:', e);
+    return null;
+  }
+}
+
+async function setPlayerSrc() {
   if (!currentItem) return;
   const type   = currentItem.media_type || (currentItem.first_air_date ? 'tv' : 'movie');
   const id     = currentItem.id;
   const source = SOURCES[currentSource];
-  const url    = type === 'tv'
-    ? source.tv(id, currentSeason, currentEpisode)
-    : source.movie(id);
 
   const frame   = document.getElementById('playerFrame');
   const loading = document.getElementById('playerLoading');
   loading.style.display = 'flex';
+
+  let url;
+  if (source.isKodik) {
+    url = await getKodikUrl(type, id);
+    if (!url) {
+      showToast('Kodik: контент не найден — попробуйте другой источник', true);
+      loading.style.display = 'none';
+      return;
+    }
+    // Для сериалов добавляем сезон и серию
+    if (type === 'tv') {
+      url += (url.includes('?') ? '&' : '?') + `season=${currentSeason}&episode=${currentEpisode}`;
+    }
+  } else {
+    url = type === 'tv'
+      ? source.tv(id, currentSeason, currentEpisode)
+      : source.movie(id);
+  }
+
   frame.onload = () => { loading.style.display = 'none'; };
   frame.src = url;
 }
