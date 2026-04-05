@@ -1248,6 +1248,21 @@ function fillModalFull(item) {
   }
 }
 
+// --- Проверка совпадения названия Kodik с TMDB ---
+function kodikTitleMatches(kodikTitle, tmdbItem) {
+  if (!kodikTitle || !tmdbItem) return true; // не можем проверить — пропускаем
+  const tmdbTitle = (tmdbItem.title || tmdbItem.name || '').toLowerCase();
+  const kTitle    = kodikTitle.toLowerCase();
+  // Убираем цифры/спецсимволы для грубого сравнения
+  const clean = s => s.replace(/[^a-zа-яё0-9\s]/gi, '').trim();
+  const ct = clean(tmdbTitle);
+  const ck = clean(kTitle);
+  if (!ct || !ck) return true;
+  // Совпадение если хотя бы первые 4 символа одного содержатся в другом
+  const prefix = ct.slice(0, Math.min(5, ct.length));
+  return ck.includes(prefix) || ct.includes(clean(ck).slice(0, 5));
+}
+
 async function buildEpisodeSelector(details) {
   const myItem = currentItem;   // фиксируем текущий айтем
   const episodeDiv = document.getElementById('episodeSelector');
@@ -1256,31 +1271,44 @@ async function buildEpisodeSelector(details) {
 
   try {
     const ids = await getExternalIds(myItem, 'tv');
-    if (currentItem !== myItem) return; // открыли другой контент
+    if (currentItem !== myItem) return;
     if (!ids) return;
 
-    const results = await getAllKodikResults(ids, 'tv');
+    const results = await getAllKodikResults(ids, 'tv', myItem);
     if (currentItem !== myItem) return;
     if (!results.length) return;
 
-    // Сортируем по last_season (чтобы Сезон 1 был первым)
-    results.sort((a, b) => (a.last_season || 1) - (b.last_season || 1));
+    // ── 1. Фильтруем явно неправильные тайтлы ──────────────────────
+    const validated = results.filter(r => kodikTitleMatches(r.title, myItem));
+    const pool = validated.length ? validated : results; // fallback
 
-    kodikSeasonLinks = results.map((r, i) => {
-      let label = r.title || `Часть ${i + 1}`;
-      if (r.last_season && r.last_season > 0) {
-        label = `Сезон ${r.last_season}`;
-      }
+    // ── 2. Дедублируем: одна запись на уникальный last_season ───────
+    // Если все last_season = 1 (разные дубляжи), оставляем только первый
+    const seenSeasons = new Map(); // last_season → first result
+    for (const r of pool) {
+      const sNum = r.last_season || 1;
+      if (!seenSeasons.has(sNum)) seenSeasons.set(sNum, r);
+    }
+
+    // Сортируем по номеру сезона
+    const unique = [...seenSeasons.entries()]
+      .sort(([a], [b]) => a - b)
+      .map(([sNum, r]) => r);
+
+    kodikSeasonLinks = unique.map((r, i) => {
+      // Если сезонов несколько — пишем "Сезон N", если один — скрываем селектор
+      const sNum = r.last_season || 1;
+      const label = unique.length > 1 ? `Сезон ${sNum}` : (r.title || 'Сезон 1');
       return {
         label,
         link: normalizeKodikLink(r.link),
-        lastSeason: r.last_season || 1
+        lastSeason: sNum
       };
     });
 
     console.log('Kodik season links:', kodikSeasonLinks.map(s => `${s.label}: ${s.link}`));
 
-    // Показываем селектор только если >1 варианта
+    // Показываем селектор только если >1 уникального сезона
     if (kodikSeasonLinks.length > 1) {
       const sel = document.getElementById('seasonSelect');
       sel.innerHTML = kodikSeasonLinks.map((s, i) =>
@@ -1435,10 +1463,15 @@ async function getAllKodikResults(ids, type, item) {
 // --- Одна ссылка для фильма ---
 async function getKodikLink(ids, type, item) {
   try {
-    const results = await getAllKodikResults(ids, type, item || currentItem);
+    const searchItem = item || currentItem;
+    const results = await getAllKodikResults(ids, type, searchItem);
     if (!results.length) return null;
-    const match = results[0];
-    console.log(`Kodik match: type=${match.type}, title=${match.title}, link=${match.link}`);
+
+    // Сначала пробуем найти результат с совпадающим названием
+    const matched = results.find(r => kodikTitleMatches(r.title, searchItem));
+    const match   = matched || results[0];
+
+    console.log(`Kodik match: type=${match.type}, title=${match.title}, validated=${!!matched}`);
     return normalizeKodikLink(match.link);
   } catch (e) {
     console.error('Kodik API ошибка:', e);
