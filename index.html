@@ -1330,14 +1330,21 @@ function startPlayer() {
 }
 
 
-// --- Получение IMDb ID ---
+// --- Получение IMDb ID и Kinopoisk ID ---
 async function getExternalIds(item, type) {
-  if (item.imdb_id) {
-    return { imdb: item.imdb_id };
+  // Сначала смотрим что уже загружено
+  if (item.imdb_id || item.external_ids?.kinopoisk_id) {
+    return {
+      imdb: item.imdb_id || null,
+      kp:   item.external_ids?.kinopoisk_id || null
+    };
   }
   try {
     const response = await api(`/${type}/${item.id}/external_ids`);
-    return { imdb: response.imdb_id || null };
+    return {
+      imdb: response.imdb_id || null,
+      kp:   response.kinopoisk_id || null
+    };
   } catch (e) {
     console.error("Ошибка получения внешних ID", e);
     return null;
@@ -1345,36 +1352,58 @@ async function getExternalIds(item, type) {
 }
 
 // --- Поиск ссылки плеера через Kodik API ---
-async function getKodikLink(imdbId, type, season, episode) {
+async function searchKodik(params) {
+  const urlParams = new URLSearchParams({ token: KODIK_TOKEN, with_episodes: 'true', ...params });
+  const res = await fetch('https://kodik-api.com/search', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: urlParams.toString()
+  });
+  const data = await res.json();
+  return data.results || [];
+}
+
+function pickKodikResult(results, type) {
+  // Kodik типы: movie, serial, anime, anime-serial, documentary-serial, multfilm, multseries
+  const targetTypes = type === 'tv'
+    ? ['serial', 'anime-serial', 'documentary-serial', 'multseries']
+    : ['movie', 'anime', 'multfilm', 'documentary'];
+  return results.find(r => targetTypes.includes(r.type)) || results[0] || null;
+}
+
+function buildKodikUrl(link, type, season, episode) {
+  // Обновляем старые домены
+  link = link.replace('kodik.info', 'kodikplayer.com')
+             .replace('aniqit.com', 'kodikplayer.com')
+             .replace('kodik.biz', 'kodikplayer.com');
+  if (link.startsWith('//')) link = 'https:' + link;
+  if (type === 'tv') link += `?season=${season}&episode=${episode}`;
+  return link;
+}
+
+async function getKodikLink(ids, type, season, episode) {
   try {
-    const params = new URLSearchParams({
-      token: KODIK_TOKEN,
-      imdb_id: imdbId,
-      with_episodes: 'true',
-    });
-    const res = await fetch(`https://kodik-api.com/search`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params.toString()
-    });
-    const data = await res.json();
-    if (!data.results || !data.results.length) return null;
+    let results = [];
 
-    const targetType = type === 'tv' ? ['serial', 'anime-serial'] : ['video', 'anime', 'film'];
-    const match = data.results.find(r => targetType.includes(r.type)) || data.results[0];
-
-    let link = match.link;
-    // Обновляем старые домены плеера на новый kodikplayer.com
-    link = link.replace('kodik.info', 'kodikplayer.com')
-               .replace('aniqit.com', 'kodikplayer.com')
-               .replace('kodik.biz', 'kodikplayer.com');
-    if (link.startsWith('//')) link = 'https:' + link;
-
-    if (type === 'tv') {
-      link += `?season=${season}&episode=${episode}`;
+    // Приоритет 1: Kinopoisk ID (у Kodik лучше покрытие по KP)
+    if (ids.kp) {
+      results = await searchKodik({ kinopoisk_id: ids.kp });
+      console.log(`Kodik KP(${ids.kp}): ${results.length} результатов`);
     }
 
-    return link;
+    // Приоритет 2: IMDb ID
+    if (!results.length && ids.imdb) {
+      results = await searchKodik({ imdb_id: ids.imdb });
+      console.log(`Kodik IMDb(${ids.imdb}): ${results.length} результатов`);
+    }
+
+    if (!results.length) return null;
+
+    const match = pickKodikResult(results, type);
+    if (!match) return null;
+
+    console.log(`Kodik match: type=${match.type}, title=${match.title}`);
+    return buildKodikUrl(match.link, type, season, episode);
   } catch (e) {
     console.error("Kodik API ошибка:", e);
     return null;
@@ -1428,12 +1457,12 @@ async function setPlayerSrc() {
     const ids = await getExternalIds(snapItem, type);
     if (currentItem !== snapItem || currentSource !== snapSource) return;
 
-    if (!ids || !ids.imdb) {
+    if (!ids || (!ids.imdb && !ids.kp)) {
       showPlayerError('Не удалось найти этот контент в базе Kodik');
       return;
     }
 
-    const kodikUrl = await getKodikLink(ids.imdb, type, snapSeason, snapEpisode);
+    const kodikUrl = await getKodikLink(ids, type, snapSeason, snapEpisode);
     if (currentItem !== snapItem || currentSource !== snapSource) return;
 
     if (!kodikUrl) {
