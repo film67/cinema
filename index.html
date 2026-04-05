@@ -989,9 +989,10 @@ async function init() {
   try { favorites = JSON.parse(localStorage.getItem('cv_favs') || '[]'); } catch {}
   updateFavBtn();
   loadHero();
-  loadSection('trendingRow', '/trending/all/day');
-  loadSection('moviesRow',   '/movie/popular');
-  loadSection('seriesRow',   '/tv/popular');
+  // filterForKodik=true — показываем только контент с высокой вероятностью наличия в базе
+  loadSection('trendingRow', '/trending/all/day',  {}, true);
+  loadSection('moviesRow',   '/movie/popular',     { 'vote_count.gte': 500 }, true);
+  loadSection('seriesRow',   '/tv/popular',        { 'vote_count.gte': 300 }, true);
   loadAnime();
 }
 
@@ -1253,17 +1254,31 @@ function kodikTitleMatches(kodikTitle, tmdbItem) {
   if (!kodikTitle || !tmdbItem) return true;
   // Для аниме не проверяем название — японские/русские/ромадзи варианты слишком разные
   if (isAnimeItem(tmdbItem)) return true;
-  const tmdbTitle = (tmdbItem.title || tmdbItem.name || '').toLowerCase();
-  const kTitle    = kodikTitle.toLowerCase();
-  const clean = s => s.replace(/[^a-zа-яё0-9\s]/gi, '').trim();
-  const ct = clean(tmdbTitle);
-  const ck = clean(kTitle);
-  if (!ct || !ck) return true;
-  // Минимум 6 символов для сравнения (4 слишком мало — "the", "war" и т.п. дают ложные совпадения)
-  const len = Math.min(6, Math.min(ct.length, ck.length));
-  if (len < 3) return true;
-  const prefix = ct.slice(0, len);
-  return ck.includes(prefix) || ct.includes(ck.slice(0, len));
+
+  const clean = s => s.replace(/[^a-zа-яё0-9\s]/gi, '').trim().toLowerCase();
+  const ck = clean(kodikTitle);
+  if (!ck) return true;
+
+  // Собираем все варианты названия из TMDB для сравнения
+  const candidates = [
+    tmdbItem.title || '',
+    tmdbItem.name || '',
+    tmdbItem.original_title || '',
+    tmdbItem.original_name || ''
+  ].map(clean).filter(Boolean);
+
+  if (!candidates.length) return true;
+
+  // Для каждого варианта: совпадение если Kodik-название содержит первые 6+ символов TMDB-названия
+  // ИЛИ TMDB-название содержит первые 6+ символов Kodik-названия
+  // Это нужно чтобы "Аватар" совпал с "Аватар: Пламя и пепел" и наоборот
+  for (const ct of candidates) {
+    const len = Math.min(6, Math.min(ct.length, ck.length));
+    if (len < 3) return true;
+    if (ck.includes(ct.slice(0, len)) || ct.includes(ck.slice(0, len))) return true;
+  }
+
+  return false;
 }
 
 async function buildEpisodeSelector(details) {
@@ -1283,14 +1298,14 @@ async function buildEpisodeSelector(details) {
 
     // ── 1. Фильтруем явно неправильные тайтлы ──────────────────────
     const validated = results.filter(r => kodikTitleMatches(r.title, myItem));
-    // Для сериалов: если нет совпадений по названию — не берём мусор
-    // Исключение: аниме-сериалы (у них японские/транслит названия не совпадают с TMDB)
+    // Если нет совпадений — не берём мусор (исключение: аниме с транслитом)
     const pool = validated.length ? validated
       : (isAnimeItem(myItem) ? results : []);
     if (!pool.length) {
       console.log('Kodik serial: нет совпадения по названию — пропускаем');
       return;
     }
+    console.log(`Kodik serial: validated=${validated.length}/${results.length}`);
 
     // ── 2. Дедублируем: одна запись на уникальный last_season ───────
     // Если все last_season = 1 (разные дубляжи), оставляем только первый
@@ -1889,18 +1904,20 @@ async function loadCatalogPage(type, page, replace) {
       results = r.results.map(i => ({ ...i, media_type:'movie' }));
       total   = r.total_results || 0;
     } else if (type === 'movie') {
-      const params = { sort_by: sort, page, 'vote_count.gte': 100 };
+      // vote_count.gte: 300 — фильтруем малоизвестные фильмы которых нет в Kodik
+      const params = { sort_by: sort, page, 'vote_count.gte': 300, with_original_language: 'ru|en|fr|de|it|es|ko|zh|tr|pl' };
       if (genre) params.with_genres = genre;
       if (year)  params.primary_release_year = year;
       const r = await api('/discover/movie', params);
-      results = r.results.map(i => ({ ...i, media_type:'movie' }));
+      results = r.results.map(i => ({ ...i, media_type:'movie' })).filter(kodikLikelyHas);
       total   = r.total_results || 0;
     } else if (type === 'tv') {
-      const params = { sort_by: sort, page, 'vote_count.gte': 80 };
+      // vote_count.gte: 150 — фильтруем малоизвестные сериалы которых нет в Kodik
+      const params = { sort_by: sort, page, 'vote_count.gte': 150, with_original_language: 'ru|en|fr|de|it|es|ko|zh|tr|pl' };
       if (genre) params.with_genres = genre;
       if (year)  params.first_air_date_year = year;
       const r = await api('/discover/tv', params);
-      results = r.results.map(i => ({ ...i, media_type:'tv' }));
+      results = r.results.map(i => ({ ...i, media_type:'tv' })).filter(kodikLikelyHas);
       total   = r.total_results || 0;
     }
 
