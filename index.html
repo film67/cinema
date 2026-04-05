@@ -1259,9 +1259,9 @@ function kodikTitleMatches(kodikTitle, tmdbItem) {
   const ct = clean(tmdbTitle);
   const ck = clean(kTitle);
   if (!ct || !ck) return true;
-  // Проверяем первые 4+ символа (учитываем короткие названия)
-  const len = Math.min(4, Math.min(ct.length, ck.length));
-  if (len < 2) return true;
+  // Минимум 6 символов для сравнения (4 слишком мало — "the", "war" и т.п. дают ложные совпадения)
+  const len = Math.min(6, Math.min(ct.length, ck.length));
+  if (len < 3) return true;
   const prefix = ct.slice(0, len);
   return ck.includes(prefix) || ct.includes(ck.slice(0, len));
 }
@@ -1398,7 +1398,7 @@ function normalizeKodikLink(link) {
   if (!link) return null;
   // Заменяем все старые домены Kodik на новый
   link = link.replace(
-    /\/\/(kodik\.info|kodik\.biz|kodik\.cc|kodik\.fun|kodik\.pro|kodik\.io|kodik\.online|kodik\.click|aniqit\.com|kodikstarter\.ru)/g,
+    /\/\/(kodik\.info|kodik\.biz|kodik\.cc|kodik\.fun|kodik\.pro|kodik\.io|kodik\.online|kodik\.click|aniqit\.com|kodikstarter\.ru|bd\.kodikres\.com)/g,
     '//kodikplayer.com'
   );
   if (link.startsWith('//')) link = 'https:' + link;
@@ -1424,14 +1424,13 @@ async function searchKodik(params) {
 }
 
 // --- Определяем, является ли контент аниме ---
+// ВАЖНО: аниме = японский оригинал И жанр анимация (id=16)
+// Только японский язык недостаточно — японские фильмы без анимации не аниме
 function isAnimeItem(item) {
   if (!item) return false;
-  // Японский язык оригинала
-  if (item.original_language === 'ja') return true;
-  // Жанр "Animation" (id=16) + японский оригинал
+  if (item.original_language !== 'ja') return false;
   const genres = item.genre_ids || (item.genres || []).map(g => g.id);
-  if (genres.includes(16) && item.original_language === 'ja') return true;
-  return false;
+  return genres.includes(16);
 }
 
 // --- Фильтрация результатов по типу контента ---
@@ -1440,14 +1439,10 @@ function filterKodikByType(results, type, item) {
 
   let targets;
   if (type === 'tv') {
-    // Сериал-аниме → только anime-serial
-    // Обычный сериал → serial, foreign-serial, russian-serial, multseries, documentary-serial
     targets = anime
       ? ['anime-serial']
       : ['serial', 'foreign-serial', 'russian-serial', 'multseries', 'documentary-serial'];
   } else {
-    // Аниме-фильм → anime, multfilm
-    // Обычный фильм → movie, foreign, russian, documentary (НЕ anime)
     targets = anime
       ? ['anime', 'multfilm']
       : ['movie', 'foreign', 'russian', 'documentary'];
@@ -1455,13 +1450,23 @@ function filterKodikByType(results, type, item) {
 
   const filtered = results.filter(r => targets.includes(r.type));
 
-  // Fallback: если строгий фильтр ничего не дал — берём всё кроме противоположного типа
+  // Fallback только если строгий фильтр пуст:
+  // берём всё что НЕ является противоположным типом контента
+  // НО никогда не смешиваем аниме с обычным контентом
   if (!filtered.length) {
-    const opposite = type === 'tv'
-      ? ['movie', 'anime', 'multfilm', 'documentary', 'foreign', 'russian']
-      : ['serial', 'anime-serial', 'foreign-serial', 'russian-serial', 'multseries', 'documentary-serial'];
-    const fallback = results.filter(r => !opposite.includes(r.type));
-    return fallback.length ? fallback : results;
+    if (type === 'tv') {
+      // Для обычного сериала — исключаем movie-типы и аниме
+      const exclude = anime
+        ? ['movie', 'foreign', 'russian', 'documentary', 'serial', 'foreign-serial', 'russian-serial', 'multseries', 'documentary-serial']
+        : ['movie', 'foreign', 'russian', 'documentary', 'anime', 'multfilm', 'anime-serial'];
+      return results.filter(r => !exclude.includes(r.type));
+    } else {
+      // Для обычного фильма — исключаем serial-типы и аниме
+      const exclude = anime
+        ? ['serial', 'foreign-serial', 'russian-serial', 'multseries', 'documentary-serial', 'movie', 'foreign', 'russian', 'documentary']
+        : ['serial', 'foreign-serial', 'russian-serial', 'multseries', 'documentary-serial', 'anime-serial', 'anime', 'multfilm'];
+      return results.filter(r => !exclude.includes(r.type));
+    }
   }
 
   return filtered;
@@ -1586,8 +1591,8 @@ async function setPlayerSrc() {
         }
       }
     } else {
-      // Для фильмов — обычный поиск
-      kodikUrl = await getKodikLink(ids, type);
+      // Для фильмов — обычный поиск, передаём snapItem явно (без race condition)
+      kodikUrl = await getKodikLink(ids, type, snapItem);
     }
 
     if (currentItem !== snapItem || currentSource !== snapSource) return;
