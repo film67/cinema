@@ -989,10 +989,9 @@ async function init() {
   try { favorites = JSON.parse(localStorage.getItem('cv_favs') || '[]'); } catch {}
   updateFavBtn();
   loadHero();
-  // filterForKodik=true — показываем только контент с высокой вероятностью наличия в базе
-  loadSection('trendingRow', '/trending/all/day',  {}, true);
-  loadSection('moviesRow',   '/movie/popular',     { 'vote_count.gte': 500 }, true);
-  loadSection('seriesRow',   '/tv/popular',        { 'vote_count.gte': 300 }, true);
+  loadSection('trendingRow', '/trending/all/day', {}, true);
+  loadSection('moviesRow',   '/movie/popular',    { 'vote_count.gte': 500 }, true);
+  loadSection('seriesRow',   '/tv/popular',       { 'vote_count.gte': 300 }, true);
   loadAnime();
 }
 
@@ -1053,15 +1052,101 @@ async function loadHero() {
 // ═══════════════════════════════════════════════════
 // SECTIONS
 // ═══════════════════════════════════════════════════
-async function loadSection(containerId, endpoint, params = {}) {
+
+// Фильтр: показываем только контент с высокой вероятностью наличия в Kodik
+function kodikLikelyHas(item) {
+  const goodLangs = ['ru', 'en', 'fr', 'de', 'it', 'es', 'ko', 'zh', 'ja', 'tr', 'pl'];
+  if (!goodLangs.includes(item.original_language || 'en')) return false;
+  if ((item.vote_count || 0) < 150) return false;
+  const dateStr = item.release_date || item.first_air_date || '';
+  if (dateStr) {
+    const twoMonthsAgo = new Date();
+    twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
+    if (new Date(dateStr) > twoMonthsAgo) return false;
+  }
+  return true;
+}
+
+async function loadSection(containerId, endpoint, params = {}, useFilter = false) {
   loadSkeletons(containerId, 6);
   try {
-    const data = await api(endpoint, params);
-    const items = data.results.slice(0,6);
+    // Запрашиваем больше чтобы после фоновой проверки осталось достаточно карточек
+    const data = await api(endpoint, { ...params, page: 1 });
+    let items = data.results || [];
+    if (useFilter) items = items.filter(kodikLikelyHas);
+    // Берём до 12 кандидатов — после проверки Kodik останется ~6
+    items = items.slice(0, 12);
     items.forEach(i => itemsMap.set(i.id, i));
     renderCards(containerId, items);
+    // После отрисовки — тихо проверяем каждую карточку в Kodik и скрываем те которых нет
+    checkKodikAvailability(containerId, items);
   } catch(e) {
     document.getElementById(containerId).innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>Ошибка загрузки</p></div>';
+  }
+}
+
+// Кэш результатов проверки чтобы не дублировать запросы
+const kodikAvailCache = new Map(); // itemId -> true/false
+
+async function checkKodikAvailability(containerId, items) {
+  // Проверяем параллельно пачками по 3 чтобы не перегружать API
+  const BATCH = 3;
+  for (let i = 0; i < items.length; i += BATCH) {
+    const batch = items.slice(i, i + BATCH);
+    await Promise.all(batch.map(item => checkOneItem(containerId, item)));
+  }
+}
+
+async function checkOneItem(containerId, item) {
+  // Если уже проверяли — используем кэш
+  if (kodikAvailCache.has(item.id)) {
+    if (!kodikAvailCache.get(item.id)) hideCard(containerId, item.id);
+    return;
+  }
+  try {
+    const type = item.media_type || (item.first_air_date ? 'tv' : 'movie');
+    const ids = await getExternalIds(item, type);
+    let found = false;
+
+    // Сначала по IMDb ID (быстро)
+    if (ids && ids.imdb) {
+      const res = await searchKodik({ imdb_id: ids.imdb, limit: '1' });
+      if (res.length) {
+        const filtered = filterKodikByType(res, type, item);
+        found = filtered.length > 0;
+      }
+    }
+
+    // Если не нашли по IMDb — по оригинальному названию
+    if (!found) {
+      const origTitle = item.original_title || item.original_name || item.title || item.name || '';
+      const year = (item.release_date || item.first_air_date || '').slice(0, 4);
+      if (origTitle) {
+        const res = await searchKodik({ title: origTitle, year, limit: '5' });
+        if (res.length) {
+          const filtered = filterKodikByType(res, type, item);
+          found = filtered.some(r => kodikTitleMatches(r.title, item));
+        }
+      }
+    }
+
+    kodikAvailCache.set(item.id, found);
+    if (!found) hideCard(containerId, item.id);
+  } catch(e) {
+    // При ошибке не скрываем — лучше показать лишнее чем убрать рабочее
+    kodikAvailCache.set(item.id, true);
+  }
+}
+
+function hideCard(containerId, itemId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const card = container.querySelector(`.card[data-id="${itemId}"]`);
+  if (card) {
+    card.style.transition = 'opacity 0.3s, transform 0.3s';
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.95)';
+    setTimeout(() => card.remove(), 300);
   }
 }
 
@@ -1904,16 +1989,14 @@ async function loadCatalogPage(type, page, replace) {
       results = r.results.map(i => ({ ...i, media_type:'movie' }));
       total   = r.total_results || 0;
     } else if (type === 'movie') {
-      // vote_count.gte: 300 — фильтруем малоизвестные фильмы которых нет в Kodik
-      const params = { sort_by: sort, page, 'vote_count.gte': 300, with_original_language: 'ru|en|fr|de|it|es|ko|zh|tr|pl' };
+      const params = { sort_by: sort, page, 'vote_count.gte': 300 };
       if (genre) params.with_genres = genre;
       if (year)  params.primary_release_year = year;
       const r = await api('/discover/movie', params);
       results = r.results.map(i => ({ ...i, media_type:'movie' })).filter(kodikLikelyHas);
       total   = r.total_results || 0;
     } else if (type === 'tv') {
-      // vote_count.gte: 150 — фильтруем малоизвестные сериалы которых нет в Kodik
-      const params = { sort_by: sort, page, 'vote_count.gte': 150, with_original_language: 'ru|en|fr|de|it|es|ko|zh|tr|pl' };
+      const params = { sort_by: sort, page, 'vote_count.gte': 150 };
       if (genre) params.with_genres = genre;
       if (year)  params.first_air_date_year = year;
       const r = await api('/discover/tv', params);
