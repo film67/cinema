@@ -1140,8 +1140,9 @@ async function openModal(itemId) {
   currentItem    = null;
 
   const _frame = document.getElementById('playerFrame');
-  _frame.onload = null;
-  _frame.src    = '';
+  if (_frame) { _frame.onload = null; _frame.src = ''; _frame.style.display = 'block'; }
+  const _errDiv = document.getElementById('playerErrorMsg');
+  if (_errDiv) _errDiv.style.display = 'none';
   document.getElementById('playerWrap').style.display = 'none';
   document.getElementById('playerLoading').style.display = 'flex';
   document.getElementById('episodeSelector').style.display = 'none';
@@ -1257,7 +1258,7 @@ function buildEpisodeSelector(details) {
   seasonSel.innerHTML = seasons.map(s =>
     `<option value="${s.season_number}">${s.name || 'Сезон '+s.season_number} (${s.episode_count} эп.)</option>`
   ).join('');
-  seasonSel.value = 1;
+  seasonSel.value = seasons[0].season_number;
 
   fillEpisodes(seasons[0].episode_count || 12);
   selector.style.display = 'flex';
@@ -1329,30 +1330,80 @@ function startPlayer() {
 }
 
 
-// --- Получение IMDb / КП ID ---
+// --- Получение IMDb ID ---
 async function getExternalIds(item, type) {
-  // Сначала берём из уже загруженных данных (openModal запрашивает append_to_response=external_ids)
   if (item.imdb_id) {
-    return { imdb: item.imdb_id, kp: item.external_ids?.id_kinopoisk || null };
+    return { imdb: item.imdb_id };
   }
-  // Если вдруг нет — делаем отдельный запрос
   try {
     const response = await api(`/${type}/${item.id}/external_ids`);
-    return {
-      imdb: response.imdb_id || null,
-      kp:   response.id_kinopoisk || response.kinopoisk_id || null
-    };
+    return { imdb: response.imdb_id || null };
   } catch (e) {
     console.error("Ошибка получения внешних ID", e);
     return null;
   }
 }
 
-// --- Установка плеера (без гонки состояний) ---
+// --- Поиск ссылки плеера через Kodik API ---
+async function getKodikLink(imdbId, type, season, episode) {
+  try {
+    const params = new URLSearchParams({
+      token: KODIK_TOKEN,
+      imdb_id: imdbId,
+      with_episodes: 'true',
+    });
+    const res = await fetch(`https://kodik-api.com/search`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString()
+    });
+    const data = await res.json();
+    if (!data.results || !data.results.length) return null;
+
+    const targetType = type === 'tv' ? ['serial', 'anime-serial'] : ['video', 'anime', 'film'];
+    const match = data.results.find(r => targetType.includes(r.type)) || data.results[0];
+
+    let link = match.link;
+    // Обновляем старые домены плеера на новый kodikplayer.com
+    link = link.replace('kodik.info', 'kodikplayer.com')
+               .replace('aniqit.com', 'kodikplayer.com')
+               .replace('kodik.biz', 'kodikplayer.com');
+    if (link.startsWith('//')) link = 'https:' + link;
+
+    if (type === 'tv') {
+      link += `?season=${season}&episode=${episode}`;
+    }
+
+    return link;
+  } catch (e) {
+    console.error("Kodik API ошибка:", e);
+    return null;
+  }
+}
+
+function showPlayerError(msg) {
+  const wrap    = document.getElementById('playerWrap');
+  const frame   = document.getElementById('playerFrame');
+  const loading = document.getElementById('playerLoading');
+  wrap.style.display    = 'block';
+  loading.style.display = 'none';
+  frame.src             = '';
+  frame.style.display   = 'none';
+  let errDiv = document.getElementById('playerErrorMsg');
+  if (!errDiv) {
+    errDiv = document.createElement('div');
+    errDiv.id = 'playerErrorMsg';
+    errDiv.className = 'player-error';
+    wrap.appendChild(errDiv);
+  }
+  errDiv.style.display = 'flex';
+  errDiv.innerHTML = `<div class="icon">😔</div><p>${msg}</p><small>Попробуйте позже или поищите другой контент</small>`;
+}
+
+// --- Установка плеера ---
 async function setPlayerSrc() {
   if (!currentItem) return;
 
-  // Фиксируем snapshot текущего состояния ДО async-операций
   const snapItem    = currentItem;
   const snapSource  = currentSource;
   const snapSeason  = currentSeason;
@@ -1363,43 +1414,48 @@ async function setPlayerSrc() {
   const frame   = document.getElementById('playerFrame');
   const loading = document.getElementById('playerLoading');
 
-  // Сбрасываем плеер и показываем загрузку
-  loading.style.display = 'flex';
-  frame.src = '';
-
-  let url = '';
+  // Сбрасываем ошибку если была
+  const errDiv2 = document.getElementById('playerErrorMsg');
+  if (errDiv2) errDiv2.style.display = 'none';
+  const wrap = document.getElementById('playerWrap');
+  const frameEl = document.getElementById('playerFrame');
+  frameEl.style.display = 'block';
+  frameEl.src = '';
+  document.getElementById('playerLoading').style.display = 'flex';
+  wrap.style.display = 'block';
 
   if (source.isKodik) {
-    // Получаем IMDb / КП ID (приоритет — уже загруженные данные)
     const ids = await getExternalIds(snapItem, type);
-
-    // Проверяем: пользователь не переключился на другой фильм пока мы ждали?
     if (currentItem !== snapItem || currentSource !== snapSource) return;
 
-    if (ids && (ids.kp || ids.imdb)) {
-      const idParam = ids.kp ? `kinopoisk_id=${ids.kp}` : `imdb_id=${ids.imdb}`;
-      url = `https://kodikplayer.com/find-player?token=${KODIK_TOKEN}&${idParam}&strict=1`;
-      if (type === 'tv') {
-        url += `&season=${snapSeason}&episode=${snapEpisode}`;
-      }
-    } else {
-      // Резерв: поиск по названию
-      const title = snapItem.title || snapItem.name || '';
-      url = `https://kodikplayer.com/find-player?token=${KODIK_TOKEN}&title=${encodeURIComponent(title)}&strict=1`;
+    if (!ids || !ids.imdb) {
+      showPlayerError('Не удалось найти этот контент в базе Kodik');
+      return;
     }
+
+    const kodikUrl = await getKodikLink(ids.imdb, type, snapSeason, snapEpisode);
+    if (currentItem !== snapItem || currentSource !== snapSource) return;
+
+    if (!kodikUrl) {
+      showPlayerError('Этот фильм пока недоступен в русской озвучке');
+      return;
+    }
+
+    document.getElementById('playerFrame').onload = () => {
+      document.getElementById('playerLoading').style.display = 'none';
+    };
+    document.getElementById('playerFrame').src = kodikUrl;
+    console.log("Kodik link:", kodikUrl);
+
   } else {
-    // Vidsrc — работает напрямую по TMDB ID
-    url = type === 'tv'
+    // Запасной источник (Vidsrc)
+    const url = type === 'tv'
       ? source.tv(snapItem.id, snapSeason, snapEpisode)
       : source.movie(snapItem.id);
-  }
-
-  // Ещё раз убеждаемся, что пользователь не ушёл
-  if (currentItem !== snapItem || currentSource !== snapSource) return;
-
-  if (url) {
-    frame.onload = () => { loading.style.display = 'none'; };
-    frame.src = url;
+    document.getElementById('playerFrame').onload = () => {
+      document.getElementById('playerLoading').style.display = 'none';
+    };
+    document.getElementById('playerFrame').src = url;
     console.log("Загружен плеер:", url);
   }
 }
@@ -1475,6 +1531,7 @@ function onSearch(val) {
 
 async function doSearch(val) {
   if (!val.trim()) return;
+  isSearchMode = true;
   showPage('search');
   document.getElementById('pageTitle').textContent = `Результаты: "${val}"`;
   document.getElementById('searchCount').textContent = 'Поиск...';
@@ -1544,6 +1601,7 @@ function setGenreOptions(type) {
 // CATEGORY
 // ═══════════════════════════════════════════════════
 async function filterAndShow(type) {
+  isSearchMode   = false;
   catalogType    = type;
   catalogPage    = 1;
   catalogTotal   = 0;
@@ -1592,8 +1650,10 @@ async function applyFilters() {
 let catalogLoading = false;
 let catalogDone    = false;
 
+let isSearchMode = false;
+
 const infiniteObserver = new IntersectionObserver(entries => {
-  if (entries[0].isIntersecting && !catalogLoading && !catalogDone) {
+  if (entries[0].isIntersecting && !catalogLoading && !catalogDone && !isSearchMode) {
     catalogPage++;
     loadCatalogPage(catalogType, catalogPage, false);
   }
@@ -1614,41 +1674,39 @@ async function loadCatalogPage(type, page, replace) {
   const year  = document.getElementById('yearSelect')?.value  || '';
 
   try {
-    const isForeign = s => !s || /[฀-๿가-힯ᄀ-ᇿ぀-鿿豈-﫿＀-￯؀-ۿ֐-׿ऀ-ॿ]/.test(s);
-
     let results = [];
     let total   = 0;
 
     if (type === 'trending') {
       const r = await api('/trending/all/day', { page });
-      results = r.results.filter(i => !isForeign(i.title || i.name));
+      results = r.results;
       total = r.total_results || results.length;
     } else if (type === 'anime') {
       const params = { with_genres:'16', with_original_language:'ja', sort_by: sort, page, 'vote_count.gte': 200 };
       if (genre) params.with_genres = genre + ',16';
       if (year)  params.first_air_date_year = year;
       const r = await api('/discover/tv', params);
-      results = r.results.filter(i => !isForeign(i.name)).map(i => ({ ...i, media_type:'tv' }));
+      results = r.results.map(i => ({ ...i, media_type:'tv' }));
       total   = r.total_results || 0;
     } else if (type === 'documentary') {
       const params = { with_genres: genre || '99', sort_by: sort, page, 'vote_count.gte': 30 };
       if (year) params.primary_release_year = year;
       const r = await api('/discover/movie', params);
-      results = r.results.filter(i => !isForeign(i.title)).map(i => ({ ...i, media_type:'movie' }));
+      results = r.results.map(i => ({ ...i, media_type:'movie' }));
       total   = r.total_results || 0;
     } else if (type === 'movie') {
       const params = { sort_by: sort, page, 'vote_count.gte': 100 };
       if (genre) params.with_genres = genre;
       if (year)  params.primary_release_year = year;
       const r = await api('/discover/movie', params);
-      results = r.results.filter(i => !isForeign(i.title)).map(i => ({ ...i, media_type:'movie' }));
+      results = r.results.map(i => ({ ...i, media_type:'movie' }));
       total   = r.total_results || 0;
     } else if (type === 'tv') {
       const params = { sort_by: sort, page, 'vote_count.gte': 80 };
       if (genre) params.with_genres = genre;
       if (year)  params.first_air_date_year = year;
       const r = await api('/discover/tv', params);
-      results = r.results.filter(i => !isForeign(i.name)).map(i => ({ ...i, media_type:'tv' }));
+      results = r.results.map(i => ({ ...i, media_type:'tv' }));
       total   = r.total_results || 0;
     }
 
@@ -1713,7 +1771,10 @@ function showPage(page) {
   document.getElementById('favPage').style.display    = page === 'fav'    ? 'block' : 'none';
   if (page === 'main') {
     document.getElementById('searchInput').value = '';
+    const msi = document.getElementById('mobileSearchInput');
+    if (msi) msi.value = '';
     document.getElementById('filterBar').classList.remove('visible');
+    isSearchMode = false;
     catalogDone = true;
     document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
   }
