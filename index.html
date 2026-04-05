@@ -906,10 +906,8 @@
     <div class="modal-body">
       <div id="playerSources"></div>
       <div id="episodeSelector">
-        <span class="ep-label">Сезон:</span>
+        <span class="ep-label" id="seasonLabel">Часть / Сезон:</span>
         <select class="ep-select" id="seasonSelect" onchange="onSeasonChange()"></select>
-        <span class="ep-label">Серия:</span>
-        <select class="ep-select" id="episodeSelect" onchange="onEpisodeChange()"></select>
       </div>
       <div id="playerWrap" style="display:none">
         <div id="playerLoading">
@@ -960,12 +958,13 @@ const SOURCES = [
 // ═══════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════
-let favorites     = [];
-let currentItem   = null;
-let currentSource = 0;
-let currentSeason  = 1;
-let currentEpisode = 1;
-let tvDetails     = null; // кешируем детали сериала для сезонов
+let favorites        = [];
+let currentItem      = null;
+let currentSource    = 0;
+let currentSeason    = 0;   // index in kodikSeasonLinks (for TV) or 1 for Vidsrc
+let currentEpisode   = 1;
+let tvDetails        = null;
+let kodikSeasonLinks = []; // [{label, link, lastSeason}] for current TV show
 
 // ─── Хранилище объектов карточек ───
 const itemsMap = new Map();
@@ -1133,11 +1132,12 @@ async function openModal(itemId) {
   // Каждый новый вызов openModal получает свой уникальный номер
   const myGen = ++modalGeneration;
 
-  currentSeason  = 1;
+  currentSeason  = 0;
   currentEpisode = 1;
   currentSource  = 0;
   tvDetails      = null;
   currentItem    = null;
+  kodikSeasonLinks = [];
 
   const _frame = document.getElementById('playerFrame');
   if (_frame) { _frame.onload = null; _frame.src = ''; _frame.style.display = 'block'; }
@@ -1248,13 +1248,60 @@ function fillModalFull(item) {
   }
 }
 
-function buildEpisodeSelector(details) {
-  // Kodik сам управляет сезонами/сериями внутри плеера — UI селектор не нужен
-  document.getElementById('episodeSelector').style.display = 'none';
+async function buildEpisodeSelector(details) {
+  const myItem = currentItem;   // фиксируем текущий айтем
+  const episodeDiv = document.getElementById('episodeSelector');
+  episodeDiv.style.display = 'none';
+  kodikSeasonLinks = [];
+
+  try {
+    const ids = await getExternalIds(myItem, 'tv');
+    if (currentItem !== myItem) return; // открыли другой контент
+    if (!ids) return;
+
+    const results = await getAllKodikResults(ids, 'tv');
+    if (currentItem !== myItem) return;
+    if (!results.length) return;
+
+    // Сортируем по last_season (чтобы Сезон 1 был первым)
+    results.sort((a, b) => (a.last_season || 1) - (b.last_season || 1));
+
+    kodikSeasonLinks = results.map((r, i) => {
+      let label = r.title || `Часть ${i + 1}`;
+      if (r.last_season && r.last_season > 0) {
+        label = `Сезон ${r.last_season}`;
+      }
+      return {
+        label,
+        link: normalizeKodikLink(r.link),
+        lastSeason: r.last_season || 1
+      };
+    });
+
+    console.log('Kodik season links:', kodikSeasonLinks.map(s => `${s.label}: ${s.link}`));
+
+    // Показываем селектор только если >1 варианта
+    if (kodikSeasonLinks.length > 1) {
+      const sel = document.getElementById('seasonSelect');
+      sel.innerHTML = kodikSeasonLinks.map((s, i) =>
+        `<option value="${i}">${s.label}</option>`
+      ).join('');
+      episodeDiv.style.display = 'flex';
+    }
+  } catch(e) {
+    console.error('buildEpisodeSelector error:', e);
+  }
 }
 
-function onSeasonChange() {}
-function onEpisodeChange() {}
+function onSeasonChange() {
+  const sel = document.getElementById('seasonSelect');
+  currentSeason = parseInt(sel.value) || 0;
+  // Если плеер уже открыт — перезагружаем с новым сезоном
+  if (document.getElementById('playerWrap').style.display !== 'none') {
+    setPlayerSrc();
+  }
+}
+function onEpisodeChange() {} // не используется, Kodik управляет сам
 
 async function loadSimilar(itemId) {
   try {
@@ -1315,12 +1362,24 @@ async function getExternalIds(item, type) {
   }
 }
 
-// --- Поиск ссылки плеера через Kodik API ---
+// --- Нормализация ссылок Kodik (новый домен kodikplayer.com) ---
+function normalizeKodikLink(link) {
+  if (!link) return null;
+  // Заменяем все старые домены Kodik на новый
+  link = link.replace(
+    /\/\/(kodik\.info|kodik\.biz|kodik\.cc|kodik\.fun|kodik\.pro|kodik\.io|kodik\.online|kodik\.click|aniqit\.com|kodikstarter\.ru)/g,
+    '//kodikplayer.com'
+  );
+  if (link.startsWith('//')) link = 'https:' + link;
+  return link;
+}
+
+// --- Поиск через Kodik API ---
 async function searchKodik(params) {
   const urlParams = new URLSearchParams({
     token: KODIK_TOKEN,
-    with_episodes: 'false',
-    limit: '5',
+    with_episodes: 'true',
+    limit: '100',
     ...params
   });
   const res = await fetch('https://kodik-api.com/search', {
@@ -1329,52 +1388,60 @@ async function searchKodik(params) {
     body: urlParams.toString()
   });
   const data = await res.json();
-  console.log('Kodik raw response:', JSON.stringify(data).slice(0, 300));
+  console.log('Kodik raw response:', data.total, 'results total');
   return data.results || [];
 }
 
-function pickKodikResult(results, type) {
-  // Все возможные типы Kodik:
-  // Сериалы: serial, anime-serial, documentary-serial, multseries, foreign-serial, russian-serial
-  // Фильмы:  movie, anime, multfilm, documentary, foreign, russian
-  const tvTypes    = ['serial', 'anime-serial', 'documentary-serial', 'multseries', 'foreign-serial', 'russian-serial'];
-  const movieTypes = ['movie', 'anime', 'multfilm', 'documentary', 'foreign', 'russian'];
-  const targetTypes = type === 'tv' ? tvTypes : movieTypes;
-  return results.find(r => targetTypes.includes(r.type)) || results[0] || null;
+// --- Фильтрация результатов по типу ---
+function filterKodikByType(results, type) {
+  const tvTypes    = ['serial','anime-serial','documentary-serial','multseries','foreign-serial','russian-serial'];
+  const movieTypes = ['movie','anime','multfilm','documentary','foreign','russian','cartoon'];
+  const targets    = type === 'tv' ? tvTypes : movieTypes;
+  const filtered   = results.filter(r => targets.includes(r.type));
+  return filtered.length ? filtered : results; // fallback: вернуть всё
 }
 
-async function getKodikLink(ids, type) {
+// --- Получить все результаты Kodik для тайтла ---
+async function getAllKodikResults(ids, type, item) {
+  const searchItem = item || currentItem;
+  let results = [];
+
+  // Приоритет 1: Kinopoisk ID
+  if (ids.kp) {
+    results = await searchKodik({ kinopoisk_id: ids.kp });
+    console.log(`Kodik KP(${ids.kp}): ${results.length} рез.`);
+  }
+
+  // Приоритет 2: IMDb ID
+  if (!results.length && ids.imdb) {
+    results = await searchKodik({ imdb_id: ids.imdb });
+    console.log(`Kodik IMDb(${ids.imdb}): ${results.length} рез.`);
+  }
+
+  // Приоритет 3: поиск по TMDB-названию
+  if (!results.length && searchItem) {
+    const title = searchItem.title || searchItem.name || '';
+    const year  = (searchItem.release_date || searchItem.first_air_date || '').slice(0, 4);
+    if (title) {
+      results = await searchKodik({ title, year });
+      console.log(`Kodik title("${title}"): ${results.length} рез.`);
+    }
+  }
+
+  if (!results.length) return [];
+  return filterKodikByType(results, type);
+}
+
+// --- Одна ссылка для фильма ---
+async function getKodikLink(ids, type, item) {
   try {
-    let results = [];
-
-    // Приоритет 1: Kinopoisk ID (у Kodik лучше покрытие по KP)
-    if (ids.kp) {
-      results = await searchKodik({ kinopoisk_id: ids.kp });
-      console.log(`Kodik KP(${ids.kp}): ${results.length} результатов`);
-    }
-
-    // Приоритет 2: IMDb ID
-    if (!results.length && ids.imdb) {
-      results = await searchKodik({ imdb_id: ids.imdb });
-      console.log(`Kodik IMDb(${ids.imdb}): ${results.length} результатов`);
-    }
-
+    const results = await getAllKodikResults(ids, type, item || currentItem);
     if (!results.length) return null;
-
-    const match = pickKodikResult(results, type);
-    if (!match) return null;
-
+    const match = results[0];
     console.log(`Kodik match: type=${match.type}, title=${match.title}, link=${match.link}`);
-
-    // Kodik сам управляет сезонами внутри плеера — просто берём ссылку как есть
-    let link = match.link;
-    link = link.replace('kodik.info', 'kodikplayer.com')
-               .replace('aniqit.com', 'kodikplayer.com')
-               .replace('kodik.biz', 'kodikplayer.com');
-    if (link.startsWith('//')) link = 'https:' + link;
-    return link;
+    return normalizeKodikLink(match.link);
   } catch (e) {
-    console.error("Kodik API ошибка:", e);
+    console.error('Kodik API ошибка:', e);
     return null;
   }
 }
@@ -1426,16 +1493,36 @@ async function setPlayerSrc() {
     const ids = await getExternalIds(snapItem, type);
     if (currentItem !== snapItem || currentSource !== snapSource) return;
 
-    if (!ids || !ids.imdb) {
+    if (!ids || (!ids.imdb && !ids.kp)) {
       showPlayerError('У этого контента нет IMDb ID — невозможно найти в Kodik');
       return;
     }
 
-    const kodikUrl = await getKodikLink(ids, type);
+    let kodikUrl = null;
+
+    if (type === 'tv') {
+      // Для сериалов — используем предзагруженные ссылки по сезонам (если есть)
+      if (kodikSeasonLinks.length > 0) {
+        const idx = Math.min(currentSeason, kodikSeasonLinks.length - 1);
+        kodikUrl = kodikSeasonLinks[idx]?.link || null;
+      }
+      // Если ещё не загружены (пользователь нажал быстро) — ищем напрямую
+      if (!kodikUrl) {
+        const results = await getAllKodikResults(ids, 'tv', snapItem);
+        if (results.length) {
+          results.sort((a, b) => (a.last_season || 1) - (b.last_season || 1));
+          kodikUrl = normalizeKodikLink(results[0].link);
+        }
+      }
+    } else {
+      // Для фильмов — обычный поиск
+      kodikUrl = await getKodikLink(ids, type);
+    }
+
     if (currentItem !== snapItem || currentSource !== snapSource) return;
 
     if (!kodikUrl) {
-      showPlayerError('Этот фильм пока недоступен в русской озвучке');
+      showPlayerError('Этот контент пока недоступен в Kodik');
       return;
     }
 
@@ -1443,7 +1530,7 @@ async function setPlayerSrc() {
       document.getElementById('playerLoading').style.display = 'none';
     };
     document.getElementById('playerFrame').src = kodikUrl;
-    console.log("Kodik link:", kodikUrl);
+    console.log('Kodik player URL:', kodikUrl);
 
   } else {
     // Запасной источник (Vidsrc)
