@@ -1283,7 +1283,14 @@ async function buildEpisodeSelector(details) {
 
     // ── 1. Фильтруем явно неправильные тайтлы ──────────────────────
     const validated = results.filter(r => kodikTitleMatches(r.title, myItem));
-    const pool = validated.length ? validated : results; // fallback
+    // Для сериалов: если нет совпадений по названию — не берём мусор
+    // Исключение: аниме-сериалы (у них японские/транслит названия не совпадают с TMDB)
+    const pool = validated.length ? validated
+      : (isAnimeItem(myItem) ? results : []);
+    if (!pool.length) {
+      console.log('Kodik serial: нет совпадения по названию — пропускаем');
+      return;
+    }
 
     // ── 2. Дедублируем: одна запись на уникальный last_season ───────
     // Если все last_season = 1 (разные дубляжи), оставляем только первый
@@ -1489,13 +1496,32 @@ async function getAllKodikResults(ids, type, item) {
     console.log(`Kodik IMDb(${ids.imdb}): ${results.length} рез.`);
   }
 
-  // Приоритет 3: поиск по TMDB-названию
+  // Приоритет 3: поиск по локализованному названию (русское из TMDB)
   if (!results.length && searchItem) {
     const title = searchItem.title || searchItem.name || '';
     const year  = (searchItem.release_date || searchItem.first_air_date || '').slice(0, 4);
     if (title) {
       results = await searchKodik({ title, year });
       console.log(`Kodik title("${title}"): ${results.length} рез.`);
+    }
+  }
+
+  // Приоритет 4: поиск по оригинальному названию (The Simpsons вместо Симпсоны)
+  if (!results.length && searchItem) {
+    const origTitle = searchItem.original_title || searchItem.original_name || '';
+    const year = (searchItem.release_date || searchItem.first_air_date || '').slice(0, 4);
+    if (origTitle && origTitle !== (searchItem.title || searchItem.name || '')) {
+      results = await searchKodik({ title: origTitle, year });
+      console.log(`Kodik orig_title("${origTitle}"): ${results.length} рез.`);
+    }
+  }
+
+  // Приоритет 5: поиск без года (год в TMDB и Kodik может отличаться на 1)
+  if (!results.length && searchItem) {
+    const title = searchItem.title || searchItem.name || '';
+    if (title) {
+      results = await searchKodik({ title });
+      console.log(`Kodik title_noyear("${title}"): ${results.length} рез.`);
     }
   }
 
@@ -1510,12 +1536,19 @@ async function getKodikLink(ids, type, item) {
     const results = await getAllKodikResults(ids, type, searchItem);
     if (!results.length) return null;
 
-    // Сначала пробуем найти результат с совпадающим названием
+    // Ищем результат с совпадающим названием
     const matched = results.find(r => kodikTitleMatches(r.title, searchItem));
-    const match   = matched || results[0];
 
-    console.log(`Kodik match: type=${match.type}, title=${match.title}, validated=${!!matched}`);
-    return normalizeKodikLink(match.link);
+    // ВАЖНО: если нет совпадения по названию — не берём первый попавшийся.
+    // Защита от случая когда Kodik вернул 100 результатов по широкому запросу
+    // и results[0] — совершенно другой контент (Аватар -> Кайрю и почтальон).
+    if (!matched) {
+      console.log(`Kodik: нет совпадения по названию среди ${results.length} рез. — пропускаем`);
+      return null;
+    }
+
+    console.log(`Kodik match: type=${matched.type}, title=${matched.title}`);
+    return normalizeKodikLink(matched.link);
   } catch (e) {
     console.error('Kodik API ошибка:', e);
     return null;
