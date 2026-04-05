@@ -1250,17 +1250,20 @@ function fillModalFull(item) {
 
 // --- Проверка совпадения названия Kodik с TMDB ---
 function kodikTitleMatches(kodikTitle, tmdbItem) {
-  if (!kodikTitle || !tmdbItem) return true; // не можем проверить — пропускаем
+  if (!kodikTitle || !tmdbItem) return true;
+  // Для аниме не проверяем название — японские/русские/ромадзи варианты слишком разные
+  if (isAnimeItem(tmdbItem)) return true;
   const tmdbTitle = (tmdbItem.title || tmdbItem.name || '').toLowerCase();
   const kTitle    = kodikTitle.toLowerCase();
-  // Убираем цифры/спецсимволы для грубого сравнения
   const clean = s => s.replace(/[^a-zа-яё0-9\s]/gi, '').trim();
   const ct = clean(tmdbTitle);
   const ck = clean(kTitle);
   if (!ct || !ck) return true;
-  // Совпадение если хотя бы первые 4 символа одного содержатся в другом
-  const prefix = ct.slice(0, Math.min(5, ct.length));
-  return ck.includes(prefix) || ct.includes(clean(ck).slice(0, 5));
+  // Проверяем первые 4+ символа (учитываем короткие названия)
+  const len = Math.min(4, Math.min(ct.length, ck.length));
+  if (len < 2) return true;
+  const prefix = ct.slice(0, len);
+  return ck.includes(prefix) || ct.includes(ck.slice(0, len));
 }
 
 async function buildEpisodeSelector(details) {
@@ -1420,13 +1423,48 @@ async function searchKodik(params) {
   return data.results || [];
 }
 
-// --- Фильтрация результатов по типу ---
-function filterKodikByType(results, type) {
-  const tvTypes    = ['serial','anime-serial','documentary-serial','multseries','foreign-serial','russian-serial'];
-  const movieTypes = ['movie','anime','multfilm','documentary','foreign','russian','cartoon'];
-  const targets    = type === 'tv' ? tvTypes : movieTypes;
-  const filtered   = results.filter(r => targets.includes(r.type));
-  return filtered.length ? filtered : results; // fallback: вернуть всё
+// --- Определяем, является ли контент аниме ---
+function isAnimeItem(item) {
+  if (!item) return false;
+  // Японский язык оригинала
+  if (item.original_language === 'ja') return true;
+  // Жанр "Animation" (id=16) + японский оригинал
+  const genres = item.genre_ids || (item.genres || []).map(g => g.id);
+  if (genres.includes(16) && item.original_language === 'ja') return true;
+  return false;
+}
+
+// --- Фильтрация результатов по типу контента ---
+function filterKodikByType(results, type, item) {
+  const anime = isAnimeItem(item);
+
+  let targets;
+  if (type === 'tv') {
+    // Сериал-аниме → только anime-serial
+    // Обычный сериал → serial, foreign-serial, russian-serial, multseries, documentary-serial
+    targets = anime
+      ? ['anime-serial']
+      : ['serial', 'foreign-serial', 'russian-serial', 'multseries', 'documentary-serial'];
+  } else {
+    // Аниме-фильм → anime, multfilm
+    // Обычный фильм → movie, foreign, russian, documentary (НЕ anime)
+    targets = anime
+      ? ['anime', 'multfilm']
+      : ['movie', 'foreign', 'russian', 'documentary'];
+  }
+
+  const filtered = results.filter(r => targets.includes(r.type));
+
+  // Fallback: если строгий фильтр ничего не дал — берём всё кроме противоположного типа
+  if (!filtered.length) {
+    const opposite = type === 'tv'
+      ? ['movie', 'anime', 'multfilm', 'documentary', 'foreign', 'russian']
+      : ['serial', 'anime-serial', 'foreign-serial', 'russian-serial', 'multseries', 'documentary-serial'];
+    const fallback = results.filter(r => !opposite.includes(r.type));
+    return fallback.length ? fallback : results;
+  }
+
+  return filtered;
 }
 
 // --- Получить все результаты Kodik для тайтла ---
@@ -1457,7 +1495,7 @@ async function getAllKodikResults(ids, type, item) {
   }
 
   if (!results.length) return [];
-  return filterKodikByType(results, type);
+  return filterKodikByType(results, type, searchItem);
 }
 
 // --- Одна ссылка для фильма ---
