@@ -656,7 +656,77 @@
   #toast.show { opacity:1; transform: translateX(-50%) translateY(0); }
   #toast.error { border-color: rgba(229,9,20,0.4); }
 
-  /* ─── MOBILE NAV ─── */
+  /* ─── EXTERNAL RATINGS ─── */
+  .modal-ratings {
+    display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; align-items: center;
+  }
+  .rating-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    border-radius: 7px; padding: 5px 10px;
+    font-family: 'Outfit', sans-serif; font-weight: 700;
+    font-size: 13px; line-height: 1; cursor: default;
+    text-decoration: none;
+  }
+  .rb-logo {
+    font-size: 10px; font-weight: 900;
+    letter-spacing: 0.5px; opacity: 0.9;
+  }
+  .rb-val { font-size: 14px; }
+  .rb-sub { font-size: 10px; opacity: 0.65; font-weight: 400; }
+
+  /* Кинопоиск — оранжевый */
+  .kp-badge {
+    background: #e65c00;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .kp-badge .rb-logo { font-size: 9px; background: rgba(0,0,0,0.2); padding: 1px 4px; border-radius: 3px; }
+
+  /* IMDb — жёлтый фирменный */
+  .imdb-badge {
+    background: #f5c518;
+    color: #000;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+  .imdb-badge .rb-logo { font-size: 10px; background: rgba(0,0,0,0.12); padding: 1px 4px; border-radius: 3px; color: #000; }
+
+  /* TMDB — зелёный */
+  .tmdb-badge {
+    background: #01b4e4;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .tmdb-badge .rb-logo { font-size: 9px; background: rgba(0,0,0,0.2); padding: 1px 4px; border-radius: 3px; }
+
+  .rating-badge.loading { opacity: 0.4; }
+  .rating-badge.link-badge { cursor: pointer; text-decoration: none; }
+  .rating-badge.link-badge:hover { filter: brightness(1.1); }
+
+  /* ─── MODAL TABS ─── */
+  .modal-tabs {
+    display: flex; gap: 0;
+    border-bottom: 1px solid var(--border);
+    margin: 0 24px 20px;
+  }
+  .modal-tab {
+    padding: 10px 18px;
+    background: none; border: none; border-bottom: 2px solid transparent;
+    color: var(--text2); font-family: 'Outfit', sans-serif;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: var(--tr); margin-bottom: -1px;
+  }
+  .modal-tab:hover { color: var(--text); }
+  .modal-tab.active { color: var(--text); border-bottom-color: var(--accent); }
+  .modal-tab-content { display: none; }
+  .modal-tab-content.active { display: block; }
+
+  /* ─── NAV active улучшен ─── */
+  .nav-links a.active {
+    color: #fff;
+    background: rgba(229,9,20,0.2);
+    border: 1px solid rgba(229,9,20,0.35);
+  }
+
   .btn-menu, .btn-search-mobile {
     display: none;
     background: rgba(255,255,255,0.05);
@@ -727,6 +797,7 @@
     .modal-header { padding:0 16px 20px; }
     .modal-poster { width:100px; height:150px; }
     .modal-body { padding:0 16px 20px; }
+    .modal-tabs { margin: 0 16px 16px; }
     #playerFrame, #playerLoading { height:320px; }
     .cards, #searchResults, #favResults { grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:14px; }
     .mobile-menu { top:54px; }
@@ -769,7 +840,7 @@
     <li><a id="navMovies" onclick="filterAndShow('movie')">Фильмы</a></li>
     <li><a id="navSeries" onclick="filterAndShow('tv')">Сериалы</a></li>
     <li><a id="navAnime" onclick="filterAndShow('anime')">Аниме</a></li>
-    <li><a id="navDocs" onclick="filterAndShow('documentary')">Документалки</a></li>
+    <li><a id="navDorama" onclick="filterAndShow('dorama')">Дорамы</a></li>
   </ul>
   <div class="nav-right">
     <div class="search-wrap">
@@ -787,14 +858,14 @@
   <a onclick="filterAndShow('movie'); closeMobileMenu()">Фильмы</a>
   <a onclick="filterAndShow('tv'); closeMobileMenu()">Сериалы</a>
   <a onclick="filterAndShow('anime'); closeMobileMenu()">Аниме</a>
-  <a onclick="filterAndShow('documentary'); closeMobileMenu()">Документалки</a>
-  <a onclick="showPage('fav'); closeMobileMenu()">Избранное</a>
+  <a onclick="filterAndShow('dorama'); closeMobileMenu()">Дорамы</a>
 </div>
 <div class="mobile-search-bar" id="mobileSearchBar">
   <input type="text" placeholder="Поиск фильмов и сериалов..." oninput="onSearch(this.value)" id="mobileSearchInput">
 </div>
 
 <!-- HERO -->
+<div id="heroWrap">
 <section id="hero">
   <div id="heroBg"></div>
   <div class="hero-content">
@@ -813,36 +884,44 @@
   </div>
   <div class="hero-dots" id="heroDots"></div>
 </section>
+</div><!-- /heroWrap -->
 
 <!-- MAIN PAGE -->
 <div id="mainPage">
-  <div class="section">
+  <div class="section" id="sectionTrending">
     <div class="section-header">
       <h2 class="section-title">В тренде</h2>
       <span class="section-more" onclick="filterAndShow('trending')">Все →</span>
     </div>
     <div class="cards" id="trendingRow"></div>
   </div>
-  <div class="section">
+  <div class="section" id="sectionMovies">
     <div class="section-header">
       <h2 class="section-title">Популярные Фильмы</h2>
       <span class="section-more" onclick="filterAndShow('movie')">Все →</span>
     </div>
     <div class="cards" id="moviesRow"></div>
   </div>
-  <div class="section">
+  <div class="section" id="sectionSeries">
     <div class="section-header">
       <h2 class="section-title">Популярные Сериалы</h2>
       <span class="section-more" onclick="filterAndShow('tv')">Все →</span>
     </div>
     <div class="cards" id="seriesRow"></div>
   </div>
-  <div class="section">
+  <div class="section" id="sectionAnime">
     <div class="section-header">
       <h2 class="section-title">Аниме</h2>
       <span class="section-more" onclick="filterAndShow('anime')">Все →</span>
     </div>
     <div class="cards" id="animeRow"></div>
+  </div>
+  <div class="section" id="sectionDorama">
+    <div class="section-header">
+      <h2 class="section-title">Дорамы</h2>
+      <span class="section-more" onclick="filterAndShow('dorama')">Все →</span>
+    </div>
+    <div class="cards" id="doramaRow"></div>
   </div>
 </div>
 
@@ -895,6 +974,7 @@
       <img id="modalPoster" class="modal-poster" src="" alt="">
       <div class="modal-info">
         <h2 class="modal-title" id="modalTitle"></h2>
+        <div id="modalRatings" class="modal-ratings"></div>
         <div class="modal-meta" id="modalMeta"></div>
         <p class="modal-desc" id="modalOverview"></p>
         <div class="modal-btns">
@@ -904,27 +984,44 @@
       </div>
     </div>
     <div class="modal-body">
-      <div id="playerSources"></div>
-      <div id="episodeSelector">
-        <span class="ep-label" id="seasonLabel">Часть / Сезон:</span>
-        <select class="ep-select" id="seasonSelect" onchange="onSeasonChange()"></select>
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchModalTab('info', this)">Описание</button>
+        <button class="modal-tab" onclick="switchModalTab('player', this)">Смотреть</button>
+        <button class="modal-tab" onclick="switchModalTab('similar', this)">Похожее</button>
       </div>
-      <div id="playerWrap" style="display:none">
-        <div id="playerLoading">
-          <div class="spinner"></div>
-          <span>Загрузка плеера...</span>
-          <p>Если долго грузит — попробуйте другой источник</p>
+
+      <!-- TAB: Описание -->
+      <div class="modal-tab-content active" id="tabInfo">
+        <div class="modal-tags" id="modalTags"></div>
+      </div>
+
+      <!-- TAB: Смотреть (плеер) -->
+      <div class="modal-tab-content" id="tabPlayer">
+        <div id="playerSources"></div>
+        <div id="episodeSelector">
+          <span class="ep-label" id="seasonLabel">Часть / Сезон:</span>
+          <select class="ep-select" id="seasonSelect" onchange="onSeasonChange()"></select>
         </div>
+        <div id="playerWrap" style="display:none">
+          <div id="playerLoading">
+            <div class="spinner"></div>
+            <span>Загрузка плеера...</span>
+            <p>Если долго грузит — попробуйте другой источник</p>
+          </div>
 <iframe id="playerFrame"
   allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer"
   referrerpolicy="no-referrer-when-downgrade"
   style="width:100%; height:480px; border:none;">
 </iframe>
-        <div id="vibixEmbed" style="display:none; width:100%; min-height:480px;"></div>
+          <div id="vibixEmbed" style="display:none; width:100%; min-height:480px;"></div>
+        </div>
       </div>
-      <div class="modal-tags" id="modalTags"></div>
-      <div class="similar-title" id="similarTitle" style="display:none">Похожее</div>
-      <div id="similarRow"></div>
+
+      <!-- TAB: Похожее -->
+      <div class="modal-tab-content" id="tabSimilar">
+        <div class="similar-title" id="similarTitle" style="display:none">Похожее</div>
+        <div id="similarRow"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -999,6 +1096,7 @@ async function init() {
   loadSection('moviesRow',   '/movie/popular',    { 'vote_count.gte': 500 }, true);
   loadSection('seriesRow',   '/tv/popular',       { 'vote_count.gte': 300 }, true);
   loadAnime();
+  loadDorama();
 }
 
 async function loadAnime() {
@@ -1008,6 +1106,16 @@ async function loadAnime() {
     const items = r.results.slice(0, 6).map(i => ({ ...i, media_type:'tv' }));
     items.forEach(i => itemsMap.set(i.id, i));
     renderCards('animeRow', items);
+  } catch {}
+}
+
+async function loadDorama() {
+  loadSkeletons('doramaRow', 6);
+  try {
+    const r = await api('/discover/tv', { with_original_language:'ko', sort_by:'popularity.desc', 'vote_count.gte': 100 });
+    const items = r.results.slice(0, 6).map(i => ({ ...i, media_type:'tv' }));
+    items.forEach(i => itemsMap.set(i.id, i));
+    renderCards('doramaRow', items);
   } catch {}
 }
 
@@ -1269,12 +1377,15 @@ async function openModal(itemId) {
   document.getElementById('playerSources').style.display = 'none';
   document.getElementById('modalTags').innerHTML = '';
   document.getElementById('modalMeta').innerHTML = '';
+  document.getElementById('modalRatings').innerHTML = '';
   document.getElementById('similarRow').innerHTML = '';
   document.getElementById('similarTitle').style.display = 'none';
   document.getElementById('modalBackdrop').style.backgroundImage = '';
 
   document.getElementById('modal').classList.add('open');
   document.body.style.overflow = 'hidden';
+  // Сбрасываем вкладки на "Описание"
+  switchModalTab('info', document.querySelector('.modal-tab'));
 
   let item = itemsMap.get(itemId) || { id: itemId };
   currentItem = item;
@@ -1291,6 +1402,7 @@ async function openModal(itemId) {
     itemsMap.set(itemId, item);
     currentItem = item;
     fillModalFull(item);
+    loadExternalRatings(item, myGen);
 
     if (type === 'tv') {
       tvDetails = details;
@@ -1338,7 +1450,10 @@ function fillModalBasic(item) {
     `<button class="source-btn ${i===0?'active':''}" onclick="selectSource(${i})">${s.label}</button>`
   ).join('');
 
-  document.getElementById('modalWatchBtn').onclick = startPlayer;
+  document.getElementById('modalWatchBtn').onclick = () => {
+    switchModalTab('player', document.querySelector('.modal-tab:nth-child(2)'));
+    startPlayer();
+  };
 }
 
 function fillModalFull(item) {
@@ -1490,6 +1605,110 @@ function onSeasonChange() {
   }
 }
 function onEpisodeChange() {} // не используется, Kodik управляет сам
+
+// ═══════════════════════════════════════════════════
+// EXTERNAL RATINGS (KP + IMDb)
+// ═══════════════════════════════════════════════════
+async function loadExternalRatings(item, gen) {
+  const el = document.getElementById('modalRatings');
+  if (!el) return;
+
+  // Сразу показываем TMDB рейтинг пока грузятся остальные
+  const tmdbScore = item.vote_average ? item.vote_average.toFixed(1) : null;
+  if (tmdbScore) {
+    el.innerHTML = `<div class="rating-badge tmdb-badge loading" id="rbTmdb">
+      <span class="rb-logo">TMDB</span><span class="rb-val">${tmdbScore}</span>
+    </div>`;
+  }
+
+  // Получаем внешние ID
+  const type = item.media_type || (item.first_air_date ? 'tv' : 'movie');
+  let ids = item._externalIds;
+  if (!ids) {
+    try { ids = await getExternalIds(item, type); } catch(e) { ids = {}; }
+  }
+  if (gen !== modalGeneration) return;
+
+  const imdbId = ids?.imdb || item.imdb_id || null;
+  const kpId   = ids?.kp   || null;
+
+  // Пробуем rating.kinopoisk.ru — даёт сразу KP и IMDb
+  if (kpId) {
+    try {
+      const res = await fetch(`https://rating.kinopoisk.ru/${kpId}.xml`);
+      const text = await res.text();
+      if (gen !== modalGeneration) return;
+      const xml = new DOMParser().parseFromString(text, 'text/xml');
+      const kpVal   = xml.querySelector('kp_rating')?.textContent?.trim();
+      const imdbVal = xml.querySelector('imdb_rating')?.textContent?.trim();
+
+      let html = '';
+      if (kpVal && parseFloat(kpVal) > 0) {
+        const kpUrl = `https://www.kinopoisk.ru/film/${kpId}/`;
+        html += `<a class="rating-badge kp-badge link-badge" href="${kpUrl}" target="_blank" rel="noopener">
+          <span class="rb-logo">КП</span><span class="rb-val">${kpVal}</span>
+        </a>`;
+      }
+      if (imdbVal && parseFloat(imdbVal) > 0) {
+        const imdbUrl = imdbId ? `https://www.imdb.com/title/${imdbId}/` : '#';
+        html += `<a class="rating-badge imdb-badge link-badge" href="${imdbUrl}" target="_blank" rel="noopener">
+          <span class="rb-logo">IMDb</span><span class="rb-val">${imdbVal}</span>
+        </a>`;
+      }
+      if (tmdbScore) {
+        html += `<div class="rating-badge tmdb-badge"><span class="rb-logo">TMDB</span><span class="rb-val">${tmdbScore}</span></div>`;
+      }
+      if (html) { el.innerHTML = html; return; }
+    } catch(e) { /* CORS заблокирован — пробуем OMDB */ }
+  }
+
+  if (gen !== modalGeneration) return;
+
+  // Fallback: OMDB API для IMDb рейтинга
+  if (imdbId) {
+    try {
+      const res = await fetch(`https://www.omdbapi.com/?i=${imdbId}&apikey=b9bd48a6`);
+      const data = await res.json();
+      if (gen !== modalGeneration) return;
+
+      let html = '';
+      if (kpId) {
+        const kpUrl = `https://www.kinopoisk.ru/film/${kpId}/`;
+        html += `<a class="rating-badge kp-badge link-badge" href="${kpUrl}" target="_blank" rel="noopener">
+          <span class="rb-logo">КП</span><span class="rb-val">—</span>
+        </a>`;
+      }
+      if (data?.imdbRating && data.imdbRating !== 'N/A') {
+        const imdbUrl = `https://www.imdb.com/title/${imdbId}/`;
+        html += `<a class="rating-badge imdb-badge link-badge" href="${imdbUrl}" target="_blank" rel="noopener">
+          <span class="rb-logo">IMDb</span><span class="rb-val">${data.imdbRating}</span>
+        </a>`;
+      }
+      if (tmdbScore) {
+        html += `<div class="rating-badge tmdb-badge"><span class="rb-logo">TMDB</span><span class="rb-val">${tmdbScore}</span></div>`;
+      }
+      if (html) { el.innerHTML = html; return; }
+    } catch(e) {}
+  }
+
+  // Финальный fallback — только ссылки без рейтинга
+  if (gen !== modalGeneration) return;
+  let html = '';
+  if (kpId) {
+    html += `<a class="rating-badge kp-badge link-badge" href="https://www.kinopoisk.ru/film/${kpId}/" target="_blank" rel="noopener">
+      <span class="rb-logo">КП</span><span class="rb-val">—</span>
+    </a>`;
+  }
+  if (imdbId) {
+    html += `<a class="rating-badge imdb-badge link-badge" href="https://www.imdb.com/title/${imdbId}/" target="_blank" rel="noopener">
+      <span class="rb-logo">IMDb</span><span class="rb-val">—</span>
+    </a>`;
+  }
+  if (tmdbScore) {
+    html += `<div class="rating-badge tmdb-badge"><span class="rb-logo">TMDB</span><span class="rb-val">${tmdbScore}</span></div>`;
+  }
+  if (html) el.innerHTML = html;
+}
 
 async function loadSimilar(itemId) {
   try {
@@ -2053,7 +2272,7 @@ function setGenreOptions(type) {
 // ═══════════════════════════════════════════════════
 // CATEGORY
 // ═══════════════════════════════════════════════════
-async function filterAndShow(type) {
+async function filterAndShow(type, fromHistory = false) {
   isSearchMode   = false;
   catalogType    = type;
   catalogPage    = 1;
@@ -2061,8 +2280,9 @@ async function filterAndShow(type) {
   catalogLoading = false;
   catalogDone    = false;
 
-  showPage('search');
-  const labels = { movie:'Фильмы', tv:'Сериалы', anime:'Аниме', documentary:'Документалки', trending:'В тренде' };
+  if (!fromHistory) pushState('search', type);
+  showPage('search', true);
+  const labels = { movie:'Фильмы', tv:'Сериалы', anime:'Аниме', dorama:'Дорамы', trending:'В тренде' };
   document.getElementById('pageTitle').textContent = labels[type] || type;
   document.getElementById('searchCount').textContent = 'Загрузка...';
 
@@ -2075,9 +2295,9 @@ async function filterAndShow(type) {
     document.getElementById('genreSelect').value = '';
     document.getElementById('yearSelect').value  = '';
     const sortSel = document.getElementById('sortSelect');
-    sortSel.options[2].value = type === 'tv' || type === 'anime'
+    sortSel.options[2].value = type === 'tv' || type === 'anime' || type === 'dorama'
       ? 'first_air_date.desc' : 'primary_release_date.desc';
-    sortSel.options[3].value = type === 'tv' || type === 'anime'
+    sortSel.options[3].value = type === 'tv' || type === 'anime' || type === 'dorama'
       ? 'first_air_date.asc'  : 'primary_release_date.asc';
   } else {
     filterBar.classList.remove('visible');
@@ -2087,7 +2307,7 @@ async function filterAndShow(type) {
   await loadCatalogPage(type, 1, true);
 
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-  const map = { movie:'navMovies', tv:'navSeries', anime:'navAnime', documentary:'navDocs' };
+  const map = { movie:'navMovies', tv:'navSeries', anime:'navAnime', dorama:'navDorama' };
   if (map[type]) document.getElementById(map[type]).classList.add('active');
 }
 
@@ -2141,11 +2361,12 @@ async function loadCatalogPage(type, page, replace) {
       const r = await api('/discover/tv', params);
       results = r.results.map(i => ({ ...i, media_type:'tv' }));
       total   = r.total_results || 0;
-    } else if (type === 'documentary') {
-      const params = { with_genres: genre || '99', sort_by: sort, page, 'vote_count.gte': 30 };
-      if (year) params.primary_release_year = year;
-      const r = await api('/discover/movie', params);
-      results = r.results.map(i => ({ ...i, media_type:'movie' }));
+    } else if (type === 'dorama') {
+      const params = { with_original_language: 'ko', sort_by: sort, page, 'vote_count.gte': 50 };
+      if (genre) params.with_genres = genre;
+      if (year)  params.first_air_date_year = year;
+      const r = await api('/discover/tv', params);
+      results = r.results.map(i => ({ ...i, media_type:'tv' }));
       total   = r.total_results || 0;
     } else if (type === 'movie') {
       const params = { sort_by: sort, page, 'vote_count.gte': 300 };
@@ -2222,10 +2443,15 @@ async function loadCatalogPage(type, page, replace) {
 // ═══════════════════════════════════════════════════
 // PAGES
 // ═══════════════════════════════════════════════════
-function showPage(page) {
+function showPage(page, fromHistory = false) {
   document.getElementById('mainPage').style.display   = page === 'main'   ? 'block' : 'none';
   document.getElementById('searchPage').style.display = page === 'search' ? 'block' : 'none';
   document.getElementById('favPage').style.display    = page === 'fav'    ? 'block' : 'none';
+  document.getElementById('heroWrap').style.display   = page === 'main'   ? 'block' : 'none';
+  if (!fromHistory) {
+    if (page === 'main') pushState('main', null);
+    if (page === 'fav')  pushState('fav', null);
+  }
   if (page === 'main') {
     document.getElementById('searchInput').value = '';
     const msi = document.getElementById('mobileSearchInput');
@@ -2297,6 +2523,52 @@ function toggleMobileSearch() {
     setTimeout(() => document.getElementById('mobileSearchInput').focus(), 60);
   }
 }
+
+// ═══════════════════════════════════════════════════
+// MODAL TABS
+// ═══════════════════════════════════════════════════
+function switchModalTab(tab, btn) {
+  document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.modal-tab-content').forEach(c => c.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const tabMap = { info: 'tabInfo', player: 'tabPlayer', similar: 'tabSimilar' };
+  const el = document.getElementById(tabMap[tab]);
+  if (el) el.classList.add('active');
+}
+
+
+// ═══════════════════════════════════════════════════
+// URL ROUTING — history.pushState
+// ═══════════════════════════════════════════════════
+function pushState(page, type) {
+  try {
+    const url = type ? `?page=${page}&type=${type}` : (page === 'main' ? location.pathname : `?page=${page}`);
+    history.pushState({ page, type }, '', url);
+  } catch(e) { /* file:// или iframe — игнорируем */ }
+}
+
+function handlePopState(e) {
+  const s = e.state;
+  if (!s) { showPage('main'); return; }
+  if (s.page === 'search' && s.type) {
+    filterAndShow(s.type, true);
+  } else if (s.page === 'fav') {
+    showPage('fav', true);
+  } else {
+    showPage('main', true);
+  }
+}
+window.addEventListener('popstate', handlePopState);
+
+// Восстановление состояния при загрузке страницы
+(function restoreFromURL() {
+  const params = new URLSearchParams(location.search);
+  const page = params.get('page');
+  const type = params.get('type');
+  if (page === 'search' && type) {
+    window.addEventListener('DOMContentLoaded', () => filterAndShow(type, true), { once: true });
+  }
+})();
 
 init();
 </script>
