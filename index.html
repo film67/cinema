@@ -920,7 +920,7 @@
   referrerpolicy="no-referrer-when-downgrade"
   style="width:100%; height:480px; border:none;">
 </iframe>
-        
+        <div id="vibixEmbed" style="display:none; width:100%; min-height:480px;"></div>
       </div>
       <div class="modal-tags" id="modalTags"></div>
       <div class="similar-title" id="similarTitle" style="display:none">Похожее</div>
@@ -939,6 +939,7 @@
 const API_KEY     = '558568949e362ddf3eabb364c1222b93';
 const API_BASE    = 'https://api.themoviedb.org/3';
 const KODIK_TOKEN = '9386a8f4ef7abc8415155bb91edf3fe8';
+const VIBIX_TOKEN = '25168|oUQBY5zjYNPbSOfbPRKuHxN1jdXWvtQjia0zKNlbdef6dd76';
 
 // ─── ИСТОЧНИКИ ─────────────────────────────────────
 const SOURCES = [
@@ -946,6 +947,11 @@ const SOURCES = [
     name: 'Kodik',
     label: 'Основной',
     isKodik: true
+  },
+  {
+    name: 'Vibix',
+    label: 'Vibix',
+    isVibix: true
   },
   {
     name: 'Vidsrc',
@@ -1501,6 +1507,9 @@ function closeModal() {
   const frame = document.getElementById('playerFrame');
   frame.onload = null;
   frame.src = '';
+  // Сбрасываем Vibix embed
+  const vibixDiv = document.getElementById('vibixEmbed');
+  if (vibixDiv) { vibixDiv.innerHTML = ''; vibixDiv.style.display = 'none'; }
   document.getElementById('modal').classList.remove('open');
   document.body.style.overflow = '';
   document.getElementById('playerWrap').style.display = 'none';
@@ -1525,23 +1534,53 @@ function startPlayer() {
 }
 
 
-// --- Получение IMDb ID (TMDB не хранит KP ID) ---
+// --- Получение IMDb ID и KP ID ---
 async function getExternalIds(item, type) {
+  // Кэш чтобы не делать повторные запросы
+  if (item._externalIds) return item._externalIds;
+
+  let imdb = item.imdb_id || null;
+  let kp   = item.kp_id   || null;
+
   // imdb_id грузится через append_to_response=external_ids в openModal
-  if (item.imdb_id) {
-    return { imdb: item.imdb_id, kp: null };
+  if (!imdb) {
+    try {
+      const response = await api(`/${type}/${item.id}/external_ids`);
+      imdb = response.imdb_id || null;
+    } catch (e) {
+      console.error("Ошибка получения external_ids", e);
+    }
   }
-  // Если вдруг не загрузился — отдельный запрос
-  try {
-    const response = await api(`/${type}/${item.id}/external_ids`);
-    return {
-      imdb: response.imdb_id || null,
-      kp:   null  // TMDB не хранит Kinopoisk ID
-    };
-  } catch (e) {
-    console.error("Ошибка получения внешних ID", e);
-    return null;
+
+  // KP ID получаем из Kodik по IMDb ID (Kodik хранит kinopoisk_id)
+  if (!kp && imdb) {
+    try {
+      const kodikRes = await searchKodik({ imdb_id: imdb, limit: '1' });
+      if (kodikRes.length && kodikRes[0].kinopoisk_id) {
+        kp = String(kodikRes[0].kinopoisk_id);
+      }
+    } catch(e) {
+      console.log('KP ID через Kodik не найден:', e);
+    }
   }
+
+  // Если Kodik не дал — пробуем по названию+году
+  if (!kp) {
+    try {
+      const title = item.title || item.name || item.original_title || item.original_name || '';
+      const year  = (item.release_date || item.first_air_date || '').slice(0,4);
+      if (title) {
+        const kodikRes = await searchKodik({ title, year, limit: '3' });
+        const match = kodikRes.find(r => r.kinopoisk_id);
+        if (match) kp = String(match.kinopoisk_id);
+      }
+    } catch(e) {}
+  }
+
+  const result = { imdb, kp };
+  // Кэшируем на объекте
+  try { item._externalIds = result; } catch(e) {}
+  return result;
 }
 
 // --- Нормализация ссылок Kodik (новый домен kodikplayer.com) ---
@@ -1699,6 +1738,90 @@ async function getKodikLink(ids, type, item) {
   }
 }
 
+// ═══════════════════════════════════════════════════
+// VIBIX API
+// ═══════════════════════════════════════════════════
+// Твой publisher ID из личного кабинета Vibix (видно в embed коде)
+const VIBIX_PUBLISHER_ID = '677443527';
+
+async function getVibixVideoId(kpId) {
+  // Запрашиваем данные по Кинопоиск ID → получаем Vibix video id
+  try {
+    const url = `https://vibix.org/api/external/videos/kp/${kpId}`;
+    const res = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${VIBIX_TOKEN}`,
+        'Accept': 'application/json'
+      }
+    });
+    if (!res.ok) { console.log('Vibix API', res.status, 'для KP:', kpId); return null; }
+    const data = await res.json();
+    console.log('Vibix API ответ:', data);
+
+    // ID видео в Vibix — ищем во всех возможных полях ответа
+    return data?.id
+      || data?.data?.id
+      || data?.video_id
+      || data?.data?.video_id
+      || null;
+  } catch(e) {
+    console.error('Vibix getVibixVideoId error:', e);
+    return null;
+  }
+}
+
+function renderVibixEmbed(vibixId, type, season, episode) {
+  // Рендерим <ins> тег — официальный способ Vibix
+  const embedDiv = document.getElementById('vibixEmbed');
+  const dataType = type === 'tv' ? 'series' : 'movie';
+
+  let attrs = `data-publisher-id="${VIBIX_PUBLISHER_ID}" data-type="${dataType}" data-id="${vibixId}"`;
+  if (type === 'tv') {
+    attrs += ` data-season="${season || 1}" data-episode="${episode || 1}"`;
+  }
+
+  embedDiv.innerHTML = `<ins ${attrs} style="display:block; width:100%; min-height:480px;"></ins>`;
+
+  // Загружаем/перезапускаем скрипт Vibix
+  const oldScript = document.getElementById('vibix-script');
+  if (oldScript) oldScript.remove();
+  const script = document.createElement('script');
+  script.id = 'vibix-script';
+  script.src = 'https://vibix.org/player.js';
+  script.async = true;
+  script.onload = () => {
+    document.getElementById('playerLoading').style.display = 'none';
+  };
+  // Если уже загружен — вызываем инициализацию напрямую
+  if (window.Vibix) {
+    document.getElementById('playerLoading').style.display = 'none';
+  } else {
+    // Таймаут — на случай если скрипт не вернёт onload
+    setTimeout(() => {
+      document.getElementById('playerLoading').style.display = 'none';
+    }, 3000);
+  }
+  document.body.appendChild(script);
+}
+
+async function loadVibixPlayer(ids, type, season, episode) {
+  if (!ids.kp) {
+    return false; // Vibix работает только по KP ID
+  }
+  const vibixId = await getVibixVideoId(ids.kp);
+  if (!vibixId) return false;
+
+  const frame = document.getElementById('playerFrame');
+  frame.style.display = 'none';
+  frame.src = '';
+
+  const embedDiv = document.getElementById('vibixEmbed');
+  embedDiv.style.display = 'block';
+
+  renderVibixEmbed(vibixId, type, season, episode);
+  return true;
+}
+
 function showPlayerError(msg) {
   const wrap    = document.getElementById('playerWrap');
   const frame   = document.getElementById('playerFrame');
@@ -1735,6 +1858,9 @@ async function setPlayerSrc() {
   // Сбрасываем ошибку если была
   const errDiv2 = document.getElementById('playerErrorMsg');
   if (errDiv2) errDiv2.style.display = 'none';
+  // Сбрасываем Vibix embed
+  const vibixDiv = document.getElementById('vibixEmbed');
+  if (vibixDiv) { vibixDiv.innerHTML = ''; vibixDiv.style.display = 'none'; }
   const wrap = document.getElementById('playerWrap');
   const frameEl = document.getElementById('playerFrame');
   frameEl.style.display = 'block';
@@ -1785,8 +1911,28 @@ async function setPlayerSrc() {
     document.getElementById('playerFrame').src = kodikUrl;
     console.log('Kodik player URL:', kodikUrl);
 
+  } else if (source.isVibix) {
+    // ─── Vibix (<ins> embed) ────────────────────────
+    const ids = await getExternalIds(snapItem, type);
+    if (currentItem !== snapItem || currentSource !== snapSource) return;
+
+    if (!ids || !ids.kp) {
+      showPlayerError('Vibix работает только по Кинопоиск ID — для этого контента он не найден');
+      return;
+    }
+
+    const vSeason  = type === 'tv' ? (snapSeason  || 1) : null;
+    const vEpisode = type === 'tv' ? (snapEpisode || 1) : null;
+
+    const ok = await loadVibixPlayer(ids, type, vSeason, vEpisode);
+    if (currentItem !== snapItem || currentSource !== snapSource) return;
+
+    if (!ok) {
+      showPlayerError('Этот контент пока недоступен в Vibix');
+    }
+
   } else {
-    // Запасной источник (Vidsrc)
+    // ─── Запасной источник (Vidsrc) ─────────────────
     const url = type === 'tv'
       ? source.tv(snapItem.id, snapSeason, snapEpisode)
       : source.movie(snapItem.id);
@@ -2037,14 +2183,14 @@ async function loadCatalogPage(type, page, replace) {
       if (genre) params.with_genres = genre;
       if (year)  params.primary_release_year = year;
       const r = await api('/discover/movie', params);
-      results = r.results.map(i => ({ ...i, media_type:'movie' })).filter(kodikLikelyHas);
+      results = r.results.map(i => ({ ...i, media_type:'movie' }));
       total   = r.total_results || 0;
     } else if (type === 'tv') {
       const params = { sort_by: sort, page, 'vote_count.gte': 150 };
       if (genre) params.with_genres = genre;
       if (year)  params.first_air_date_year = year;
       const r = await api('/discover/tv', params);
-      results = r.results.map(i => ({ ...i, media_type:'tv' })).filter(kodikLikelyHas);
+      results = r.results.map(i => ({ ...i, media_type:'tv' }));
       total   = r.total_results || 0;
     }
 
