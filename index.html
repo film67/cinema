@@ -1675,9 +1675,12 @@ function closeModal() {
   const frame = document.getElementById('playerFrame');
   frame.onload = null;
   frame.src = '';
-  // Сбрасываем Vibix embed
+  frame.style.display = 'block'; // сбрасываем на случай если Vibix его скрывал
+  // Сбрасываем Vibix embed и SDK-скрипт
   const vibixDiv = document.getElementById('vibixEmbed');
   if (vibixDiv) { vibixDiv.innerHTML = ''; vibixDiv.style.display = 'none'; }
+  const vibixSDKEl = document.getElementById('vibixSDK');
+  if (vibixSDKEl) vibixSDKEl.remove();
   document.getElementById('modal').classList.remove('open');
   document.body.style.overflow = '';
   document.getElementById('playerWrap').style.display = 'none';
@@ -1984,9 +1987,11 @@ async function setPlayerSrc() {
   // Сбрасываем ошибку если была
   const errDiv2 = document.getElementById('playerErrorMsg');
   if (errDiv2) errDiv2.style.display = 'none';
-  // Сбрасываем Vibix embed
+  // Сбрасываем Vibix embed и SDK
   const vibixDiv = document.getElementById('vibixEmbed');
   if (vibixDiv) { vibixDiv.innerHTML = ''; vibixDiv.style.display = 'none'; }
+  const oldSDK = document.getElementById('vibixSDK');
+  if (oldSDK) oldSDK.remove();
   const wrap = document.getElementById('playerWrap');
   const frameEl = document.getElementById('playerFrame');
   frameEl.style.display = 'block';
@@ -2038,7 +2043,7 @@ async function setPlayerSrc() {
     console.log('Kodik player URL:', kodikUrl);
 
   } else if (source.isVibix) {
-    // ─── Vibix — грузим iframe_url напрямую ────────
+    // ─── Vibix — ins-embed (официальный способ, показывает все сезоны) ────────
     const ids = await getExternalIds(snapItem, type);
     if (currentItem !== snapItem || currentSource !== snapSource) return;
 
@@ -2047,26 +2052,73 @@ async function setPlayerSrc() {
       return;
     }
 
-    const vSeason  = type === 'tv' ? (snapSeason  || 1) : null;
-    const vEpisode = type === 'tv' ? (snapEpisode || 1) : null;
-    const vibixUrl = await getVibixIframeUrl(ids, type, vSeason, vEpisode);
+    // Получаем data-id из Vibix API
+    const vibixEndpoints = [];
+    if (ids.kp)   vibixEndpoints.push(`${VIBIX_API}/videos/kp/${ids.kp}`);
+    if (ids.imdb) {
+      const imdbFmt = String(ids.imdb).startsWith('tt') ? ids.imdb : `tt${ids.imdb}`;
+      vibixEndpoints.push(`${VIBIX_API}/videos/imdb/${imdbFmt}`);
+    }
+
+    let vibixId   = null;
+    let vibixType = type === 'tv' ? 'series' : 'movie';
+
+    for (const vUrl of vibixEndpoints) {
+      try {
+        const vRes = await fetch(vUrl, {
+          headers: { 'Authorization': `Bearer ${VIBIX_TOKEN}`, 'Accept': 'application/json' }
+        });
+        if (!vRes.ok) { console.log('Vibix', vRes.status, vUrl); continue; }
+        const vData = await vRes.json();
+        console.log('Vibix API ответ:', vData);
+        vibixId = vData?.id || vData?.data?.id || null;
+        if (vibixId) break;
+      } catch(e) { console.error('Vibix error:', e); }
+    }
 
     if (currentItem !== snapItem || currentSource !== snapSource) return;
 
-    if (!vibixUrl) {
+    if (!vibixId) {
       showPlayerError('Этот контент пока недоступен в Vibix');
       return;
     }
 
-    // Скрываем vibixEmbed, показываем обычный iframe
+    // Прячем iframe, показываем ins-embed
+    const frameEl3 = document.getElementById('playerFrame');
+    frameEl3.onload = null;
+    frameEl3.src = '';
+    frameEl3.style.display = 'none';
+
     const vDiv = document.getElementById('vibixEmbed');
-    if (vDiv) { vDiv.innerHTML = ''; vDiv.style.display = 'none'; }
-    document.getElementById('playerFrame').style.display = 'block';
-    document.getElementById('playerFrame').onload = () => {
-      document.getElementById('playerLoading').style.display = 'none';
-    };
-    document.getElementById('playerFrame').src = vibixUrl;
-    console.log('Vibix player URL:', vibixUrl);
+    vDiv.style.display = 'block';
+
+    // Удаляем старый SDK-скрипт если есть (иначе ins не перерисуется)
+    const oldVibixScript = document.getElementById('vibixSDK');
+    if (oldVibixScript) oldVibixScript.remove();
+
+    // Строим официальный ins-тег — он сам показывает все сезоны
+    vDiv.innerHTML = `<ins
+      data-publisher-id="${VIBIX_PUBLISHER_ID}"
+      data-type="${vibixType}"
+      data-id="${vibixId}"
+      data-design="1"
+      data-color1="#56CEAA"
+      data-color2="#FFFFFF"
+      data-color3="#AEC7BC"
+      data-color4="#42BD88"
+      data-color5="#000000"
+      style="display:block;width:100%;height:480px;"
+    ></ins>`;
+
+    // Загружаем SDK Vibix — он инициализирует ins-тег
+    const vibixSDK = document.createElement('script');
+    vibixSDK.id  = 'vibixSDK';
+    vibixSDK.src = 'https://graphicslab.io/sdk/v2/rendex-sdk.min.js';
+    vibixSDK.async = true;
+    document.head.appendChild(vibixSDK);
+
+    document.getElementById('playerLoading').style.display = 'none';
+    console.log('Vibix ins embed: id=' + vibixId + ', type=' + vibixType);
 
   } else {
     // ─── Запасной источник (Vidsrc) ─────────────────
