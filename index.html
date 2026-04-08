@@ -1561,35 +1561,33 @@ async function buildEpisodeSelector(details) {
     }
     console.log(`Kodik serial: validated=${validated.length}/${results.length}`);
 
-    // ── 2. Выбираем запись с максимальным last_season (один дубляж покрывает все сезоны)
-    // Kodik возвращает одну ссылку на весь сериал — сезон меняется через параметр в URL
-    pool.sort((a, b) => (b.last_season || 1) - (a.last_season || 1));
-    const best = pool[0];
-    const totalSeasons = best.last_season || 1;
-    const baseLink = normalizeKodikLink(best.link);
-
-    // ── 3. Генерируем ссылки для каждого сезона, заменяя номер в URL ─
-    // Kodik URL вида: https://kodikplayer.com/serial/HASH/season/1/episode/1
-    kodikSeasonLinks = [];
-    for (let s = 1; s <= totalSeasons; s++) {
-      // Заменяем /season/X/episode/Y → /season/S/episode/1
-      let link = baseLink.replace(/\/season\/\d+\/episode\/\d+/, `/season/${s}/episode/1`);
-      // Запасной вариант: параметр ?season=S в URL без пути сезона
-      if (link === baseLink) {
-        link = baseLink.includes('?')
-          ? baseLink.replace(/([?&])season=\d+/, `$1season=${s}`)
-          : baseLink + `?season=${s}`;
-      }
-      kodikSeasonLinks.push({
-        label: totalSeasons > 1 ? `Сезон ${s}` : (best.title || 'Сезон 1'),
-        link,
-        lastSeason: s
-      });
+    // ── 2. Дедублируем: одна запись на уникальный last_season ───────
+    // Если все last_season = 1 (разные дубляжи), оставляем только первый
+    const seenSeasons = new Map(); // last_season → first result
+    for (const r of pool) {
+      const sNum = r.last_season || 1;
+      if (!seenSeasons.has(sNum)) seenSeasons.set(sNum, r);
     }
+
+    // Сортируем по номеру сезона
+    const unique = [...seenSeasons.entries()]
+      .sort(([a], [b]) => a - b)
+      .map(([sNum, r]) => r);
+
+    kodikSeasonLinks = unique.map((r, i) => {
+      // Если сезонов несколько — пишем "Сезон N", если один — скрываем селектор
+      const sNum = r.last_season || 1;
+      const label = unique.length > 1 ? `Сезон ${sNum}` : (r.title || 'Сезон 1');
+      return {
+        label,
+        link: normalizeKodikLink(r.link),
+        lastSeason: sNum
+      };
+    });
 
     console.log('Kodik season links:', kodikSeasonLinks.map(s => `${s.label}: ${s.link}`));
 
-    // Показываем селектор только если >1 сезона
+    // Показываем селектор только если >1 уникального сезона
     if (kodikSeasonLinks.length > 1) {
       const sel = document.getElementById('seasonSelect');
       sel.innerHTML = kodikSeasonLinks.map((s, i) =>
@@ -2017,18 +2015,8 @@ async function setPlayerSrc() {
       if (!kodikUrl) {
         const results = await getAllKodikResults(ids, 'tv', snapItem);
         if (results.length) {
-          // Берём запись с максимальным last_season и подставляем сезон 1
-          results.sort((a, b) => (b.last_season || 1) - (a.last_season || 1));
-          const best = results[0];
-          const baseLink = normalizeKodikLink(best.link);
-          // Подставляем season/1/episode/1 если сезон не выбран
-          const targetSeason = currentSeason + 1; // currentSeason = index (0-based)
-          kodikUrl = baseLink.replace(/\/season\/\d+\/episode\/\d+/, `/season/${targetSeason}/episode/1`);
-          if (kodikUrl === baseLink && targetSeason > 1) {
-            kodikUrl = baseLink.includes('?')
-              ? baseLink.replace(/([?&])season=\d+/, `$1season=${targetSeason}`)
-              : baseLink + `?season=${targetSeason}`;
-          }
+          results.sort((a, b) => (a.last_season || 1) - (b.last_season || 1));
+          kodikUrl = normalizeKodikLink(results[0].link);
         }
       }
     } else {
