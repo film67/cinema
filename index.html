@@ -935,10 +935,11 @@
   <div id="filterBar">
     <span class="filter-label">Сортировка:</span>
     <select class="filter-select" id="sortSelect" onchange="applyFilters()">
-      <option value="popularity.desc">По популярности</option>
-      <option value="vote_average.desc">По рейтингу</option>
-      <option value="primary_release_date.desc">Сначала новые</option>
-      <option value="primary_release_date.asc">Сначала старые</option>
+      <option value="popularity.desc">🔥 По популярности</option>
+      <option value="vote_average.desc">⭐ По рейтингу TMDB/IMDb</option>
+      <option value="revenue.desc">💰 По кассовым сборам</option>
+      <option value="primary_release_date.desc">🆕 Сначала новые</option>
+      <option value="primary_release_date.asc">📅 Сначала старые</option>
     </select>
     <div class="filter-sep"></div>
     <span class="filter-label">Жанр:</span>
@@ -950,6 +951,9 @@
     <select class="filter-select" id="yearSelect" onchange="applyFilters()">
       <option value="">Все годы</option>
     </select>
+  </div>
+  <div id="sortHint" style="display:none; font-size:11px; color:var(--text3); padding:0 0 14px; margin-top:-10px;">
+    ⭐ Рейтинг TMDB тесно коррелирует с IMDb. КП рейтинг доступен при открытии карточки фильма.
   </div>
   <div id="searchResults"></div>
   <!-- Sentinel для infinite scroll — когда он появляется в видимой зоне, грузим следующую страницу -->
@@ -1609,6 +1613,8 @@ function onEpisodeChange() {} // не используется, Kodik управ
 // ═══════════════════════════════════════════════════
 // EXTERNAL RATINGS (KP + IMDb)
 // ═══════════════════════════════════════════════════
+const KPDEV_TOKEN = '2YMQFG3-6EK4QJ2-GPJ402M-HC3J1SX'; // kinopoisk.dev token
+
 async function loadExternalRatings(item, gen) {
   const el = document.getElementById('modalRatings');
   if (!el) return;
@@ -1632,45 +1638,78 @@ async function loadExternalRatings(item, gen) {
   const imdbId = ids?.imdb || item.imdb_id || null;
   const kpId   = ids?.kp   || null;
 
-  // Пробуем rating.kinopoisk.ru — даёт сразу KP и IMDb
+  // Попытка 1: kinopoisk.dev API (бесплатный, без CORS проблем)
   if (kpId) {
     try {
-      const res = await fetch(`https://rating.kinopoisk.ru/${kpId}.xml`);
-      const text = await res.text();
-      if (gen !== modalGeneration) return;
-      const xml = new DOMParser().parseFromString(text, 'text/xml');
-      const kpVal   = xml.querySelector('kp_rating')?.textContent?.trim();
-      const imdbVal = xml.querySelector('imdb_rating')?.textContent?.trim();
-
-      let html = '';
-      if (kpVal && parseFloat(kpVal) > 0) {
-        const kpUrl = `https://www.kinopoisk.ru/film/${kpId}/`;
-        html += `<a class="rating-badge kp-badge link-badge" href="${kpUrl}" target="_blank" rel="noopener">
-          <span class="rb-logo">КП</span><span class="rb-val">${kpVal}</span>
-        </a>`;
+      const res = await fetch(`https://api.kinopoisk.dev/v1.4/movie/${kpId}`, {
+        headers: { 'X-API-KEY': KPDEV_TOKEN }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (gen !== modalGeneration) return;
+        const kpVal   = data?.rating?.kp   ? data.rating.kp.toFixed(1)   : null;
+        const imdbVal = data?.rating?.imdb ? data.rating.imdb.toFixed(1) : null;
+        let html = '';
+        if (kpVal && parseFloat(kpVal) > 0) {
+          const kpUrl = `https://www.kinopoisk.ru/film/${kpId}/`;
+          html += `<a class="rating-badge kp-badge link-badge" href="${kpUrl}" target="_blank" rel="noopener">
+            <span class="rb-logo">КП</span><span class="rb-val">${kpVal}</span>
+          </a>`;
+        }
+        if (imdbVal && parseFloat(imdbVal) > 0) {
+          const imdbUrl = imdbId ? `https://www.imdb.com/title/${imdbId}/` : '#';
+          html += `<a class="rating-badge imdb-badge link-badge" href="${imdbUrl}" target="_blank" rel="noopener">
+            <span class="rb-logo">IMDb</span><span class="rb-val">${imdbVal}</span>
+          </a>`;
+        }
+        if (tmdbScore) html += `<div class="rating-badge tmdb-badge"><span class="rb-logo">TMDB</span><span class="rb-val">${tmdbScore}</span></div>`;
+        if (html) { el.innerHTML = html; return; }
       }
-      if (imdbVal && parseFloat(imdbVal) > 0) {
-        const imdbUrl = imdbId ? `https://www.imdb.com/title/${imdbId}/` : '#';
-        html += `<a class="rating-badge imdb-badge link-badge" href="${imdbUrl}" target="_blank" rel="noopener">
-          <span class="rb-logo">IMDb</span><span class="rb-val">${imdbVal}</span>
-        </a>`;
-      }
-      if (tmdbScore) {
-        html += `<div class="rating-badge tmdb-badge"><span class="rb-logo">TMDB</span><span class="rb-val">${tmdbScore}</span></div>`;
-      }
-      if (html) { el.innerHTML = html; return; }
-    } catch(e) { /* CORS заблокирован — пробуем OMDB */ }
+    } catch(e) { /* пробуем следующий метод */ }
   }
 
   if (gen !== modalGeneration) return;
 
-  // Fallback: OMDB API для IMDb рейтинга
+  // Попытка 2: kinopoisk.dev поиск по IMDb ID (если нет kpId)
+  if (!kpId && imdbId) {
+    try {
+      const res = await fetch(`https://api.kinopoisk.dev/v1.4/movie?externalId.imdb=${imdbId}&limit=1`, {
+        headers: { 'X-API-KEY': KPDEV_TOKEN }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (gen !== modalGeneration) return;
+        const movie   = data?.docs?.[0];
+        const kpVal   = movie?.rating?.kp   ? movie.rating.kp.toFixed(1)   : null;
+        const imdbVal = movie?.rating?.imdb ? movie.rating.imdb.toFixed(1) : null;
+        const kpFoundId = movie?.id;
+        let html = '';
+        if (kpVal && parseFloat(kpVal) > 0) {
+          const kpUrl = kpFoundId ? `https://www.kinopoisk.ru/film/${kpFoundId}/` : '#';
+          html += `<a class="rating-badge kp-badge link-badge" href="${kpUrl}" target="_blank" rel="noopener">
+            <span class="rb-logo">КП</span><span class="rb-val">${kpVal}</span>
+          </a>`;
+        }
+        if (imdbVal && parseFloat(imdbVal) > 0) {
+          const imdbUrl = `https://www.imdb.com/title/${imdbId}/`;
+          html += `<a class="rating-badge imdb-badge link-badge" href="${imdbUrl}" target="_blank" rel="noopener">
+            <span class="rb-logo">IMDb</span><span class="rb-val">${imdbVal}</span>
+          </a>`;
+        }
+        if (tmdbScore) html += `<div class="rating-badge tmdb-badge"><span class="rb-logo">TMDB</span><span class="rb-val">${tmdbScore}</span></div>`;
+        if (html) { el.innerHTML = html; return; }
+      }
+    } catch(e) {}
+  }
+
+  if (gen !== modalGeneration) return;
+
+  // Попытка 3: OMDB для IMDb рейтинга
   if (imdbId) {
     try {
       const res = await fetch(`https://www.omdbapi.com/?i=${imdbId}&apikey=b9bd48a6`);
       const data = await res.json();
       if (gen !== modalGeneration) return;
-
       let html = '';
       if (kpId) {
         const kpUrl = `https://www.kinopoisk.ru/film/${kpId}/`;
@@ -1684,14 +1723,12 @@ async function loadExternalRatings(item, gen) {
           <span class="rb-logo">IMDb</span><span class="rb-val">${data.imdbRating}</span>
         </a>`;
       }
-      if (tmdbScore) {
-        html += `<div class="rating-badge tmdb-badge"><span class="rb-logo">TMDB</span><span class="rb-val">${tmdbScore}</span></div>`;
-      }
+      if (tmdbScore) html += `<div class="rating-badge tmdb-badge"><span class="rb-logo">TMDB</span><span class="rb-val">${tmdbScore}</span></div>`;
       if (html) { el.innerHTML = html; return; }
     } catch(e) {}
   }
 
-  // Финальный fallback — только ссылки без рейтинга
+  // Финальный fallback — ссылки без рейтинга
   if (gen !== modalGeneration) return;
   let html = '';
   if (kpId) {
@@ -1704,9 +1741,7 @@ async function loadExternalRatings(item, gen) {
       <span class="rb-logo">IMDb</span><span class="rb-val">—</span>
     </a>`;
   }
-  if (tmdbScore) {
-    html += `<div class="rating-badge tmdb-badge"><span class="rb-logo">TMDB</span><span class="rb-val">${tmdbScore}</span></div>`;
-  }
+  if (tmdbScore) html += `<div class="rating-badge tmdb-badge"><span class="rb-logo">TMDB</span><span class="rb-val">${tmdbScore}</span></div>`;
   if (html) el.innerHTML = html;
 }
 
@@ -2295,10 +2330,11 @@ async function filterAndShow(type, fromHistory = false) {
     document.getElementById('genreSelect').value = '';
     document.getElementById('yearSelect').value  = '';
     const sortSel = document.getElementById('sortSelect');
-    sortSel.options[2].value = type === 'tv' || type === 'anime' || type === 'dorama'
-      ? 'first_air_date.desc' : 'primary_release_date.desc';
-    sortSel.options[3].value = type === 'tv' || type === 'anime' || type === 'dorama'
-      ? 'first_air_date.asc'  : 'primary_release_date.asc';
+    // options[0]=популярность, [1]=рейтинг, [2]=сборы (только для фильмов), [3]=новые, [4]=старые
+    const isTV = type === 'tv' || type === 'anime' || type === 'dorama';
+    sortSel.options[2].style.display = isTV ? 'none' : '';  // сборы только для фильмов
+    sortSel.options[3].value = isTV ? 'first_air_date.desc' : 'primary_release_date.desc';
+    sortSel.options[4].value = isTV ? 'first_air_date.asc'  : 'primary_release_date.asc';
   } else {
     filterBar.classList.remove('visible');
   }
@@ -2310,6 +2346,12 @@ async function filterAndShow(type, fromHistory = false) {
   const map = { movie:'navMovies', tv:'navSeries', anime:'navAnime', dorama:'navDorama' };
   if (map[type]) document.getElementById(map[type]).classList.add('active');
 }
+
+// Показываем/скрываем подсказку о рейтинге
+document.getElementById('sortSelect').addEventListener('change', function() {
+  const hint = document.getElementById('sortHint');
+  if (hint) hint.style.display = this.value === 'vote_average.desc' ? 'block' : 'none';
+});
 
 async function applyFilters() {
   catalogPage = 1;
@@ -2369,14 +2411,17 @@ async function loadCatalogPage(type, page, replace) {
       results = r.results.map(i => ({ ...i, media_type:'tv' }));
       total   = r.total_results || 0;
     } else if (type === 'movie') {
-      const params = { sort_by: sort, page, 'vote_count.gte': 300 };
+      // При сортировке по рейтингу поднимаем порог голосов чтобы не было шлака
+      const voteMin = sort === 'vote_average.desc' ? 1000 : 100;
+      const params = { sort_by: sort, page, 'vote_count.gte': voteMin };
       if (genre) params.with_genres = genre;
       if (year)  params.primary_release_year = year;
       const r = await api('/discover/movie', params);
       results = r.results.map(i => ({ ...i, media_type:'movie' }));
       total   = r.total_results || 0;
     } else if (type === 'tv') {
-      const params = { sort_by: sort, page, 'vote_count.gte': 150 };
+      const voteMin = sort === 'vote_average.desc' ? 500 : 50;
+      const params = { sort_by: sort, page, 'vote_count.gte': voteMin };
       if (genre) params.with_genres = genre;
       if (year)  params.first_air_date_year = year;
       const r = await api('/discover/tv', params);
@@ -2393,10 +2438,8 @@ async function loadCatalogPage(type, page, replace) {
 
     if (replace) {
       renderCards('searchResults', results);
-      // Фоновая проверка Kodik для каталога (только фильмы и сериалы)
-      if (type === 'movie' || type === 'tv') {
-        checkKodikAvailability('searchResults', results);
-      }
+      // Фоновая проверка Kodik отключена — карточки скрывались из-за ложных промахов
+      // (год ±1, разные транслитерации). Доступность = при открытии плеера.
     } else {
       if (!results.length) { catalogDone = true; return; }
       const frag = document.createElement('div');
