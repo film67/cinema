@@ -1741,74 +1741,79 @@ async function getKodikLink(ids, type, item) {
 // ═══════════════════════════════════════════════════
 // VIBIX API
 // ═══════════════════════════════════════════════════
-// Твой publisher ID из личного кабинета Vibix (видно в embed коде)
 const VIBIX_PUBLISHER_ID = '677443527';
 
-async function getVibixVideoId(kpId) {
-  // Запрашиваем данные по Кинопоиск ID → получаем Vibix video id
-  try {
-    const url = `https://vibix.org/api/external/videos/kp/${kpId}`;
-    const res = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${VIBIX_TOKEN}`,
-        'Accept': 'application/json'
+// Получаем Vibix video id по KP ID или IMDb ID
+async function getVibixVideoId(kpId, imdbId) {
+  // Пробуем по KP ID
+  if (kpId) {
+    try {
+      const res = await fetch(`https://vibix.org/api/external/videos/kp/${kpId}`, {
+        headers: { 'Authorization': `Bearer ${VIBIX_TOKEN}`, 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        console.log('Vibix API (kp) ответ:', data);
+        const vid = data?.id || data?.data?.id || data?.video_id || data?.data?.video_id
+          || (Array.isArray(data) && data[0]?.id) || null;
+        if (vid) return vid;
+      } else {
+        console.log('Vibix API (kp) статус:', res.status);
       }
-    });
-    if (!res.ok) { console.log('Vibix API', res.status, 'для KP:', kpId); return null; }
-    const data = await res.json();
-    console.log('Vibix API ответ:', data);
-
-    // ID видео в Vibix — ищем во всех возможных полях ответа
-    return data?.id
-      || data?.data?.id
-      || data?.video_id
-      || data?.data?.video_id
-      || null;
-  } catch(e) {
-    console.error('Vibix getVibixVideoId error:', e);
-    return null;
+    } catch(e) { console.error('Vibix kp error:', e); }
   }
+
+  // Пробуем по IMDb ID
+  if (imdbId) {
+    try {
+      const cleanImdb = String(imdbId).startsWith('tt') ? imdbId : `tt${imdbId}`;
+      const res = await fetch(`https://vibix.org/api/external/videos/imdb/${cleanImdb}`, {
+        headers: { 'Authorization': `Bearer ${VIBIX_TOKEN}`, 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        console.log('Vibix API (imdb) ответ:', data);
+        const vid = data?.id || data?.data?.id || data?.video_id || data?.data?.video_id
+          || (Array.isArray(data) && data[0]?.id) || null;
+        if (vid) return vid;
+      } else {
+        console.log('Vibix API (imdb) статус:', res.status);
+      }
+    } catch(e) { console.error('Vibix imdb error:', e); }
+  }
+
+  return null;
 }
 
 function renderVibixEmbed(vibixId, type, season, episode) {
-  // Рендерим <ins> тег — официальный способ Vibix
   const embedDiv = document.getElementById('vibixEmbed');
   const dataType = type === 'tv' ? 'series' : 'movie';
 
-  let attrs = `data-publisher-id="${VIBIX_PUBLISHER_ID}" data-type="${dataType}" data-id="${vibixId}"`;
+  let attrs = `data-publisher-id="${VIBIX_PUBLISHER_ID}" data-type="${dataType}" data-id="${vibixId}" data-design="1"`;
   if (type === 'tv') {
     attrs += ` data-season="${season || 1}" data-episode="${episode || 1}"`;
   }
 
   embedDiv.innerHTML = `<ins ${attrs} style="display:block; width:100%; min-height:480px;"></ins>`;
 
-  // Загружаем/перезапускаем скрипт Vibix
+  // Правильный скрипт Vibix (из кабинета)
   const oldScript = document.getElementById('vibix-script');
   if (oldScript) oldScript.remove();
   const script = document.createElement('script');
   script.id = 'vibix-script';
-  script.src = 'https://vibix.org/player.js';
+  script.src = 'https://graphicslab.io/sdk/v2/rendex-sdk.min.js';
   script.async = true;
   script.onload = () => {
     document.getElementById('playerLoading').style.display = 'none';
   };
-  // Если уже загружен — вызываем инициализацию напрямую
-  if (window.Vibix) {
+  setTimeout(() => {
     document.getElementById('playerLoading').style.display = 'none';
-  } else {
-    // Таймаут — на случай если скрипт не вернёт onload
-    setTimeout(() => {
-      document.getElementById('playerLoading').style.display = 'none';
-    }, 3000);
-  }
+  }, 3500);
   document.body.appendChild(script);
 }
 
 async function loadVibixPlayer(ids, type, season, episode) {
-  if (!ids.kp) {
-    return false; // Vibix работает только по KP ID
-  }
-  const vibixId = await getVibixVideoId(ids.kp);
+  const vibixId = await getVibixVideoId(ids.kp, ids.imdb);
   if (!vibixId) return false;
 
   const frame = document.getElementById('playerFrame');
@@ -1916,8 +1921,8 @@ async function setPlayerSrc() {
     const ids = await getExternalIds(snapItem, type);
     if (currentItem !== snapItem || currentSource !== snapSource) return;
 
-    if (!ids || !ids.kp) {
-      showPlayerError('Vibix работает только по Кинопоиск ID — для этого контента он не найден');
+    if (!ids || (!ids.kp && !ids.imdb)) {
+      showPlayerError('Нет KP или IMDb ID — невозможно найти контент в Vibix');
       return;
     }
 
