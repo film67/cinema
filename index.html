@@ -944,18 +944,18 @@ const VIBIX_TOKEN = '25168|oUQBY5zjYNPbSOfbPRKuHxN1jdXWvtQjia0zKNlbdef6dd76';
 // ─── ИСТОЧНИКИ ─────────────────────────────────────
 const SOURCES = [
   {
-    name: 'Kodik',
-    label: 'Основной',
-    isKodik: true
-  },
-  {
     name: 'Vibix',
-    label: 'Vibix',
+    label: '🎬 Основной',
     isVibix: true
   },
   {
+    name: 'Kodik',
+    label: '📺 Запасной',
+    isKodik: true
+  },
+  {
     name: 'Vidsrc',
-    label: 'Запасной',
+    label: '🌐 На английском',
     isKodik: false,
     movie: (id) => `https://vidsrc.me/embed/movie?tmdb=${id}`,
     tv: (id, s, e) => `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`
