@@ -1613,13 +1613,41 @@ function onEpisodeChange() {} // не используется, Kodik управ
 // ═══════════════════════════════════════════════════
 // EXTERNAL RATINGS (KP + IMDb)
 // ═══════════════════════════════════════════════════
-const KPDEV_TOKEN = '2YMQFG3-6EK4QJ2-GPJ402M-HC3J1SX'; // kinopoisk.dev token
+
+// Кэш рейтингов в localStorage чтобы не тратить запросы повторно
+const RATINGS_CACHE_KEY = 'kino_ratings_v1';
+const RATINGS_CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 дней
+
+function getRatingsCache(key) {
+  try {
+    const raw = localStorage.getItem(RATINGS_CACHE_KEY);
+    if (!raw) return null;
+    const cache = JSON.parse(raw);
+    const entry = cache[key];
+    if (!entry) return null;
+    if (Date.now() - entry.ts > RATINGS_CACHE_TTL) return null;
+    return entry.data;
+  } catch(e) { return null; }
+}
+
+function setRatingsCache(key, data) {
+  try {
+    const raw = localStorage.getItem(RATINGS_CACHE_KEY);
+    const cache = raw ? JSON.parse(raw) : {};
+    cache[key] = { ts: Date.now(), data };
+    // Чистим старые записи если больше 500
+    const keys = Object.keys(cache);
+    if (keys.length > 500) {
+      keys.sort((a,b) => cache[a].ts - cache[b].ts).slice(0, 100).forEach(k => delete cache[k]);
+    }
+    localStorage.setItem(RATINGS_CACHE_KEY, JSON.stringify(cache));
+  } catch(e) {}
+}
 
 async function loadExternalRatings(item, gen) {
   const el = document.getElementById('modalRatings');
   if (!el) return;
 
-  // Сразу показываем TMDB рейтинг пока грузятся остальные
   const tmdbScore = item.vote_average ? item.vote_average.toFixed(1) : null;
   if (tmdbScore) {
     el.innerHTML = `<div class="rating-badge tmdb-badge loading" id="rbTmdb">
@@ -1627,7 +1655,6 @@ async function loadExternalRatings(item, gen) {
     </div>`;
   }
 
-  // Получаем внешние ID
   const type = item.media_type || (item.first_air_date ? 'tv' : 'movie');
   let ids = item._externalIds;
   if (!ids) {
@@ -1638,110 +1665,101 @@ async function loadExternalRatings(item, gen) {
   const imdbId = ids?.imdb || item.imdb_id || null;
   const kpId   = ids?.kp   || null;
 
-  // Попытка 1: kinopoisk.dev API (бесплатный, без CORS проблем)
-  if (kpId) {
-    try {
-      const res = await fetch(`https://api.kinopoisk.dev/v1.4/movie/${kpId}`, {
-        headers: { 'X-API-KEY': KPDEV_TOKEN }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (gen !== modalGeneration) return;
-        const kpVal   = data?.rating?.kp   ? data.rating.kp.toFixed(1)   : null;
-        const imdbVal = data?.rating?.imdb ? data.rating.imdb.toFixed(1) : null;
-        let html = '';
-        if (kpVal && parseFloat(kpVal) > 0) {
-          const kpUrl = `https://www.kinopoisk.ru/film/${kpId}/`;
-          html += `<a class="rating-badge kp-badge link-badge" href="${kpUrl}" target="_blank" rel="noopener">
-            <span class="rb-logo">КП</span><span class="rb-val">${kpVal}</span>
-          </a>`;
-        }
-        if (imdbVal && parseFloat(imdbVal) > 0) {
-          const imdbUrl = imdbId ? `https://www.imdb.com/title/${imdbId}/` : '#';
-          html += `<a class="rating-badge imdb-badge link-badge" href="${imdbUrl}" target="_blank" rel="noopener">
-            <span class="rb-logo">IMDb</span><span class="rb-val">${imdbVal}</span>
-          </a>`;
-        }
-        if (tmdbScore) html += `<div class="rating-badge tmdb-badge"><span class="rb-logo">TMDB</span><span class="rb-val">${tmdbScore}</span></div>`;
-        if (html) { el.innerHTML = html; return; }
-      }
-    } catch(e) { /* пробуем следующий метод */ }
+  // Проверяем кэш
+  const cacheKey = kpId || imdbId || String(item.id);
+  const cached = getRatingsCache(cacheKey);
+  if (cached) {
+    el.innerHTML = cached;
+    return;
   }
 
-  if (gen !== modalGeneration) return;
+  function buildHtml(kpVal, imdbVal, kpIdLocal, imdbIdLocal) {
+    let html = '';
+    if (kpVal && parseFloat(kpVal) > 0) {
+      const kpUrl = kpIdLocal ? `https://www.kinopoisk.ru/film/${kpIdLocal}/` : '#';
+      html += `<a class="rating-badge kp-badge link-badge" href="${kpUrl}" target="_blank" rel="noopener">
+        <span class="rb-logo">КП</span><span class="rb-val">${kpVal}</span>
+      </a>`;
+    } else if (kpIdLocal) {
+      html += `<a class="rating-badge kp-badge link-badge" href="https://www.kinopoisk.ru/film/${kpIdLocal}/" target="_blank" rel="noopener">
+        <span class="rb-logo">КП</span><span class="rb-val">—</span>
+      </a>`;
+    }
+    if (imdbVal && parseFloat(imdbVal) > 0) {
+      const imdbUrl = imdbIdLocal ? `https://www.imdb.com/title/${imdbIdLocal}/` : '#';
+      html += `<a class="rating-badge imdb-badge link-badge" href="${imdbUrl}" target="_blank" rel="noopener">
+        <span class="rb-logo">IMDb</span><span class="rb-val">${imdbVal}</span>
+      </a>`;
+    } else if (imdbIdLocal) {
+      html += `<a class="rating-badge imdb-badge link-badge" href="https://www.imdb.com/title/${imdbIdLocal}/" target="_blank" rel="noopener">
+        <span class="rb-logo">IMDb</span><span class="rb-val">—</span>
+      </a>`;
+    }
+    if (tmdbScore) {
+      html += `<div class="rating-badge tmdb-badge"><span class="rb-logo">TMDB</span><span class="rb-val">${tmdbScore}</span></div>`;
+    }
+    return html;
+  }
 
-  // Попытка 2: kinopoisk.dev поиск по IMDb ID (если нет kpId)
-  if (!kpId && imdbId) {
+  // ── Метод 1: kinopoiskapiunofficial.tech по KP ID ──
+  // Этот сервис точно поддерживает CORS из браузера
+  if (kpId) {
     try {
-      const res = await fetch(`https://api.kinopoisk.dev/v1.4/movie?externalId.imdb=${imdbId}&limit=1`, {
-        headers: { 'X-API-KEY': KPDEV_TOKEN }
+      const res = await fetch(`https://kinopoiskapiunofficial.tech/api/v2.2/films/${kpId}`, {
+        headers: { 'X-API-KEY': '2YMQFG3-6EK4QJ2-GPJ402M-HC3J1SX' }
       });
       if (res.ok) {
         const data = await res.json();
         if (gen !== modalGeneration) return;
-        const movie   = data?.docs?.[0];
-        const kpVal   = movie?.rating?.kp   ? movie.rating.kp.toFixed(1)   : null;
-        const imdbVal = movie?.rating?.imdb ? movie.rating.imdb.toFixed(1) : null;
-        const kpFoundId = movie?.id;
-        let html = '';
-        if (kpVal && parseFloat(kpVal) > 0) {
-          const kpUrl = kpFoundId ? `https://www.kinopoisk.ru/film/${kpFoundId}/` : '#';
-          html += `<a class="rating-badge kp-badge link-badge" href="${kpUrl}" target="_blank" rel="noopener">
-            <span class="rb-logo">КП</span><span class="rb-val">${kpVal}</span>
-          </a>`;
-        }
-        if (imdbVal && parseFloat(imdbVal) > 0) {
-          const imdbUrl = `https://www.imdb.com/title/${imdbId}/`;
-          html += `<a class="rating-badge imdb-badge link-badge" href="${imdbUrl}" target="_blank" rel="noopener">
-            <span class="rb-logo">IMDb</span><span class="rb-val">${imdbVal}</span>
-          </a>`;
-        }
-        if (tmdbScore) html += `<div class="rating-badge tmdb-badge"><span class="rb-logo">TMDB</span><span class="rb-val">${tmdbScore}</span></div>`;
-        if (html) { el.innerHTML = html; return; }
+        const kpVal   = data?.ratingKinopoisk   ? data.ratingKinopoisk.toFixed(1)   : null;
+        const imdbVal = data?.ratingImdb         ? data.ratingImdb.toFixed(1)        : null;
+        const imdbIdFromKp = data?.imdbId || imdbId;
+        const html = buildHtml(kpVal, imdbVal, kpId, imdbIdFromKp);
+        if (html) { el.innerHTML = html; setRatingsCache(cacheKey, html); return; }
       }
     } catch(e) {}
   }
 
   if (gen !== modalGeneration) return;
 
-  // Попытка 3: OMDB для IMDb рейтинга
+  // ── Метод 2: kinopoiskapiunofficial.tech поиск по IMDb ID ──
+  if (imdbId && !kpId) {
+    try {
+      const res = await fetch(`https://kinopoiskapiunofficial.tech/api/v2.2/films?imdbId=${imdbId}`, {
+        headers: { 'X-API-KEY': '2YMQFG3-6EK4QJ2-GPJ402M-HC3J1SX' }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (gen !== modalGeneration) return;
+        const film = data?.items?.[0];
+        if (film) {
+          const kpVal   = film.ratingKinopoisk ? film.ratingKinopoisk.toFixed(1) : null;
+          const imdbVal = film.ratingImdb      ? film.ratingImdb.toFixed(1)      : null;
+          const foundKpId = film.kinopoiskId ? String(film.kinopoiskId) : null;
+          const html = buildHtml(kpVal, imdbVal, foundKpId, imdbId);
+          if (html) { el.innerHTML = html; setRatingsCache(cacheKey, html); return; }
+        }
+      }
+    } catch(e) {}
+  }
+
+  if (gen !== modalGeneration) return;
+
+  // ── Метод 3: OMDB fallback для IMDb рейтинга ──
   if (imdbId) {
     try {
       const res = await fetch(`https://www.omdbapi.com/?i=${imdbId}&apikey=b9bd48a6`);
       const data = await res.json();
       if (gen !== modalGeneration) return;
-      let html = '';
-      if (kpId) {
-        const kpUrl = `https://www.kinopoisk.ru/film/${kpId}/`;
-        html += `<a class="rating-badge kp-badge link-badge" href="${kpUrl}" target="_blank" rel="noopener">
-          <span class="rb-logo">КП</span><span class="rb-val">—</span>
-        </a>`;
-      }
-      if (data?.imdbRating && data.imdbRating !== 'N/A') {
-        const imdbUrl = `https://www.imdb.com/title/${imdbId}/`;
-        html += `<a class="rating-badge imdb-badge link-badge" href="${imdbUrl}" target="_blank" rel="noopener">
-          <span class="rb-logo">IMDb</span><span class="rb-val">${data.imdbRating}</span>
-        </a>`;
-      }
-      if (tmdbScore) html += `<div class="rating-badge tmdb-badge"><span class="rb-logo">TMDB</span><span class="rb-val">${tmdbScore}</span></div>`;
-      if (html) { el.innerHTML = html; return; }
+      const imdbVal = (data?.imdbRating && data.imdbRating !== 'N/A') ? data.imdbRating : null;
+      const html = buildHtml(null, imdbVal, kpId, imdbId);
+      if (html) { el.innerHTML = html; setRatingsCache(cacheKey, html); return; }
     } catch(e) {}
   }
 
-  // Финальный fallback — ссылки без рейтинга
+  // ── Финальный fallback — ссылки без рейтинга ──
   if (gen !== modalGeneration) return;
-  let html = '';
-  if (kpId) {
-    html += `<a class="rating-badge kp-badge link-badge" href="https://www.kinopoisk.ru/film/${kpId}/" target="_blank" rel="noopener">
-      <span class="rb-logo">КП</span><span class="rb-val">—</span>
-    </a>`;
-  }
-  if (imdbId) {
-    html += `<a class="rating-badge imdb-badge link-badge" href="https://www.imdb.com/title/${imdbId}/" target="_blank" rel="noopener">
-      <span class="rb-logo">IMDb</span><span class="rb-val">—</span>
-    </a>`;
-  }
-  if (tmdbScore) html += `<div class="rating-badge tmdb-badge"><span class="rb-logo">TMDB</span><span class="rb-val">${tmdbScore}</span></div>`;
+  const html = buildHtml(null, null, kpId, imdbId);
   if (html) el.innerHTML = html;
 }
 
