@@ -2159,8 +2159,8 @@ function showPlayerError(msg) {
 // ALLOHA PLAYER
 // ═══════════════════════════════════════════════════
 function getAllohaUrl(ids, type, season, episode) {
-  // Базовый URL плеера Alloha (поддомен для раздачи)
-  const base = 'https://alloha.tv/';
+  // Alloha раздаёт плеер через твой собственный домен (настроено в ЛК Alloha → Плеер)
+  const base = 'https://p.kino.uziptv.vip/';
   const params = new URLSearchParams({ token: ALLOHA_TOKEN });
 
   if (ids.kp) {
