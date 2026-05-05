@@ -15,6 +15,7 @@
 <noscript><div><img src="https://mc.yandex.ru/watch/108555772" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 <!-- /Yandex.Metrika counter -->
   <meta name="google-site-verification" content="C0hjetmwfu59Zm99-PhM_8p5VUFgqcR2vHcMpAt1a-s" />
+  <meta name="allohatv" content="i7d6eiCMQHzJa9bCpIQ6RybebsBgAmp5">
   <meta name="referrer" content="no-referrer-when-downgrade">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1247,26 +1248,32 @@
 // ═══════════════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════════════
-const API_KEY     = '558568949e362ddf3eabb364c1222b93';
-const API_BASE    = 'https://api.themoviedb.org/3';
-const KODIK_TOKEN = '9386a8f4ef7abc8415155bb91edf3fe8';
-const VIBIX_TOKEN = '25168|oUQBY5zjYNPbSOfbPRKuHxN1jdXWvtQjia0zKNlbdef6dd76';
+const API_KEY      = '558568949e362ddf3eabb364c1222b93';
+const API_BASE     = 'https://api.themoviedb.org/3';
+const KODIK_TOKEN  = '9386a8f4ef7abc8415155bb91edf3fe8';
+const VIBIX_TOKEN  = '25168|oUQBY5zjYNPbSOfbPRKuHxN1jdXWvtQjia0zKNlbdef6dd76';
+const ALLOHA_TOKEN = '7f303bf45447726226613c600db22e';
 
 // ─── ИСТОЧНИКИ ─────────────────────────────────────
 const SOURCES = [
   {
+    name: 'Alloha',
+    label: 'Основной',
+    isAlloha: true
+  },
+  {
     name: 'Vibix',
-    label: '🎬 Основной',
+    label: 'Основной 2',
     isVibix: true
   },
   {
     name: 'Kodik',
-    label: '📺 Запасной',
+    label: 'Запасной',
     isKodik: true
   },
   {
     name: 'Vidsrc',
-    label: '🌐 На английском',
+    label: 'На английском',
     isKodik: false,
     movie: (id) => `https://vidsrc.me/embed/movie?tmdb=${id}`,
     tv: (id, s, e) => `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`
@@ -1597,6 +1604,20 @@ async function openModal(itemId) {
 
   let item = itemsMap.get(itemId) || { id: itemId };
   currentItem = item;
+
+  // ── Динамический title + URL для SEO ──────────────
+  const titleText = item.title || item.name || '';
+  const yearText  = (item.release_date || item.first_air_date || '').slice(0, 4);
+  if (titleText) {
+    const pageTitle = yearText
+      ? `${titleText} (${yearText}) — смотреть онлайн бесплатно | KINO UZIPTV VIP`
+      : `${titleText} — смотреть онлайн бесплатно | KINO UZIPTV VIP`;
+    document.title = pageTitle;
+    try {
+      history.pushState({ page: 'modal', itemId }, '', `?item=${itemId}`);
+    } catch(e) {}
+  }
+
   fillModalBasic(item);
 
   try {
@@ -1669,6 +1690,15 @@ function fillModalFull(item) {
   const year = (item.release_date || item.first_air_date || '').slice(0,4);
   const rating = item.vote_average ? item.vote_average.toFixed(1) : null;
   const type = item.media_type;
+
+  // ── Обновляем title с полными данными ─────────────
+  const titleText = item.title || item.name || '';
+  if (titleText) {
+    const typeLabel = type === 'tv' ? 'сериал' : 'фильм';
+    document.title = year
+      ? `${titleText} (${year}) — смотреть ${typeLabel} онлайн бесплатно HD | KINO UZIPTV VIP`
+      : `${titleText} — смотреть ${typeLabel} онлайн бесплатно HD | KINO UZIPTV VIP`;
+  }
   const extras = [
     item.runtime ? `⏱ ${item.runtime} мин.` : '',
     item.number_of_seasons ? `📚 ${item.number_of_seasons} сезонов` : '',
@@ -1868,6 +1898,10 @@ function closeModal() {
   document.body.style.overflow = '';
   document.getElementById('playerWrap').style.display = 'none';
   currentItem = null;
+
+  // ── Восстанавливаем исходный title и URL ──────────
+  document.title = 'Смотреть фильмы, сериалы, аниме, дорамы онлайн бесплатно HD — KINO UZIPTV VIP';
+  try { history.pushState({ page: 'main' }, '', location.pathname); } catch(e) {}
 }
 
 function handleModalBgClick(e) {
@@ -2121,6 +2155,34 @@ function showPlayerError(msg) {
   errDiv.innerHTML = `<div class="icon">😔</div><p>${msg}</p><small>Попробуйте позже или поищите другой контент</small>`;
 }
 
+// ═══════════════════════════════════════════════════
+// ALLOHA PLAYER
+// ═══════════════════════════════════════════════════
+async function getAllohaUrl(ids, type, season, episode) {
+  // Alloha поддерживает поиск по KP ID или IMDb ID
+  const params = new URLSearchParams({ token: ALLOHA_TOKEN });
+
+  if (ids.kp) {
+    params.set('kp', ids.kp);
+  } else if (ids.imdb) {
+    const imdb = String(ids.imdb).startsWith('tt') ? ids.imdb : `tt${ids.imdb}`;
+    params.set('imdb', imdb);
+  } else {
+    return null;
+  }
+
+  // Для сериалов — передаём номер сезона/эпизода
+  if (type === 'tv') {
+    params.set('season', season || 1);
+    params.set('episode', episode || 1);
+  }
+
+  // Alloha embed URL
+  const url = `https://alloha.tv/?${params.toString()}`;
+  console.log('Alloha URL:', url);
+  return url;
+}
+
 // --- Установка плеера ---
 async function setPlayerSrc() {
   if (!currentItem) return;
@@ -2146,7 +2208,34 @@ async function setPlayerSrc() {
   document.getElementById('playerLoading').style.display = 'flex';
   wrap.style.display = 'block';
 
-  if (source.isKodik) {
+  if (source.isAlloha) {
+    // ─── Alloha плеер ─────────────────────────────
+    const ids = await getExternalIds(snapItem, type);
+    if (currentItem !== snapItem || currentSource !== snapSource) return;
+
+    if (!ids || (!ids.kp && !ids.imdb)) {
+      showPlayerError('Нет KP или IMDb ID — невозможно найти контент в Alloha');
+      return;
+    }
+
+    const season  = type === 'tv' ? (kodikSeasonLinks[currentSeason]?.lastSeason || currentSeason + 1) : null;
+    const episode = type === 'tv' ? snapEpisode : null;
+    const allohaUrl = await getAllohaUrl(ids, type, season, episode);
+
+    if (currentItem !== snapItem || currentSource !== snapSource) return;
+
+    if (!allohaUrl) {
+      showPlayerError('Этот контент недоступен в Alloha');
+      return;
+    }
+
+    document.getElementById('playerFrame').onload = () => {
+      document.getElementById('playerLoading').style.display = 'none';
+    };
+    document.getElementById('playerFrame').src = allohaUrl;
+    console.log('Alloha player URL:', allohaUrl);
+
+  } else if (source.isKodik) {
     const ids = await getExternalIds(snapItem, type);
     if (currentItem !== snapItem || currentSource !== snapSource) return;
 
@@ -2670,7 +2759,20 @@ function pushState(page, type) {
 function handlePopState(e) {
   const s = e.state;
   if (!s) { showPage('main'); return; }
-  if (s.page === 'search' && s.type) {
+  if (s.page === 'modal' && s.itemId) {
+    // При нажатии "Назад" из фильма — просто закрываем модал без рекурсии
+    if (document.getElementById('modal').classList.contains('open')) {
+      const frame = document.getElementById('playerFrame');
+      frame.onload = null; frame.src = '';
+      const vDiv = document.getElementById('vibixEmbed');
+      if (vDiv) { vDiv.innerHTML = ''; vDiv.style.display = 'none'; }
+      document.getElementById('modal').classList.remove('open');
+      document.body.style.overflow = '';
+      document.getElementById('playerWrap').style.display = 'none';
+      currentItem = null;
+      document.title = 'Смотреть фильмы, сериалы, аниме, дорамы онлайн бесплатно HD — KINO UZIPTV VIP';
+    }
+  } else if (s.page === 'search' && s.type) {
     filterAndShow(s.type, true);
   } else if (s.page === 'fav') {
     showPage('fav', true);
