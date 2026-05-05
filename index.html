@@ -2158,7 +2158,9 @@ function showPlayerError(msg) {
 // ═══════════════════════════════════════════════════
 // ALLOHA PLAYER
 // ═══════════════════════════════════════════════════
-async function getAllohaUrl(ids, type, season, episode) {
+function getAllohaUrl(ids, type, season, episode) {
+  // Базовый URL плеера Alloha (поддомен для раздачи)
+  const base = 'https://alloha.tv/';
   const params = new URLSearchParams({ token: ALLOHA_TOKEN });
 
   if (ids.kp) {
@@ -2170,15 +2172,14 @@ async function getAllohaUrl(ids, type, season, episode) {
     return null;
   }
 
-  // Для сериалов — передаём номер сезона/эпизода
+  // Для сериалов добавляем сезон и эпизод
   if (type === 'tv') {
     params.set('season', season || 1);
     params.set('episode', episode || 1);
   }
 
-  // Правильный embed URL Alloha
-  const url = `https://alloha.tv/embed/?${params.toString()}`;
-  console.log('Alloha URL:', url);
+  const url = `${base}?${params.toString()}`;
+  console.log('Alloha iframe URL:', url);
   return url;
 }
 
@@ -2219,7 +2220,7 @@ async function setPlayerSrc() {
 
     const season  = type === 'tv' ? (kodikSeasonLinks[currentSeason]?.lastSeason || currentSeason + 1) : null;
     const episode = type === 'tv' ? snapEpisode : null;
-    const allohaUrl = await getAllohaUrl(ids, type, season, episode);
+    const allohaUrl = getAllohaUrl(ids, type, season, episode);
 
     if (currentItem !== snapItem || currentSource !== snapSource) return;
 
