@@ -2159,7 +2159,6 @@ function showPlayerError(msg) {
 // ALLOHA PLAYER
 // ═══════════════════════════════════════════════════
 async function getAllohaUrl(ids, type, season, episode) {
-  // Alloha поддерживает поиск по KP ID или IMDb ID
   const params = new URLSearchParams({ token: ALLOHA_TOKEN });
 
   if (ids.kp) {
@@ -2177,8 +2176,8 @@ async function getAllohaUrl(ids, type, season, episode) {
     params.set('episode', episode || 1);
   }
 
-  // Alloha embed URL
-  const url = `https://alloha.tv/?${params.toString()}`;
+  // Правильный embed URL Alloha
+  const url = `https://alloha.tv/embed/?${params.toString()}`;
   console.log('Alloha URL:', url);
   return url;
 }
