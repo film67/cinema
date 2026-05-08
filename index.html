@@ -1697,7 +1697,24 @@ async function resolveItemTypeAndDetails(item, itemId) {
 
   for (const type of candidates) {
     try {
-      const details = await api(`/${type}/${itemId}`, { append_to_response: 'external_ids' });
+      let details = await api(`/${type}/${itemId}`, { append_to_response: 'external_ids' });
+
+      // Для прямых ссылок ?item=ID TMDB иногда отдаёт пустое русское описание.
+      // Берём английский ответ только как fallback для названия/описания, остальные данные не трогаем.
+      if (!details.overview || !(details.title || details.name)) {
+        try {
+          const fallback = await api(`/${type}/${itemId}`, { append_to_response: 'external_ids', language: 'en-US' });
+          details = {
+            ...details,
+            title: details.title || fallback.title || details.original_title || fallback.original_title || '',
+            name: details.name || fallback.name || details.original_name || fallback.original_name || '',
+            overview: details.overview || fallback.overview || '',
+            genres: (details.genres && details.genres.length) ? details.genres : (fallback.genres || []),
+            external_ids: details.external_ids || fallback.external_ids || null
+          };
+        } catch(e) {}
+      }
+
       return { type, details };
     } catch (e) {
       lastError = e;
@@ -1823,7 +1840,11 @@ function fillModalBasic(item) {
 }
 
 function fillModalFull(item) {
-  if (item.overview) document.getElementById('modalOverview').textContent = item.overview;
+  const fullTitle = item.title || item.name || item.original_title || item.original_name || '';
+  if (fullTitle) document.getElementById('modalTitle').textContent = fullTitle;
+
+  const fullOverview = item.overview || item.tagline || 'Описание пока недоступно.';
+  document.getElementById('modalOverview').textContent = fullOverview;
 
   // При прямом входе через ?item=ID постер и фон приходят только после TMDB details.
   if (item.poster_path) {
