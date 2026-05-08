@@ -1009,26 +1009,27 @@
   /* ─── ANTI-ADBLOCK NOTICE ─── */
   .adblock-bait {
     position:absolute !important;
-    left:-9999px !important;
-    top:-9999px !important;
-    width:1px !important;
-    height:1px !important;
+    left:-10000px !important;
+    top:-10000px !important;
+    width:300px !important;
+    height:250px !important;
     pointer-events:none !important;
+    opacity:1 !important;
   }
   #adblockOverlay {
     position:fixed; inset:0; z-index:5000;
     display:none; align-items:center; justify-content:center;
-    background:rgba(0,0,0,0.86);
+    background:rgba(0,0,0,0.88);
     backdrop-filter:blur(12px);
     padding:18px;
   }
   #adblockOverlay.show { display:flex; }
   .adblock-box {
-    width:100%; max-width:440px;
+    width:100%; max-width:460px;
     background:var(--bg2);
-    border:1px solid rgba(229,9,20,0.35);
+    border:1px solid rgba(229,9,20,0.38);
     border-radius:16px;
-    box-shadow:0 24px 70px rgba(0,0,0,0.65), 0 0 40px rgba(229,9,20,0.12);
+    box-shadow:0 24px 70px rgba(0,0,0,0.7), 0 0 40px rgba(229,9,20,0.14);
     padding:26px;
     text-align:center;
   }
@@ -1274,7 +1275,7 @@
     <div class="modal-body">
       <div class="modal-tabs">
         <button class="modal-tab active" onclick="switchModalTab('info', this)">Описание</button>
-        <button class="modal-tab" onclick="switchModalTab('player', this)">Смотреть</button>
+        <button class="modal-tab" onclick="openPlayerTabGuarded(this)">Смотреть</button>
         <button class="modal-tab" onclick="switchModalTab('similar', this)">Похожее</button>
       </div>
 
@@ -1317,8 +1318,9 @@
 <!-- TOAST -->
 <div id="toast"></div>
 
+
 <!-- ANTI-ADBLOCK -->
-<div class="adblock-bait adsbox ad adsbygoogle ad-banner banner-ads" id="adblockBait">&nbsp;</div>
+<div class="adblock-bait adsbox ad adsbygoogle ad-banner banner-ads pub_300x250 text-ad textAd google-auto-placed" id="adblockBait">&nbsp;</div>
 <div id="adblockOverlay">
   <div class="adblock-box">
     <div class="adblock-icon">🛡️</div>
@@ -1327,7 +1329,6 @@
     <button onclick="recheckAdBlock()">Я отключил, проверить</button>
   </div>
 </div>
-
 
 <script>
 // ═══════════════════════════════════════════════════
@@ -1814,7 +1815,8 @@ function fillModalBasic(item) {
     `<button class="source-btn ${i===0?'active':''}" onclick="selectSource(${i})">${s.label}</button>`
   ).join('');
 
-  document.getElementById('modalWatchBtn').onclick = () => {
+  document.getElementById('modalWatchBtn').onclick = async () => {
+    if (await checkAdBlock()) return;
     switchModalTab('player', document.querySelector('.modal-tab:nth-child(2)'));
     startPlayer();
   };
@@ -1822,6 +1824,16 @@ function fillModalBasic(item) {
 
 function fillModalFull(item) {
   if (item.overview) document.getElementById('modalOverview').textContent = item.overview;
+
+  // При прямом входе через ?item=ID постер и фон приходят только после TMDB details.
+  if (item.poster_path) {
+    document.getElementById('modalPoster').src = `https://image.tmdb.org/t/p/w500${item.poster_path}`;
+  }
+  if (item.backdrop_path) {
+    document.getElementById('modalBackdrop').style.backgroundImage = `url(https://image.tmdb.org/t/p/w1280${item.backdrop_path})`;
+  } else if (item.poster_path) {
+    document.getElementById('modalBackdrop').style.backgroundImage = `url(https://image.tmdb.org/t/p/w780${item.poster_path})`;
+  }
 
   const year = (item.release_date || item.first_air_date || '').slice(0,4);
   const rating = item.vote_average ? item.vote_average.toFixed(1) : null;
@@ -1851,9 +1863,6 @@ function fillModalFull(item) {
   const tags = (item.genres || []).map(g => `<span class="tag">${g.name}</span>`);
   document.getElementById('modalTags').innerHTML = tags.join('');
 
-  if (item.backdrop_path) {
-    document.getElementById('modalBackdrop').style.backgroundImage = `url(https://image.tmdb.org/t/p/w1280${item.backdrop_path})`;
-  }
 }
 
 function kodikTitleMatches(kodikTitle, tmdbItem) {
@@ -2873,6 +2882,11 @@ function toggleMobileSearch() {
 // ═══════════════════════════════════════════════════
 // MODAL TABS
 // ═══════════════════════════════════════════════════
+async function openPlayerTabGuarded(btn) {
+  if (await checkAdBlock()) return;
+  switchModalTab('player', btn);
+}
+
 function switchModalTab(tab, btn) {
   document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.modal-tab-content').forEach(c => c.classList.remove('active'));
@@ -2918,17 +2932,61 @@ function handlePopState(e) {
 }
 window.addEventListener('popstate', handlePopState);
 
-function isAdBlockEnabled() {
-  const bait = document.getElementById('adblockBait');
-  if (!bait) return false;
+function ensureAdBlockBait() {
+  let bait = document.getElementById('adblockBait');
+  if (!bait) {
+    bait = document.createElement('div');
+    bait.id = 'adblockBait';
+    bait.className = 'adblock-bait adsbox ad adsbygoogle ad-banner banner-ads pub_300x250 text-ad textAd google-auto-placed';
+    bait.innerHTML = '&nbsp;';
+    document.body.appendChild(bait);
+  }
+  return bait;
+}
+
+function isBaitBlocked() {
+  const bait = ensureAdBlockBait();
   const st = window.getComputedStyle(bait);
   return (
+    !document.body.contains(bait) ||
     bait.offsetHeight === 0 ||
     bait.offsetWidth === 0 ||
     st.display === 'none' ||
     st.visibility === 'hidden' ||
     st.opacity === '0'
   );
+}
+
+function testAdResource(url, timeoutMs = 1600) {
+  return new Promise((resolve) => {
+    let done = false;
+    const finish = (blocked) => {
+      if (done) return;
+      done = true;
+      resolve(blocked);
+    };
+
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = url + (url.includes('?') ? '&' : '?') + 'cv=' + Date.now();
+
+    const timer = setTimeout(() => finish(true), timeoutMs);
+    s.onload = () => { clearTimeout(timer); finish(false); try { s.remove(); } catch(e) {} };
+    s.onerror = () => { clearTimeout(timer); finish(true); try { s.remove(); } catch(e) {} };
+
+    document.head.appendChild(s);
+  });
+}
+
+async function isAdBlockEnabled() {
+  if (isBaitBlocked()) return true;
+
+  const checks = await Promise.all([
+    testAdResource('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', 1600),
+    testAdResource('https://securepubads.g.doubleclick.net/tag/js/gpt.js', 1600)
+  ]);
+
+  return checks.some(Boolean) || isBaitBlocked();
 }
 
 function showAdBlockOverlay(show) {
@@ -2938,16 +2996,17 @@ function showAdBlockOverlay(show) {
   document.body.style.overflow = show ? 'hidden' : '';
 }
 
-function checkAdBlock() {
-  setTimeout(() => showAdBlockOverlay(isAdBlockEnabled()), 350);
+async function checkAdBlock() {
+  const blocked = await isAdBlockEnabled();
+  showAdBlockOverlay(blocked);
+  return blocked;
 }
 
-function recheckAdBlock() {
-  if (isAdBlockEnabled()) {
+async function recheckAdBlock() {
+  const blocked = await checkAdBlock();
+  if (blocked) {
     showToast('AdBlock всё ещё включён', true);
-    showAdBlockOverlay(true);
   } else {
-    showAdBlockOverlay(false);
     showToast('Спасибо! Приятного просмотра');
   }
 }
@@ -2968,7 +3027,8 @@ function restoreFromURL() {
   }
 }
 
-checkAdBlock();
+setTimeout(checkAdBlock, 500);
+setTimeout(checkAdBlock, 2200);
 init();
 restoreFromURL();
 </script>
