@@ -529,6 +529,25 @@
     cursor: pointer; transition: var(--tr);
   }
   .hero-dot.active { background: var(--accent); width: 22px; }
+  .hero-nav-btn {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    z-index: 2;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.16);
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(12px);
+    color: #fff;
+    font-size: 30px;
+    line-height: 1;
+    cursor: pointer;
+    transition: var(--tr);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-nav-btn:hover { background: rgba(229,9,20,0.78); border-color: rgba(229,9,20,0.9); transform: translateY(-50%) scale(1.05); }
+  .hero-nav-prev { left: clamp(10px, 2vw, 28px); }
+  .hero-nav-next { right: clamp(10px, 2vw, 28px); }
 
   /* ─── SECTIONS ─── */
   #mainPage { padding: 56px clamp(12px,4vw,56px) 80px; }
@@ -985,6 +1004,56 @@
   .mobile-search-bar input:focus { border-color:rgba(229,9,20,0.5); }
   .mobile-search-bar input::placeholder { color:var(--text3); }
 
+
+
+  /* ─── ANTI-ADBLOCK NOTICE ─── */
+  .adblock-bait {
+    position:absolute !important;
+    left:-9999px !important;
+    top:-9999px !important;
+    width:1px !important;
+    height:1px !important;
+    pointer-events:none !important;
+  }
+  #adblockOverlay {
+    position:fixed; inset:0; z-index:5000;
+    display:none; align-items:center; justify-content:center;
+    background:rgba(0,0,0,0.86);
+    backdrop-filter:blur(12px);
+    padding:18px;
+  }
+  #adblockOverlay.show { display:flex; }
+  .adblock-box {
+    width:100%; max-width:440px;
+    background:var(--bg2);
+    border:1px solid rgba(229,9,20,0.35);
+    border-radius:16px;
+    box-shadow:0 24px 70px rgba(0,0,0,0.65), 0 0 40px rgba(229,9,20,0.12);
+    padding:26px;
+    text-align:center;
+  }
+  .adblock-icon { font-size:42px; margin-bottom:12px; }
+  .adblock-box h3 {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:30px; letter-spacing:1px;
+    margin-bottom:10px;
+  }
+  .adblock-box p {
+    color:var(--text2);
+    font-size:14px;
+    line-height:1.65;
+    margin-bottom:18px;
+  }
+  .adblock-box button {
+    background:var(--accent); color:#fff;
+    border:none; border-radius:9px;
+    padding:12px 22px;
+    font-family:'Outfit',sans-serif;
+    font-size:14px; font-weight:700;
+    cursor:pointer; transition:var(--tr);
+  }
+  .adblock-box button:hover { background:var(--accent2); }
+
   /* ─── RESPONSIVE ─── */
   @media (max-width:1024px) {
     .nav-links a { padding:4px 9px; font-size:12px; }
@@ -1029,6 +1098,7 @@
     .btn-fav { padding:4px 8px; font-size:10px; gap:4px; }
     #hero { min-height:360px; padding:0 10px 24px; margin-top:48px; }
     .hero-title { font-size:clamp(26px,5vw,36px); }
+    .hero-nav-btn { width: 34px; height: 34px; font-size: 24px; }
     .hero-btns { flex-direction:column; gap:8px; }
     .btn-play, .btn-info { width:100%; }
     .cards, #searchResults, #favResults { grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:10px; }
@@ -1096,6 +1166,8 @@
       <button class="btn-info" id="heroInfoBtn">ℹ Подробнее</button>
     </div>
   </div>
+  <button class="hero-nav-btn hero-nav-prev" id="heroPrevBtn" type="button" aria-label="Предыдущий баннер">‹</button>
+  <button class="hero-nav-btn hero-nav-next" id="heroNextBtn" type="button" aria-label="Следующий баннер">›</button>
   <div class="hero-dots" id="heroDots"></div>
 </section>
 </div><!-- /heroWrap -->
@@ -1245,6 +1317,18 @@
 <!-- TOAST -->
 <div id="toast"></div>
 
+<!-- ANTI-ADBLOCK -->
+<div class="adblock-bait adsbox ad adsbygoogle ad-banner banner-ads" id="adblockBait">&nbsp;</div>
+<div id="adblockOverlay">
+  <div class="adblock-box">
+    <div class="adblock-icon">🛡️</div>
+    <h3>Отключите AdBlock</h3>
+    <p>Для корректной работы онлайн-кинотеатра отключите блокировщик рекламы на сайте KINO UZIPTV VIP и обновите страницу.</p>
+    <button onclick="recheckAdBlock()">Я отключил, проверить</button>
+  </div>
+</div>
+
+
 <script>
 // ═══════════════════════════════════════════════════
 // CONFIG
@@ -1362,7 +1446,13 @@ async function loadHero() {
   try {
     const data = await api('/trending/all/day');
     const items = data.results.slice(0, 5);
+    if (!items.length) return;
     let heroIdx = 0;
+    let heroTimer = null;
+
+    function setActiveDot() {
+      document.querySelectorAll('.hero-dot').forEach((d,j)=>d.classList.toggle('active',j===heroIdx));
+    }
 
     function render(idx) {
       const item = items[idx];
@@ -1375,27 +1465,54 @@ async function loadHero() {
       document.getElementById('heroOverview').textContent = item.overview || '';
       document.getElementById('heroPlayBtn').onclick = () => openModal(item.id);
       document.getElementById('heroInfoBtn').onclick = () => openModal(item.id);
+      setActiveDot();
+    }
+
+    function goHero(nextIdx, manual = false) {
+      heroIdx = (nextIdx + items.length) % items.length;
+      render(heroIdx);
+      if (manual) restartHeroTimer();
+    }
+
+    function restartHeroTimer() {
+      if (heroTimer) clearInterval(heroTimer);
+      heroTimer = setInterval(() => goHero(heroIdx + 1, false), 6000);
     }
 
     document.getElementById('heroDots').innerHTML = items.map((_, i) =>
       `<div class="hero-dot ${i===0?'active':''}" data-i="${i}"></div>`
     ).join('');
     document.querySelectorAll('.hero-dot').forEach(dot => {
-      dot.onclick = () => {
-        heroIdx = +dot.dataset.i;
-        document.querySelectorAll('.hero-dot').forEach((d,j)=>d.classList.toggle('active',j===heroIdx));
-        render(heroIdx);
-      };
+      dot.onclick = () => goHero(+dot.dataset.i, true);
     });
+
+    const prevBtn = document.getElementById('heroPrevBtn');
+    const nextBtn = document.getElementById('heroNextBtn');
+    if (prevBtn) prevBtn.onclick = () => goHero(heroIdx - 1, true);
+    if (nextBtn) nextBtn.onclick = () => goHero(heroIdx + 1, true);
+
+    const hero = document.getElementById('hero');
+    let touchStartX = 0;
+    let touchStartY = 0;
+    if (hero) {
+      hero.addEventListener('touchstart', (e) => {
+        const t = e.touches[0];
+        touchStartX = t.clientX;
+        touchStartY = t.clientY;
+      }, { passive: true });
+      hero.addEventListener('touchend', (e) => {
+        const t = e.changedTouches[0];
+        const dx = t.clientX - touchStartX;
+        const dy = t.clientY - touchStartY;
+        if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+          goHero(dx < 0 ? heroIdx + 1 : heroIdx - 1, true);
+        }
+      }, { passive: true });
+    }
 
     items.forEach(item => itemsMap.set(item.id, item));
     render(0);
-
-    setInterval(() => {
-      heroIdx = (heroIdx + 1) % items.length;
-      document.querySelectorAll('.hero-dot').forEach((d,j)=>d.classList.toggle('active',j===heroIdx));
-      render(heroIdx);
-    }, 6000);
+    restartHeroTimer();
   } catch(e) { console.error('Hero error:', e); }
 }
 
@@ -1572,6 +1689,23 @@ function renderCards(containerId, items) {
 // ═══════════════════════════════════════════════════
 // MODAL
 // ═══════════════════════════════════════════════════
+async function resolveItemTypeAndDetails(item, itemId) {
+  const knownType = item.media_type || (item.first_air_date ? 'tv' : (item.release_date ? 'movie' : null));
+  const candidates = knownType ? [knownType] : ['movie', 'tv'];
+  let lastError = null;
+
+  for (const type of candidates) {
+    try {
+      const details = await api(`/${type}/${itemId}`, { append_to_response: 'external_ids' });
+      return { type, details };
+    } catch (e) {
+      lastError = e;
+    }
+  }
+
+  throw lastError || new Error('Item not found');
+}
+
 let modalGeneration = 0;
 
 async function openModal(itemId) {
@@ -1622,8 +1756,9 @@ async function openModal(itemId) {
   fillModalBasic(item);
 
   try {
-    const type = item.media_type || (item.first_air_date ? 'tv' : 'movie');
-    const details = await api(`/${type}/${itemId}`, { append_to_response: 'external_ids' });
+    const resolved = await resolveItemTypeAndDetails(item, itemId);
+    const type = resolved.type;
+    const details = resolved.details;
 
     if (myGen !== modalGeneration) return;
 
@@ -2783,16 +2918,59 @@ function handlePopState(e) {
 }
 window.addEventListener('popstate', handlePopState);
 
-(function restoreFromURL() {
+function isAdBlockEnabled() {
+  const bait = document.getElementById('adblockBait');
+  if (!bait) return false;
+  const st = window.getComputedStyle(bait);
+  return (
+    bait.offsetHeight === 0 ||
+    bait.offsetWidth === 0 ||
+    st.display === 'none' ||
+    st.visibility === 'hidden' ||
+    st.opacity === '0'
+  );
+}
+
+function showAdBlockOverlay(show) {
+  const overlay = document.getElementById('adblockOverlay');
+  if (!overlay) return;
+  overlay.classList.toggle('show', !!show);
+  document.body.style.overflow = show ? 'hidden' : '';
+}
+
+function checkAdBlock() {
+  setTimeout(() => showAdBlockOverlay(isAdBlockEnabled()), 350);
+}
+
+function recheckAdBlock() {
+  if (isAdBlockEnabled()) {
+    showToast('AdBlock всё ещё включён', true);
+    showAdBlockOverlay(true);
+  } else {
+    showAdBlockOverlay(false);
+    showToast('Спасибо! Приятного просмотра');
+  }
+}
+
+function restoreFromURL() {
   const params = new URLSearchParams(location.search);
+  const item = params.get('item');
   const page = params.get('page');
   const type = params.get('type');
-  if (page === 'search' && type) {
-    window.addEventListener('DOMContentLoaded', () => filterAndShow(type, true), { once: true });
-  }
-})();
 
+  if (item && /^\d+$/.test(item)) {
+    openModal(Number(item));
+    return;
+  }
+
+  if (page === 'search' && type) {
+    filterAndShow(type, true);
+  }
+}
+
+checkAdBlock();
 init();
+restoreFromURL();
 </script>
 </body>
 </html>
