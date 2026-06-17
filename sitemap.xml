@@ -1,28 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://kino.uziptv.vip/</loc>
+    <loc>https://kinouz.online/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://kino.uziptv.vip/?page=search&amp;type=movie</loc>
+    <loc>https://kinouz.online/?page=search&amp;type=movie</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://kino.uziptv.vip/?page=search&amp;type=tv</loc>
+    <loc>https://kinouz.online/?page=search&amp;type=tv</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://kino.uziptv.vip/?page=search&amp;type=anime</loc>
+    <loc>https://kinouz.online/?page=search&amp;type=anime</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://kino.uziptv.vip/?page=search&amp;type=dorama</loc>
+    <loc>https://kinouz.online/?page=search&amp;type=dorama</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://kinouz.online/?page=search&amp;type=cartoon</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kinouz.online/?page=fav</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
 </urlset>
