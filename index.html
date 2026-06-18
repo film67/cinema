@@ -1343,13 +1343,8 @@ const ALLOHA_TOKEN = '7f303bf45447726226613c600db22e';
 // ─── ИСТОЧНИКИ ─────────────────────────────────────
 const SOURCES = [
   {
-    name: 'Alloha',
-    label: 'Основной',
-    isAlloha: true
-  },
-  {
     name: 'Vibix',
-    label: 'Запасной',
+    label: 'Основной',
     isVibix: true
   },
   {
@@ -1363,6 +1358,11 @@ const SOURCES = [
     isKodik: false,
     movie: (id) => `https://vidsrc.me/embed/movie?tmdb=${id}`,
     tv: (id, s, e) => `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`
+  },
+  {
+    name: 'Alloha',
+    label: 'Alloha (пока не работает)',
+    isAlloha: true
   },
 ];
 
@@ -2978,36 +2978,10 @@ function isBaitBlocked() {
   );
 }
 
-function testAdResource(url, timeoutMs = 1600) {
-  return new Promise((resolve) => {
-    let done = false;
-    const finish = (blocked) => {
-      if (done) return;
-      done = true;
-      resolve(blocked);
-    };
-
-    const s = document.createElement('script');
-    s.async = true;
-    s.src = url + (url.includes('?') ? '&' : '?') + 'cv=' + Date.now();
-
-    const timer = setTimeout(() => finish(true), timeoutMs);
-    s.onload = () => { clearTimeout(timer); finish(false); try { s.remove(); } catch(e) {} };
-    s.onerror = () => { clearTimeout(timer); finish(true); try { s.remove(); } catch(e) {} };
-
-    document.head.appendChild(s);
-  });
-}
-
 async function isAdBlockEnabled() {
-  if (isBaitBlocked()) return true;
-
-  const checks = await Promise.all([
-    testAdResource('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', 1600),
-    testAdResource('https://securepubads.g.doubleclick.net/tag/js/gpt.js', 1600)
-  ]);
-
-  return checks.some(Boolean) || isBaitBlocked();
+  // Только проверка приманки (adsbox). Сетевая проверка Google-скриптов убрана,
+  // т.к. давала ложные срабатывания от защиты браузера, DNS-фильтров и медленного коннекта.
+  return isBaitBlocked();
 }
 
 function showAdBlockOverlay(show) {
