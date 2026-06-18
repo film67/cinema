@@ -1349,7 +1349,7 @@ const SOURCES = [
   },
   {
     name: 'Kodik',
-    label: 'Запасной 2',
+    label: 'Запасной',
     isKodik: true
   },
   {
@@ -1361,7 +1361,7 @@ const SOURCES = [
   },
   {
     name: 'Alloha',
-    label: 'Alloha (пока не работает)',
+    label: 'Запасной 2',
     isAlloha: true
   },
 ];
@@ -1977,11 +1977,26 @@ async function buildEpisodeSelector(details) {
       sel.innerHTML = kodikSeasonLinks.map((s, i) =>
         `<option value="${i}">${s.label}</option>`
       ).join('');
-      episodeDiv.style.display = 'flex';
     }
+    updateSeasonSelectorVisibility();
   } catch(e) {
     console.error('buildEpisodeSelector error:', e);
   }
+}
+
+function updateSeasonSelectorVisibility() {
+  const episodeDiv = document.getElementById('episodeSelector');
+  if (!episodeDiv) return;
+  // Сейчас у всех плееров (Основной/Vibix, Запасной/Kodik, На английском/Vidsrc,
+  // Запасной 2/Alloha) есть собственный выбор сезонов/серий внутри плеера,
+  // поэтому внешний селектор скрыт. Сам элемент и его данные (kodikSeasonLinks,
+  // options) сохраняются и продолжают строиться — для других задач достаточно
+  // вернуть условие видимости ниже.
+  const show = false;
+  // Прежнее условие (оставлено для справки):
+  // const src = SOURCES[currentSource];
+  // const show = kodikSeasonLinks.length > 1 && !(src && src.isKodik);
+  episodeDiv.style.display = show ? 'flex' : 'none';
 }
 
 function onSeasonChange() {
@@ -2509,6 +2524,7 @@ async function setPlayerSrc() {
 function selectSource(idx) {
   currentSource = idx;
   document.querySelectorAll('.source-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+  updateSeasonSelectorVisibility();
   if (document.getElementById('playerWrap').style.display !== 'none') {
     setPlayerSrc();
   }
