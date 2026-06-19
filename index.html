@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <!-- Monetag ad scripts -->
+  <script src="https://5gvci.com/act/files/tag.min.js?z=11173702" data-cfasync="false" async></script>
+  <script>(function(s){s.dataset.zone='11173689',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+  <!-- /Monetag ad scripts -->
   <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
     (function(m,e,t,r,i,k,a){
@@ -1347,6 +1351,7 @@ const SOURCES = [
     label: 'Основной',
     isVibix: true
   },
+  /* Закомментировано по запросу — оставлен только Vibix
   {
     name: 'Kodik',
     label: 'Запасной',
@@ -1364,6 +1369,7 @@ const SOURCES = [
     label: 'Запасной 2',
     isAlloha: true
   },
+  */
 ];
 
 // ═══════════════════════════════════════════════════
@@ -2975,6 +2981,23 @@ function ensureAdBlockBait() {
     bait = document.createElement('div');
     bait.id = 'adblockBait';
     bait.className = 'adblock-bait adsbox ad adsbygoogle ad-banner banner-ads pub_300x250 text-ad textAd google-auto-placed';
+    bait.style.cssText = 'position:absolute !important; left:-9999px !important; top:-9999px !important; width:300px !important; height:250px !important; display:block !important;';
+    bait.innerHTML = '&nbsp;';
+    document.body.appendChild(bait);
+  }
+  return bait;
+}
+
+// Вторая приманка с другим набором классов/id — для адблокеров,
+// фильтрующих по более редким сигнатурам
+function ensureAdBlockBait2() {
+  let bait = document.getElementById('ad-container-banner');
+  if (!bait) {
+    bait = document.createElement('div');
+    bait.id = 'ad-container-banner';
+    bait.className = 'adsbygoogle-noablate ad-placement sponsorblock advertisement-slot doubleclick';
+    bait.setAttribute('data-ad-client', 'ca-pub-0000000000000000');
+    bait.style.cssText = 'position:absolute !important; left:-9999px !important; top:-9999px !important; width:728px !important; height:90px !important; display:block !important;';
     bait.innerHTML = '&nbsp;';
     document.body.appendChild(bait);
   }
@@ -2982,22 +3005,47 @@ function ensureAdBlockBait() {
 }
 
 function isBaitBlocked() {
-  const bait = ensureAdBlockBait();
-  const st = window.getComputedStyle(bait);
-  return (
-    !document.body.contains(bait) ||
-    bait.offsetHeight === 0 ||
-    bait.offsetWidth === 0 ||
-    st.display === 'none' ||
-    st.visibility === 'hidden' ||
-    st.opacity === '0'
-  );
+  const baits = [ensureAdBlockBait(), ensureAdBlockBait2()];
+  return baits.some(bait => {
+    if (!document.body.contains(bait)) return true;
+    const st = window.getComputedStyle(bait);
+    return (
+      bait.offsetHeight === 0 ||
+      bait.offsetWidth === 0 ||
+      bait.clientHeight === 0 ||
+      st.display === 'none' ||
+      st.visibility === 'hidden' ||
+      st.opacity === '0'
+    );
+  });
+}
+
+// Сетевая проверка: пытаемся загрузить реальный рекламный скрипт.
+// Если запрос блокируется (fetch reject / opaque-redirect к локальной заглушке),
+// считаем что блокировщик активен. Используем no-cors, чтобы не упасть на CORS.
+function isNetworkBlocked() {
+  const testUrls = [
+    'https://5gvci.com/act/files/tag.min.js',
+    'https://al5sm.com/tag.min.js'
+  ];
+  return Promise.all(testUrls.map(url => {
+    return new Promise(resolve => {
+      fetch(url, { method: 'GET', mode: 'no-cors', cache: 'no-store' })
+        .then(() => resolve(false))   // запрос прошёл — не заблокирован
+        .catch(() => resolve(true));  // запрос упал — скорее всего заблокирован
+    });
+  })).then(results => results.every(Boolean)); // блокируем overlay только если ВСЕ запросы упали
 }
 
 async function isAdBlockEnabled() {
-  // Только проверка приманки (adsbox). Сетевая проверка Google-скриптов убрана,
-  // т.к. давала ложные срабатывания от защиты браузера, DNS-фильтров и медленного коннекта.
-  return isBaitBlocked();
+  // 1) Проверка приманок (cosmetic filtering)
+  if (isBaitBlocked()) return true;
+  // 2) Проверка сети (request blocking)
+  try {
+    const netBlocked = await isNetworkBlocked();
+    if (netBlocked) return true;
+  } catch (e) { /* игнорируем сетевые ошибки, не связанные с adblock */ }
+  return false;
 }
 
 function showAdBlockOverlay(show) {
@@ -3021,6 +3069,11 @@ async function recheckAdBlock() {
     showToast('Спасибо! Приятного просмотра');
   }
 }
+
+// Периодическая перепроверка — если пользователь включит адблок
+// уже после загрузки страницы (или отключит расширение позже),
+// оверлей появится/исчезнет автоматически.
+setInterval(checkAdBlock, 8000);
 
 function restoreFromURL() {
   const params = new URLSearchParams(location.search);
