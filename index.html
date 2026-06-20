@@ -1126,6 +1126,81 @@
     .modal-body { padding:0 14px 16px; }
     .mobile-menu, .mobile-search-bar { top:48px; }
   }
+
+  /* ═══════════ TV SECTION ═══════════ */
+  #tvPage { display:none; max-width:1500px; margin:0 auto; padding:90px 30px 60px; }
+  #tvCatBar {
+    display:flex; flex-wrap:wrap; gap:8px; margin:6px 0 26px;
+  }
+  .tv-cat-btn {
+    padding:8px 16px; border-radius:20px; cursor:pointer; font-size:13px; font-weight:600;
+    background:var(--bg3); color:var(--text2); border:1px solid transparent;
+    transition:all .15s; white-space:nowrap;
+  }
+  .tv-cat-btn:hover { color:var(--text); background:rgba(255,255,255,0.07); }
+  .tv-cat-btn.active { color:#fff; background:var(--accent); border-color:var(--accent); }
+  #tvGrid {
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:16px;
+  }
+  .tv-card {
+    position:relative; background:var(--card); border-radius:12px; overflow:hidden;
+    cursor:pointer; border:1px solid rgba(255,255,255,0.05);
+    transition:transform .18s, border-color .18s; aspect-ratio:16/10;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+    padding:14px; text-align:center;
+  }
+  .tv-card:hover { transform:translateY(-4px); border-color:rgba(229,9,20,0.5); }
+  .tv-card-logo {
+    width:54px; height:54px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+    font-size:22px; font-weight:800; color:#fff; letter-spacing:-1px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); flex-shrink:0;
+  }
+  .tv-card-name { font-size:13px; font-weight:600; color:var(--text); line-height:1.25; }
+  .tv-card-live {
+    position:absolute; top:8px; right:8px; font-size:9px; font-weight:700; letter-spacing:.5px;
+    background:rgba(0,0,0,0.55); color:#fff; padding:3px 7px; border-radius:5px;
+    display:flex; align-items:center; gap:4px;
+  }
+  .tv-card-live::before { content:''; width:6px; height:6px; border-radius:50%; background:#ff3b3b; animation:tvpulse 1.4s infinite; }
+  @keyframes tvpulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  /* TV modal */
+  #tvModal {
+    display:none; position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,0.92);
+    align-items:center; justify-content:center; padding:20px;
+  }
+  #tvModal.open { display:flex; }
+  #tvModalInner { width:100%; max-width:1000px; }
+  #tvPlayerBox {
+    position:relative; width:100%; aspect-ratio:16/9; background:#000;
+    border-radius:12px; overflow:hidden;
+  }
+  #tvVideo, #tvFrame { display:none; width:100%; height:100%; border:none; background:#000; }
+  #tvPlayerLoading {
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:12px; color:var(--text2); font-size:14px;
+  }
+  #tvModalBar {
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    margin-top:14px; flex-wrap:wrap;
+  }
+  #tvModalName { font-size:18px; font-weight:700; color:var(--text); }
+  .tv-switch-btn {
+    padding:7px 14px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600;
+    background:var(--bg3); color:var(--text2); border:1px solid rgba(255,255,255,0.08); transition:all .15s;
+  }
+  .tv-switch-btn:hover { color:var(--text); border-color:var(--accent); }
+  @media (max-width:768px) {
+    #tvPage { padding:74px 14px 50px; }
+    #tvGrid { grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:10px; }
+    .tv-card { padding:10px; gap:7px; }
+    .tv-card-logo { width:42px; height:42px; font-size:17px; }
+    .tv-card-name { font-size:11px; }
+    #tvModal { padding:0; }
+    #tvModalInner { max-width:100%; }
+    #tvPlayerBox { border-radius:0; }
+    #tvModalBar { padding:10px 14px; }
+  }
 </style>
 </head>
 <body>
@@ -1140,6 +1215,7 @@
     <li><a id="navSeries" onclick="filterAndShow('tv')">Сериалы</a></li>
     <li><a id="navAnime" onclick="filterAndShow('anime')">Аниме</a></li>
     <li><a id="navDorama" onclick="filterAndShow('dorama')">Дорамы</a></li>
+    <li><a id="navTV" onclick="showTVPage()">ТВ</a></li>
   </ul>
   <div class="nav-right">
     <div class="search-wrap">
@@ -1158,6 +1234,7 @@
   <a onclick="filterAndShow('tv'); closeMobileMenu()">Сериалы</a>
   <a onclick="filterAndShow('anime'); closeMobileMenu()">Аниме</a>
   <a onclick="filterAndShow('dorama'); closeMobileMenu()">Дорамы</a>
+  <a onclick="showTVPage(); closeMobileMenu()">ТВ</a>
 </div>
 <div class="mobile-search-bar" id="mobileSearchBar">
   <input type="text" placeholder="Поиск фильмов и сериалов..." oninput="onSearch(this.value)" id="mobileSearchInput">
@@ -1268,6 +1345,16 @@
   <div id="favResults"></div>
 </div>
 
+<!-- TV PAGE -->
+<div id="tvPage">
+  <div class="page-header">
+    <h2 class="page-title">ТВ — прямой эфир</h2>
+    <p class="page-count" id="tvCount"></p>
+  </div>
+  <div id="tvCatBar"></div>
+  <div id="tvGrid"></div>
+</div>
+
 <!-- MODAL -->
 <div id="modal" onclick="handleModalBgClick(event)">
   <button class="modal-close" onclick="closeModal()">✕</button>
@@ -1325,6 +1412,24 @@
         <div class="similar-title" id="similarTitle" style="display:none">Похожее</div>
         <div id="similarRow"></div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- TV MODAL -->
+<div id="tvModal" onclick="if(event.target===this)closeTVModal()">
+  <button class="modal-close" onclick="closeTVModal()">✕</button>
+  <div id="tvModalInner">
+    <div id="tvPlayerBox">
+      <video id="tvVideo" controls playsinline></video>
+      <iframe id="tvFrame"
+        allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <div id="tvPlayerLoading"><div class="spinner"></div><span>Подключение к эфиру...</span></div>
+    </div>
+    <div id="tvModalBar">
+      <span id="tvModalName"></span>
+      <span id="tvModalSwitch"></span>
     </div>
   </div>
 </div>
@@ -2855,6 +2960,7 @@ function showPage(page, fromHistory = false) {
   document.getElementById('mainPage').style.display   = page === 'main'   ? 'block' : 'none';
   document.getElementById('searchPage').style.display = page === 'search' ? 'block' : 'none';
   document.getElementById('favPage').style.display    = page === 'fav'    ? 'block' : 'none';
+  const _tv = document.getElementById('tvPage'); if (_tv) _tv.style.display = page === 'tv' ? 'block' : 'none';
   document.getElementById('heroWrap').style.display   = page === 'main'   ? 'block' : 'none';
   if (!fromHistory) {
     if (page === 'main') pushState('main', null);
@@ -3099,6 +3205,11 @@ function restoreFromURL() {
   if (page === 'search' && type) {
     filterAndShow(type, true);
   }
+  if (page === 'tv') {
+    // showTVPage определяется в блоке ниже — откладываем вызов
+    if (typeof showTVPage === 'function') showTVPage();
+    else window.addEventListener('load', () => { if (typeof showTVPage === 'function') showTVPage(); });
+  }
 }
 
 setTimeout(checkAdBlock, 500);
@@ -3106,5 +3217,157 @@ setTimeout(checkAdBlock, 2200);
 init();
 restoreFromURL();
 </script>
+
+<!-- hls.js for direct HLS channels -->
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
+<script>
+// ═══════════════════════════════════════════════════
+// TV — прямой эфир (онлайн-телевидение)
+// ═══════════════════════════════════════════════════
+const TV_CHANNELS = [{"id":"voentv","name":"Воен ТВ","cat":"federal","ptype":null,"src":null},{"id":"zvezda","name":"Звезда","cat":"federal","ptype":"hls","src":"https://tvchannelstream1.tvzvezda.ru/cdn/tvzvezda/playlist.m3u8"},{"id":"mir","name":"МИР","cat":"federal","ptype":"hls","src":"https://hls.mirtv.cdnvideo.ru/mirtv-parampublish/mirtv_2500/playlist.m3u8"},{"id":"ntv","name":"НТВ","cat":"federal","ptype":"iframe","src":"https://rutube.ru/play/embed/c37cd74192c6bc3d6cd6077c0c4fd686"},{"id":"otr","name":"ОТР","cat":"federal","ptype":"iframe","src":"https://rutube.ru/play/embed/faa934385b83f9e8a92f5484defae5fa"},{"id":"1-kanal","name":"Первый канал","cat":"federal","ptype":null,"src":null},{"id":"pervyj-rossijskij-nacionalnyj-kanal","name":"Первый российский национальный канал","cat":"federal","ptype":null,"src":null},{"id":"5-kanal","name":"Пятый канал","cat":"federal","ptype":null,"src":null},{"id":"ren-tv","name":"РЕН ТВ","cat":"federal","ptype":"iframe","src":"https://player.mediavitrina.ru/rentv_v2/rentv/smotret_tv_web/player.html"},{"id":"planeta-rtr","name":"РТР-Планета","cat":"federal","ptype":null,"src":null},{"id":"rossiya-1","name":"Россия 1","cat":"federal","ptype":"hls","src":"https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/russia1-hd/index.m3u8"},{"id":"rossiya-rtr","name":"Россия-РТР","cat":"federal","ptype":"iframe","src":"https://player.smotrim.ru/iframe/live/uid/3b73bf76-7245-4981-a865-38478e21df1f/"},{"id":"tvc","name":"ТВЦ","cat":"federal","ptype":"hls","src":"https://tvc-hls.cdnvideo.ru/tvc-res/smil:vd9221_2.smil/playlist.m3u8"},{"id":"news_euronews","name":"Euronews","cat":"news","ptype":"hls","src":"https://stream8.cinerama.uz/1024/tracks-v1a1/mono.m3u8"},{"id":"news_izvestiya","name":"Известия","cat":"news","ptype":"hls","src":"https://igi-hls.cdnvideo.ru/igi/igi_tcode/playlist.m3u8"},{"id":"news_moskva-24","name":"Москва-24","cat":"news","ptype":"hls","src":"https://stream.smotrim.ru/hls2/moscow_24/playlist_3.m3u8"},{"id":"pervyj-informacionnyj","name":"Первый информационный","cat":"news","ptype":"hls","src":"https://ngtrk.dc.beltelecom.by/ngtrk/smil:informacionnyy.smil/playlist.m3u8"},{"id":"rbk","name":"РБК ТВ","cat":"news","ptype":"hls","src":"https://online-video.rbc.ru/online2/rbctv.m3u8"},{"id":"rossiya-24","name":"Россия 24","cat":"news","ptype":"hls","src":"https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/russia24-hd/index.m3u8"},{"id":"solovev-live","name":"Соловьев Live","cat":"news","ptype":"hls","src":"https://stream.smotrim.ru/hls2/solovievlive/playlist_6.m3u8"},{"id":"2x2","name":"2x2","cat":"entertainment","ptype":null,"src":null},{"id":"razvlekatelnye_backus-tv","name":"BACKUS TV","cat":"entertainment","ptype":null,"src":null},{"id":"razvlekatelnye_vktv","name":"VKTV","cat":"entertainment","ptype":null,"src":null},{"id":"razvlekatelnye_vse-tv","name":"Всё ТВ","cat":"entertainment","ptype":"hls","src":"https://zabava-htlive.cdn.ngenix.net/hls/CH_VSETVHD/variant.m3u8"},{"id":"domashniy","name":"Домашний","cat":"entertainment","ptype":null,"src":null},{"id":"pyatnica","name":"Пятница!","cat":"entertainment","ptype":null,"src":null},{"id":"sts","name":"СТС","cat":"entertainment","ptype":null,"src":null},{"id":"sts-love","name":"СТС Love","cat":"entertainment","ptype":"iframe","src":"https://rutube.ru/play/embed/32dc45cf878497abe1c9695e228f039b"},{"id":"subbota","name":"Суббота!","cat":"entertainment","ptype":"iframe","src":"https://rutube.ru/play/embed/310744c10a5809da38aa445c952976da"},{"id":"tv-3","name":"ТВ-3","cat":"entertainment","ptype":null,"src":null},{"id":"tnt","name":"ТНТ","cat":"entertainment","ptype":null,"src":null},{"id":"tnt4","name":"ТНТ4","cat":"entertainment","ptype":null,"src":null},{"id":"tvoe-tv","name":"Твоё ТВ","cat":"entertainment","ptype":null,"src":null},{"id":"tvoe-tv-yumor","name":"Твоё ТВ Юмор","cat":"entertainment","ptype":null,"src":null},{"id":"che","name":"Че","cat":"entertainment","ptype":"iframe","src":"https://rutube.ru/play/embed/5bbff90167d1b1d88fda92376ec7a651"},{"id":"yu","name":"Ю","cat":"entertainment","ptype":"iframe","src":"https://rutube.ru/play/embed/5c9327074e25ca86f3111d4085cbbb65"},{"id":"poznavatelnye_nasa-tv","name":"NASA TV","cat":"educational","ptype":"hls","src":"https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8"},{"id":"poznavatelnye_national-geographic","name":"National Geographic","cat":"educational","ptype":"hls","src":"https://stream8.cinerama.uz/1041/tracks-v1a1/mono.m3u8"},{"id":"poznavatelnye_dayving-tv","name":"Дайвинг TV","cat":"educational","ptype":null,"src":null},{"id":"zvezda-plus","name":"Звезда Плюс","cat":"educational","ptype":null,"src":null},{"id":"poznavatelnye_kabbala-tv","name":"Каббала ТВ","cat":"educational","ptype":null,"src":null},{"id":"poznavatelnye_moya-planeta","name":"Моя Планета","cat":"educational","ptype":"hls","src":"https://stream8.cinerama.uz/1247/tracks-v1a1/mono.m3u8"},{"id":"kultura","name":"Россия-К (Культура)","cat":"educational","ptype":"hls","src":"https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/kultura-hd/index.m3u8"},{"id":"tayna-tv","name":"Тайна ТВ","cat":"educational","ptype":"iframe","src":"https://rutube.ru/play/embed/a11c890a0ec0730ad33bdaaf2d244e1a"},{"id":"sport_ert-sports","name":"ERT Sports","cat":"sport","ptype":null,"src":null},{"id":"sport_futbol-tv","name":"Futbol TV","cat":"sport","ptype":null,"src":null},{"id":"sport_match-strana","name":"Матч Страна","cat":"sport","ptype":"hls","src":"https://zabava-htlive.cdn.ngenix.net/hls/CH_MATCHSTRANA/variant.m3u8"},{"id":"sport_matchtv","name":"Матч ТВ","cat":"sport","ptype":"iframe","src":"https://rutube.ru/play/embed/11bbbec75a2ceb8cf446ad16813c6eec"},{"id":"sport_sport-1","name":"Спорт 1","cat":"sport","ptype":null,"src":null},{"id":"sport_start","name":"Старт","cat":"sport","ptype":null,"src":null},{"id":"sport_tv-sport","name":"ТВ Спорт","cat":"sport","ptype":null,"src":null},{"id":"sport_telesport","name":"Телеспорт","cat":"sport","ptype":null,"src":null},{"id":"music_mtv-russia","name":"MTV Russia","cat":"music","ptype":null,"src":null},{"id":"music_muzzone","name":"MuzzOne","cat":"music","ptype":null,"src":null},{"id":"music_rutv","name":"RU TV","cat":"music","ptype":"iframe","src":"https://rutube.ru/play/embed/b1eb8e90d7e636677b3eb73b4fcbb717"},{"id":"music_tmtv","name":"TMTV","cat":"music","ptype":"hls","src":"https://rt-vlg-kzn-htlive.cdn.ngenix.net/hls/CH_R03_TMTV/variant.m3u8"},{"id":"music_m1","name":"М1","cat":"music","ptype":null,"src":null},{"id":"music_muz-tv","name":"МУЗ-ТВ","cat":"music","ptype":"iframe","src":"https://rutube.ru/play/embed/df6fe73494a26f74da51573fd97b9baa"},{"id":"music_tnt-music","name":"ТНТ Music","cat":"music","ptype":"iframe","src":"https://rutube.ru/play/embed/5a294ae1ed12c44c7053301fb5fa9ba0"},{"id":"detskie_kinder-tv","name":"Kinder TV","cat":"kids","ptype":null,"src":null},{"id":"detskie_detskoe-kino-international","name":"Детское кино International","cat":"kids","ptype":null,"src":null},{"id":"belarus-1","name":"Беларусь 1","cat":"regional","ptype":"hls","src":"https://ngtrk.dc.beltelecom.by/ngtrk/smil:belarus1.smil/playlist.m3u8"},{"id":"bonus_belarus-24","name":"Беларусь 24","cat":"regional","ptype":"hls","src":"https://ngtrk.dc.beltelecom.by/ngtrk/smil:belarus24.smil/playlist.m3u8"},{"id":"bonus_belarus-3","name":"Беларусь 3","cat":"regional","ptype":"hls","src":"https://ngtrk.dc.beltelecom.by/ngtrk/smil:belarus3.smil/playlist.m3u8"},{"id":"bonus_belarus-5","name":"Беларусь 5","cat":"regional","ptype":"hls","src":"https://ngtrk.dc.beltelecom.by/ngtrk/smil:belarus5.smil/playlist.m3u8"},{"id":"zvyazda","name":"Звязда (Беларусь)","cat":"regional","ptype":null,"src":null},{"id":"moskva-doverie","name":"Москва Доверие","cat":"regional","ptype":null,"src":null},{"id":"bonus_ont","name":"ОНТ (Беларусь)","cat":"regional","ptype":"hls","src":"https://ngtrk.dc.beltelecom.by/ngtrk/smil:ont.smil/playlist.m3u8"},{"id":"rtr-belarus","name":"РТР-Беларусь","cat":"regional","ptype":null,"src":null},{"id":"stv","name":"СТВ","cat":"regional","ptype":"hls","src":"https://ctv.dc.beltelecom.by/ctv/ctv.stream/playlist.m3u8"},{"id":"ctv","name":"СТВ (Беларусь)","cat":"regional","ptype":"hls","src":"https://ctv.dc.beltelecom.by/ctv/ctv.stream/playlist.m3u8"}];
+
+const TV_CATS = [
+  { id:'all',           label:'Все' },
+  { id:'federal',       label:'Федеральные' },
+  { id:'news',          label:'Новостные' },
+  { id:'entertainment', label:'Развлекательные' },
+  { id:'educational',   label:'Познавательные' },
+  { id:'sport',         label:'Спортивные' },
+  { id:'music',         label:'Музыкальные' },
+  { id:'kids',          label:'Детские' },
+  { id:'regional',      label:'Региональные' },
+];
+
+let tvActiveCat = 'all';
+let tvHls = null;
+
+function tvLogoText(name){
+  const clean = name.replace(/[()]/g,'').trim();
+  const words = clean.split(/\s+/);
+  if (clean.length <= 4) return clean.toUpperCase();
+  if (words.length >= 2) return (words[0][0]+words[1][0]).toUpperCase();
+  return clean.slice(0,2).toUpperCase();
+}
+
+function showTVPage(){
+  document.getElementById('mainPage').style.display = 'none';
+  document.getElementById('searchPage').style.display = 'none';
+  document.getElementById('favPage').style.display = 'none';
+  document.getElementById('heroWrap').style.display = 'none';
+  document.getElementById('tvPage').style.display = 'block';
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const nav = document.getElementById('navTV'); if (nav) nav.classList.add('active');
+  document.getElementById('filterBar')?.classList.remove('visible');
+  try { history.pushState({ page:'tv' }, '', '?page=tv'); } catch(e){}
+  renderTVCats();
+  renderTVGrid();
+  window.scrollTo(0,0);
+}
+
+function renderTVCats(){
+  const bar = document.getElementById('tvCatBar');
+  bar.innerHTML = TV_CATS.map(c => {
+    const n = c.id==='all' ? TV_CHANNELS.length : TV_CHANNELS.filter(x=>x.cat===c.id).length;
+    if (c.id!=='all' && n===0) return '';
+    return `<div class="tv-cat-btn ${c.id===tvActiveCat?'active':''}" onclick="tvSetCat('${c.id}')">${c.label} <span style="opacity:.6">${n}</span></div>`;
+  }).join('');
+}
+
+function tvSetCat(id){ tvActiveCat = id; renderTVCats(); renderTVGrid(); }
+
+function renderTVGrid(){
+  const grid = document.getElementById('tvGrid');
+  const list = tvActiveCat==='all' ? TV_CHANNELS : TV_CHANNELS.filter(c=>c.cat===tvActiveCat);
+  document.getElementById('tvCount').textContent = list.length + ' каналов';
+  grid.innerHTML = list.map(ch => `
+    <div class="tv-card" onclick="openTVChannel('${ch.id}')">
+      <div class="tv-card-live">LIVE</div>
+      <div class="tv-card-logo">${tvLogoText(ch.name)}</div>
+      <div class="tv-card-name">${ch.name}</div>
+    </div>
+  `).join('');
+}
+
+function openTVChannel(id){
+  const ch = TV_CHANNELS.find(c=>c.id===id);
+  if (!ch) return;
+  document.getElementById('tvModal').classList.add('open');
+  document.getElementById('tvModalName').textContent = ch.name;
+  document.getElementById('tvModalSwitch').innerHTML = '';
+  tvPlay(ch);
+}
+
+function tvPlay(ch){
+  const video = document.getElementById('tvVideo');
+  const frame = document.getElementById('tvFrame');
+  const loading = document.getElementById('tvPlayerLoading');
+
+  tvStopHls();
+  video.style.display = 'none'; video.removeAttribute('src');
+  frame.style.display = 'none'; frame.src = 'about:blank';
+  loading.style.display = 'flex';
+  loading.querySelector('span').textContent = 'Подключение к эфиру...';
+
+  // 1) прямой HLS-поток — чистый видеоплеер
+  if (ch.ptype === 'hls' && ch.src) {
+    video.style.display = 'block';
+    const src = ch.src;
+    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = src;
+      video.addEventListener('loadeddata', ()=> loading.style.display='none', { once:true });
+      video.play().catch(()=>{});
+    } else if (window.Hls && Hls.isSupported()) {
+      tvHls = new Hls({ lowLatencyMode:true });
+      tvHls.loadSource(src);
+      tvHls.attachMedia(video);
+      tvHls.on(Hls.Events.MANIFEST_PARSED, ()=>{ loading.style.display='none'; video.play().catch(()=>{}); });
+      tvHls.on(Hls.Events.ERROR, (e,data)=>{ if (data.fatal) tvPlayFallback(ch); });
+    } else {
+      tvPlayFallback(ch);
+    }
+    return;
+  }
+
+  // 2) чистый embed-плеер источника (rutube/ok/vk/smotrim/mediavitrina) — без сайта smotret.tv
+  if (ch.ptype === 'iframe' && ch.src) {
+    frame.style.display = 'block';
+    frame.src = ch.src;
+    frame.addEventListener('load', ()=> loading.style.display='none', { once:true });
+    setTimeout(()=>{ loading.style.display='none'; }, 4000);
+    return;
+  }
+
+  // 3) для канала пока нет чистого источника
+  tvPlayFallback(ch);
+}
+
+// запасной вариант: канал, для которого не добыт прямой embed
+function tvPlayFallback(ch){
+  const video = document.getElementById('tvVideo');
+  const frame = document.getElementById('tvFrame');
+  const loading = document.getElementById('tvPlayerLoading');
+  tvStopHls();
+  video.style.display = 'none'; video.removeAttribute('src');
+  frame.style.display = 'none'; frame.src = 'about:blank';
+  loading.style.display = 'flex';
+  loading.querySelector('span').innerHTML = 'Для этого канала пока нет прямого плеера.';
+}
+
+function tvStopHls(){
+  if (tvHls) { try { tvHls.destroy(); } catch(e){} tvHls = null; }
+}
+
+function closeTVModal(){
+  document.getElementById('tvModal').classList.remove('open');
+  tvStopHls();
+  const video = document.getElementById('tvVideo');
+  const frame = document.getElementById('tvFrame');
+  video.pause(); video.removeAttribute('src'); video.load();
+  frame.src = 'about:blank';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeTVModal(); });
+</script>
+
 </body>
 </html>
