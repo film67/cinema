@@ -1129,6 +1129,43 @@
 
   /* ═══════════ TV SECTION ═══════════ */
   #tvPage { display:none; max-width:1500px; margin:0 auto; padding:90px 30px 60px; }
+
+  .tv-tools {
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    margin:10px 0 14px; flex-wrap:wrap;
+  }
+  .tv-search-wrap { position:relative; width:min(420px,100%); }
+  #tvSearchInput {
+    width:100%; height:42px; border-radius:14px;
+    border:1px solid rgba(255,255,255,0.09);
+    background:rgba(255,255,255,0.055);
+    color:var(--text);
+    font-family:'Outfit',sans-serif;
+    font-size:14px; font-weight:500;
+    outline:none; padding:0 42px 0 42px;
+    transition:border-color .18s, background .18s, box-shadow .18s;
+  }
+  #tvSearchInput:focus {
+    border-color:rgba(229,9,20,0.55);
+    background:rgba(255,255,255,0.075);
+    box-shadow:0 0 0 3px rgba(229,9,20,0.18);
+  }
+  #tvSearchInput::placeholder { color:var(--text3); }
+  .tv-search-ico {
+    position:absolute; left:14px; top:50%; transform:translateY(-50%);
+    color:var(--text2); font-size:15px; pointer-events:none;
+  }
+  .tv-search-clear {
+    position:absolute; right:8px; top:50%; transform:translateY(-50%);
+    width:28px; height:28px; border-radius:10px; border:0;
+    background:rgba(255,255,255,0.07); color:var(--text2);
+    cursor:pointer; display:none; align-items:center; justify-content:center;
+    font-size:16px; line-height:1;
+  }
+  .tv-search-clear.visible { display:flex; }
+  .tv-search-clear:hover { color:#fff; background:rgba(229,9,20,0.22); }
+  .tv-search-hint { font-size:12px; color:var(--text2); }
+
   #tvCatBar {
     display:flex; flex-wrap:wrap; gap:8px; margin:6px 0 26px;
   }
@@ -1207,6 +1244,8 @@
     .tv-modal-switch { justify-content:flex-start; width:100%; }
     .tv-switch-group { justify-content:flex-start; }
 
+    .tv-tools { margin:8px 0 12px; }
+    #tvSearchInput { height:40px; font-size:13px; border-radius:12px; }
     #tvPage { padding:74px 14px 50px; }
     #tvGrid { grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:10px; }
     .tv-card { padding:10px; gap:7px; }
@@ -1366,6 +1405,14 @@
   <div class="page-header">
     <h2 class="page-title">ТВ — прямой эфир</h2>
     <p class="page-count" id="tvCount"></p>
+  </div>
+  <div class="tv-tools">
+    <div class="tv-search-wrap">
+      <span class="tv-search-ico">⌕</span>
+      <input id="tvSearchInput" type="search" autocomplete="off" placeholder="Поиск канала по названию..." oninput="tvSetSearch(this.value)">
+      <button id="tvSearchClear" class="tv-search-clear" type="button" onclick="tvClearSearch()" aria-label="Очистить поиск">×</button>
+    </div>
+    <span class="tv-search-hint">Ищи по названию канала</span>
   </div>
   <div id="tvCatBar"></div>
   <div id="tvGrid"></div>
@@ -3261,6 +3308,7 @@ const TV_CATS = [
 ];
 
 let tvActiveCat = 'all';
+let tvSearchQuery = '';
 let tvHls = null;
 let tvActiveChannel = null;
 let tvActiveSourceIndex = 0;
@@ -3338,6 +3386,38 @@ async function showTVPage(){
   window.scrollTo(0,0);
 }
 
+
+function tvNormSearch(s){
+  return String(s || '').toLowerCase().replace(/ё/g,'е').replace(/[^a-zа-я0-9]+/gi,' ').trim();
+}
+
+function tvGetFilteredChannels(){
+  const q = tvNormSearch(tvSearchQuery);
+  return TV_CHANNELS.filter(ch => {
+    if (tvActiveCat !== 'all' && ch.cat !== tvActiveCat) return false;
+    if (!q) return true;
+    const hay = tvNormSearch([ch.name, ch.id, ch.cat].filter(Boolean).join(' '));
+    return hay.includes(q);
+  });
+}
+
+function tvSetSearch(value){
+  tvSearchQuery = value || '';
+  const clear = document.getElementById('tvSearchClear');
+  if (clear) clear.classList.toggle('visible', !!tvSearchQuery.trim());
+  renderTVGrid();
+}
+
+function tvClearSearch(){
+  tvSearchQuery = '';
+  const input = document.getElementById('tvSearchInput');
+  if (input) input.value = '';
+  const clear = document.getElementById('tvSearchClear');
+  if (clear) clear.classList.remove('visible');
+  renderTVGrid();
+  if (input) input.focus();
+}
+
 function renderTVCats(){
   const bar = document.getElementById('tvCatBar');
   if (!bar) return;
@@ -3359,11 +3439,12 @@ function renderTVGrid(){
   const grid = document.getElementById('tvGrid');
   if (!grid) return;
 
-  const list = tvActiveCat === 'all' ? TV_CHANNELS : TV_CHANNELS.filter(c => c.cat === tvActiveCat);
-  document.getElementById('tvCount').textContent = list.length + ' каналов';
+  const list = tvGetFilteredChannels();
+  const q = tvSearchQuery.trim();
+  document.getElementById('tvCount').textContent = list.length + ' каналов' + (q ? ' найдено' : '');
 
   if (!list.length) {
-    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><p>В этой категории пока нет каналов</p></div>';
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><p>' + (tvSearchQuery.trim() ? 'Каналы по этому запросу не найдены' : 'В этой категории пока нет каналов') + '</p></div>';
     return;
   }
 
@@ -3372,8 +3453,7 @@ function renderTVGrid(){
     const logo = ch.logo
       ? `<img src="${tvEsc(ch.logo)}" alt="" loading="lazy" onerror="this.remove();this.parentNode.textContent=this.parentNode.dataset.fallback;">`
       : fallback;
-    const mark = ch.needs_browser_test ? '<div class="tv-card-geo" title="Нужна ручная проверка в браузере">TEST</div>'
-      : (ch.geo_unknown || ch.unstable ? '<div class="tv-card-geo" title="Источник может зависеть от региона или внешнего плеера">EXT</div>' : '');
+    const mark = '';
     return `
       <div class="tv-card" onclick="openTVChannel('${tvEsc(ch.id)}')">
         <div class="tv-card-live">LIVE</div>
@@ -3401,6 +3481,39 @@ async function openTVChannel(id){
 function tvGetSources(ch){
   if (!ch) return [];
 
+  if (Array.isArray(ch.qualityStreams) && ch.qualityStreams.length) {
+    return ch.qualityStreams
+      .filter(s => s && (s.src || s.apiUrl))
+      .map((s, i) => ({
+        label: s.label || s.quality || `Качество ${i+1}`,
+        ptype: s.ptype || ch.qualityPtype || 'hls',
+        src: s.src || s.apiUrl || ch.apiUrl || ch.src,
+        apiUrl: s.apiUrl || ch.apiUrl || ch.src,
+        quality: s.quality || s.value || s.label || '',
+        isQuality: true
+      }));
+  }
+
+  if (ch.ptype === 'matchtv_api_hls') {
+    const qs = Array.isArray(ch.qualities) && ch.qualities.length
+      ? ch.qualities
+      : [
+          { label:'1080p50', value:'1080p50fps' },
+          { label:'1080', value:'1080' },
+          { label:'720', value:'720' },
+          { label:'480', value:'480' },
+          { label:'360', value:'360' }
+        ];
+    return qs.map((q, i) => ({
+      label: q.label || q.value || `Качество ${i+1}`,
+      ptype: 'matchtv_api_hls',
+      src: ch.apiUrl || ch.src,
+      apiUrl: ch.apiUrl || ch.src,
+      quality: q.value || q.quality || q.label,
+      isQuality: true
+    }));
+  }
+
   if (ch.ptype === 'matchtv') {
     return [{
       label: 'Официальный эфир',
@@ -3417,17 +3530,28 @@ function tvGetSources(ch){
       .map((s, i) => ({
         label: s.label || (s.ptype === 'hls' ? `HLS ${i+1}` : `Плеер ${i+1}`),
         ptype: s.ptype,
-        src: s.src
+        src: s.src,
+        isQuality: !!s.isQuality
       }));
   }
 
   if (ch.ptype === 'hls' && ch.src) {
     const urls = Array.isArray(ch.streams) && ch.streams.length ? ch.streams : [ch.src];
-    return urls.filter(Boolean).map((u, i) => ({
-      label: i === 0 ? 'HLS' : `HLS ${i+1}`,
-      ptype: 'hls',
-      src: u
-    }));
+    return urls.filter(Boolean).map((u, i) => {
+      if (typeof u === 'object') {
+        return {
+          label: u.label || (i === 0 ? 'HLS' : `HLS ${i+1}`),
+          ptype: 'hls',
+          src: u.src || u.url,
+          isQuality: !!u.isQuality
+        };
+      }
+      return {
+        label: i === 0 ? 'HLS' : `HLS ${i+1}`,
+        ptype: 'hls',
+        src: u
+      };
+    }).filter(s => s.src);
   }
 
   if (ch.ptype === 'iframe' && ch.src) {
@@ -3442,7 +3566,7 @@ function tvRenderSwitches(ch, sources, activeIndex, qualityLevels = [], activeQu
   if (!box) return;
 
   const sourceBtns = sources.length > 1
-    ? `<div class="tv-switch-group"><span class="tv-switch-title">Источник:</span>${
+    ? `<div class="tv-switch-group"><span class="tv-switch-title">${sources.every(s => s && s.isQuality) ? 'Качество:' : 'Источник:'}</span>${
         sources.map((s, i) => `<button class="tv-switch-btn ${i===activeIndex?'active':''}" onclick="tvPlay(tvActiveChannel, ${i})">${tvEsc(s.label || ('Источник ' + (i+1)))}</button>`).join('')
       }</div>`
     : '';
@@ -3506,7 +3630,7 @@ function tvPlay(ch, sourceIndex = 0){
   tvResetPlayer();
 
   if (!source) {
-    tvPlayFallback(ch, 'Для этого канала пока нет прямого плеера.');
+    tvPlayFallback(ch, ch.note || 'Для этого канала пока нет прямого плеера.');
     return;
   }
 
@@ -3517,6 +3641,11 @@ function tvPlay(ch, sourceIndex = 0){
 
   if (source.ptype === 'iframe') {
     tvPlayIframe(source.src);
+    return;
+  }
+
+  if (source.ptype === 'matchtv_api_hls') {
+    tvPlayMatchTVApiHls(ch, source);
     return;
   }
 
@@ -3612,6 +3741,54 @@ function tvFailHls(ch){
   tvPlayFallback(ch, 'Источник не открылся. Возможно, канал ограничен по региону или временно недоступен.');
 }
 
+async function tvPlayMatchTVApiHls(ch, source){
+  const loading = document.getElementById('tvPlayerLoading');
+  loading.querySelector('span').textContent = 'Получение официального HLS Match TV...';
+
+  try {
+    const apiUrl = source.apiUrl || ch.apiUrl || ch.src;
+    const quality = source.quality || '1080';
+    const res = await fetch(apiUrl, {
+      cache: 'no-cache',
+      credentials: 'omit',
+      headers: { 'Accept': 'application/json' }
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+    const data = await res.json();
+    const direct = tvFindM3u8(data);
+    if (direct) {
+      tvPlayHls(ch, tvMatchQualityUrl(direct, quality));
+      return;
+    }
+
+    const built = tvBuildMatchPlaylistFromIframe(data.iframe_link || data.iframe_url || data.iframe || '', quality);
+    if (built) {
+      tvPlayHls(ch, built);
+      return;
+    }
+
+    throw new Error(data.video_error || data.payment_error || 'Match TV не отдал HLS/iframe token');
+  } catch (e) {
+    console.warn('Match TV HLS API error:', e);
+    tvPlayFallback(ch, ch.note || 'Match TV не отдал прямой HLS в браузере. Нужен свежий прямой источник для этого канала.');
+  }
+}
+
+function tvBuildMatchPlaylistFromIframe(link, quality){
+  if (!link) return '';
+  const url = tvAbsUrl(link);
+  const m = url.match(/\/iframe\/feed\/start\/([^\/]+)\/([^\/]+)\/([^\/]+)\/([^\/?#]+)/i);
+  if (!m) return '';
+  const q = encodeURIComponent(quality || '1080');
+  return `https://bl.video.matchtv.ru/media/playlist/${m[1]}/${m[2]}/${q}/${m[3]}/${m[4]}.m3u8`;
+}
+
+function tvMatchQualityUrl(src, quality){
+  if (!src || !quality) return src;
+  return src.replace(/\/(1080p50fps|1080p25fps|1080|720|576|480|360)\//i, `/${quality}/`);
+}
+
 async function tvPlayMatchTV(ch, source){
   const loading = document.getElementById('tvPlayerLoading');
   loading.querySelector('span').textContent = 'Получение официального эфира Match TV...';
@@ -3641,12 +3818,8 @@ async function tvPlayMatchTV(ch, source){
 
     throw new Error(data.video_error || data.payment_error || 'Match TV не отдал HLS/iframe');
   } catch (e) {
-    console.warn('Match TV API fallback:', e);
-    if (ch.matchPage) {
-      tvPlayIframe(ch.matchPage);
-      return;
-    }
-    tvPlayFallback(ch, 'Match TV сейчас не отдал доступный поток для вашего региона.');
+    console.warn('Match TV API error:', e);
+    tvPlayFallback(ch, 'Match TV не открыл прямой поток в браузере. Для этого канала нужен серверный прокси или другой прямой HLS-источник.');
   }
 }
 
