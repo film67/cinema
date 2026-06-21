@@ -1194,6 +1194,8 @@
     background:var(--bg3); color:var(--text2); border:1px solid rgba(255,255,255,0.08); transition:all .15s;
   }
   .tv-switch-btn:hover { color:var(--text); border-color:var(--accent); }
+  .tv-switch-btn.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+  #tvQuality { color:var(--text2); font-size:12px; font-weight:600; }
   #tvQuality select {
     background:var(--bg3); color:var(--text); border:1px solid rgba(255,255,255,0.12);
     border-radius:8px; padding:6px 10px; font-size:12px; font-weight:600; cursor:pointer; outline:none;
@@ -3314,9 +3316,11 @@ function openTVChannel(id){
 let tvCurrent = null;  // текущий канал
 let tvMatchTvCache = {}; // короткий кэш свежих master-playlist URL
 let tvMatchTvRetrying = false;
+let tvPlayToken = 0; // защита от старых асинхронных ответов, чтобы один канал не подменял другой
 
 async function tvPlay(ch, quality){
   tvCurrent = ch;
+  const playToken = ++tvPlayToken;
   const video = document.getElementById('tvVideo');
   const frame = document.getElementById('tvFrame');
   const loading = document.getElementById('tvPlayerLoading');
@@ -3335,9 +3339,11 @@ async function tvPlay(ch, quality){
     loading.querySelector('span').textContent = 'Получаем свежий эфир...';
     try {
       const masterUrl = await tvResolveMatchTvMaster(ch);
-      return tvPlayHlsUrl(ch, masterUrl, { buildQualityMenu:true, preferTopAuto:true });
+      if (!tvIsCurrentPlay(ch, playToken)) return;
+      return tvPlayHlsUrl(ch, masterUrl, { buildQualityMenu:true, preferTopAuto:true, playToken:playToken });
     } catch(e) {
-      if (ch.fallbackSrc) return tvPlayHlsUrl(ch, ch.fallbackSrc, { buildQualityMenu:true, preferTopAuto:true });
+      if (!tvIsCurrentPlay(ch, playToken)) return;
+      if (ch.fallbackSrc) return tvPlayHlsUrl(ch, ch.fallbackSrc, { buildQualityMenu:true, preferTopAuto:true, playToken:playToken });
       return tvPlayFallback(ch);
     }
   }
@@ -3349,7 +3355,7 @@ async function tvPlay(ch, quality){
       const q = quality || ch.qdef || ch.quals[0];
       src = ch.qtpl.replace('{Q}', q);
     }
-    return tvPlayHlsUrl(ch, src, { buildQualityMenu:!(ch.qtpl && ch.quals), manualQuality:quality });
+    return tvPlayHlsUrl(ch, src, { buildQualityMenu:!(ch.qtpl && ch.quals), manualQuality:quality, playToken:playToken });
   }
 
   // 3) чистый embed-плеер источника (rutube/ok/vk/smotrim/mediavitrina/matchtv)
@@ -3365,47 +3371,67 @@ async function tvPlay(ch, quality){
   tvPlayFallback(ch);
 }
 
+function tvIsCurrentPlay(ch, playToken){
+  return tvCurrent && ch && tvCurrent.id === ch.id && playToken === tvPlayToken;
+}
+
 function tvPlayHlsUrl(ch, src, opts){
   opts = opts || {};
+  const playToken = opts.playToken || tvPlayToken;
+  if (!tvIsCurrentPlay(ch, playToken)) return;
   const video = document.getElementById('tvVideo');
+  const frame = document.getElementById('tvFrame');
   const loading = document.getElementById('tvPlayerLoading');
 
   tvStopHls();
   document.getElementById('tvQuality').innerHTML = '';
+  document.getElementById('tvModalSwitch').innerHTML = '';
   video.style.display = 'block';
   video.removeAttribute('src');
+  frame.style.display = 'none';
+  frame.src = 'about:blank';
   loading.style.display = 'flex';
   loading.querySelector('span').textContent = 'Подключение к эфиру...';
 
   if (!src) return tvPlayFallback(ch);
 
-  if (video.canPlayType('application/vnd.apple.mpegurl')) {
-    video.src = src;
-    video.addEventListener('loadeddata', ()=> loading.style.display='none', { once:true });
-    video.addEventListener('error', ()=> tvFailHls(ch), { once:true });
-    video.play().catch(()=>{});
-    if (ch.qtpl && ch.quals) tvBuildManualQualityMenu(ch, opts.manualQuality);
-    return;
-  }
-
+  // Для master-playlist сначала используем hls.js, если он доступен: так можно получить уровни качества.
+  // На Safari/iOS hls.js может быть недоступен — тогда останется native HLS без ручного меню качества.
   if (window.Hls && Hls.isSupported()) {
     tvHls = new Hls({
       lowLatencyMode:true,
       startLevel:-1,
-      capLevelToPlayerSize:false
+      capLevelToPlayerSize:false,
+      abrEwmaDefaultEstimate:10000000,
+      maxStarvationDelay:2,
+      maxLoadingDelay:2
     });
     tvHls.loadSource(src);
     tvHls.attachMedia(video);
     tvHls.on(Hls.Events.MANIFEST_PARSED, ()=>{
+      if (!tvIsCurrentPlay(ch, playToken)) return;
       if (opts.preferTopAuto) tvPreferHighestAutoStart();
-      loading.style.display='none';
-      video.play().catch(()=>{});
       if (ch.qtpl && ch.quals) tvBuildManualQualityMenu(ch, opts.manualQuality);
       else if (opts.buildQualityMenu !== false) tvBuildQualityMenu();
+      loading.style.display='none';
+      video.play().catch(()=>{});
+    });
+    tvHls.on(Hls.Events.LEVEL_SWITCHED, ()=>{
+      if (!tvIsCurrentPlay(ch, playToken)) return;
+      tvUpdateQualityActiveState();
     });
     tvHls.on(Hls.Events.ERROR, (e,data)=>{
-      if (data && data.fatal) tvFailHls(ch);
+      if (data && data.fatal && tvIsCurrentPlay(ch, playToken)) tvFailHls(ch, playToken);
     });
+    return;
+  }
+
+  if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = src;
+    video.addEventListener('loadeddata', ()=> { if (tvIsCurrentPlay(ch, playToken)) loading.style.display='none'; }, { once:true });
+    video.addEventListener('error', ()=> { if (tvIsCurrentPlay(ch, playToken)) tvFailHls(ch, playToken); }, { once:true });
+    video.play().catch(()=>{});
+    if (ch.qtpl && ch.quals) tvBuildManualQualityMenu(ch, opts.manualQuality);
     return;
   }
 
@@ -3463,26 +3489,34 @@ function tvPreferHighestAutoStart(){
   const best = tvGetSortedQualityLevels()[0];
   if (!best) return;
   try {
+    // Стартуем сразу с самого высокого доступного качества, чтобы не было мыльной картинки при хорошем интернете.
     tvHls.startLevel = best.i;
-    tvHls.nextAutoLevel = best.i;
-    tvHls.currentLevel = -1;
+    tvHls.nextLevel = best.i;
+    tvHls.loadLevel = best.i;
+    tvHls.currentLevel = best.i;
   } catch(e){}
 }
 
 // прямой HLS не пошёл (протух токен / гео / сеть): для Match TV один раз обновляем API, потом fallback
-async function tvFailHls(ch){
+async function tvFailHls(ch, playToken){
+  playToken = playToken || tvPlayToken;
+  if (!tvIsCurrentPlay(ch, playToken)) return;
   if (ch && ch.ptype === 'matchtv_api' && !tvMatchTvRetrying) {
     tvMatchTvRetrying = true;
     tvClearMatchTvCache(ch);
     try {
       const fresh = await tvResolveMatchTvMaster(ch);
       tvMatchTvRetrying = false;
-      return tvPlayHlsUrl(ch, fresh, { buildQualityMenu:true, preferTopAuto:true });
+      if (!tvIsCurrentPlay(ch, playToken)) return;
+      return tvPlayHlsUrl(ch, fresh, { buildQualityMenu:true, preferTopAuto:true, playToken:playToken });
     } catch(e) {
       tvMatchTvRetrying = false;
-      if (ch.fallbackSrc) return tvPlayHlsUrl(ch, ch.fallbackSrc, { buildQualityMenu:true, preferTopAuto:true });
+      if (!tvIsCurrentPlay(ch, playToken)) return;
+      if (ch.fallbackSrc) return tvPlayHlsUrl(ch, ch.fallbackSrc, { buildQualityMenu:true, preferTopAuto:true, playToken:playToken });
     }
   }
+
+  if (!tvIsCurrentPlay(ch, playToken)) return;
 
   if (ch && ch.fallback) {
     tvStopHls();
@@ -3571,25 +3605,73 @@ function tvQualityLabel(level){
 
 // строит меню выбора качества из уровней hls.js: Auto + уровни от высокого к низкому
 function tvBuildQualityMenu(){
-  const box = document.getElementById('tvQuality');
-  if (!tvHls || !tvHls.levels || tvHls.levels.length < 2) { box.innerHTML=''; return; }
+  const labelBox = document.getElementById('tvQuality');
+  const box = document.getElementById('tvModalSwitch');
+  if (!tvHls || !tvHls.levels || tvHls.levels.length < 2) {
+    labelBox.innerHTML = '';
+    box.innerHTML = '';
+    return;
+  }
+
   const levels = tvGetSortedQualityLevels();
-  let opts = '<option value="-1">Auto</option>';
   const used = new Set();
+  labelBox.textContent = 'Качество:';
+  box.innerHTML = '';
+
+  const addBtn = (label, value) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'tv-switch-btn';
+    btn.textContent = label;
+    btn.dataset.level = String(value);
+    btn.onclick = () => tvSetQuality(value, btn);
+    box.appendChild(btn);
+    return btn;
+  };
+
+  addBtn('Auto', -1);
+
   levels.forEach(l => {
     if (used.has(l.label)) return;
     used.add(l.label);
-    opts += `<option value="${l.i}">${l.label}</option>`;
+    addBtn(l.label, l.i);
   });
-  box.innerHTML = `<select onchange="tvSetQuality(this.value)" title="Качество">${opts}</select>`;
+
+  tvUpdateQualityActiveState();
 }
 
-function tvSetQuality(v){
+function tvSetQuality(v, btn){
   if (!tvHls) return;
-  tvHls.currentLevel = parseInt(v, 10); // -1 = Auto
+  const level = parseInt(v, 10);
+  tvHls.currentLevel = level; // -1 = Auto
+  tvUpdateQualityActiveState(btn);
+}
+
+function tvUpdateQualityActiveState(forcedBtn){
+  const box = document.getElementById('tvModalSwitch');
+  if (!box) return;
+  const buttons = box.querySelectorAll('.tv-switch-btn');
+  buttons.forEach(b => b.classList.remove('active'));
+
+  if (forcedBtn) {
+    forcedBtn.classList.add('active');
+    return;
+  }
+
+  const activeLevel = tvHls ? tvHls.currentLevel : -1;
+  const activeValue = String(activeLevel);
+  const exact = box.querySelector('.tv-switch-btn[data-level="' + activeValue + '"]');
+  if (exact) {
+    exact.classList.add('active');
+    return;
+  }
+
+  const auto = box.querySelector('.tv-switch-btn[data-level="-1"]');
+  if (auto) auto.classList.add('active');
 }
 
 function closeTVModal(){
+  tvPlayToken++;
   document.getElementById('tvModal').classList.remove('open');
   tvStopHls();
   const video = document.getElementById('tvVideo');
