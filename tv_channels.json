@@ -14,10 +14,10 @@
       {
         "label": "1080p50",
         "quality": "1080p50fps",
-        "src": "https://m3u8.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080p50fps/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080p50fps/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
         "ptype": "hls",
         "fallbacks": [
-          "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080p50fps/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8"
+          "https://m3u8.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080p50fps/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8"
         ]
       },
       {
