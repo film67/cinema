@@ -648,6 +648,15 @@
   .card-fav:hover { background: rgba(0,0,0,0.9); transform:scale(1.1); }
   .card-fav.active { color: var(--accent); }
 
+
+  .tv-external-link {
+    display:inline-flex; align-items:center; justify-content:center;
+    margin-top:14px; padding:10px 16px; border-radius:10px;
+    border:1px solid rgba(229,9,20,0.45);
+    background:rgba(229,9,20,0.16); color:#fff;
+    text-decoration:none; font-weight:700; font-size:13px;
+  }
+  .tv-external-link:hover { background:rgba(229,9,20,0.28); }
   /* ─── MODAL ─── */
   #modal {
     position: fixed; inset:0; z-index:2000;
@@ -3654,7 +3663,29 @@ function tvPlay(ch, sourceIndex = 0){
     return;
   }
 
+  if (source.ptype === 'external') {
+    tvPlayExternal(ch, source);
+    return;
+  }
+
   tvPlayFallback(ch, 'Источник этого канала пока не поддерживается.');
+}
+
+function tvPlayExternal(ch, source){
+  const url = source && source.src ? tvAbsUrl(source.src) : '';
+  const label = source && source.label ? source.label : 'Открыть источник';
+  const msg = (ch && ch.name ? tvEsc(ch.name) + ': ' : '') + 'этот эфир запрещает встроенный плеер на стороннем сайте.' +
+    (url ? `<br><a class="tv-external-link" href="${tvEsc(url)}" target="_blank" rel="noopener noreferrer">${tvEsc(label)}</a>` : '');
+
+  const video = document.getElementById('tvVideo');
+  const frame = document.getElementById('tvFrame');
+  const loading = document.getElementById('tvPlayerLoading');
+
+  tvStopHls();
+  video.style.display = 'none'; video.removeAttribute('src');
+  frame.style.display = 'none'; frame.src = 'about:blank';
+  loading.style.display = 'flex';
+  loading.querySelector('span').innerHTML = msg;
 }
 
 function tvPlayIframe(src){

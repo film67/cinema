@@ -5,35 +5,35 @@
     "cat": "sport",
     "logo": "https://matchtv.ru/favicon-32x32.png",
     "ptype": "hls",
-    "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/1080p50fps/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
+    "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080p50fps/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
     "matchPage": "https://matchtv.ru/video/channel/matchtv",
     "eventId": 606457,
-    "source": "matchtv.ru",
+    "source": "matchtv.ru verified_direct_hls",
     "source_page": "https://matchtv.ru/video/channel/matchtv",
     "streams": [
       {
         "label": "1080p50",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/1080p50fps/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080p50fps/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
         "isQuality": true
       },
       {
         "label": "1080",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/1080/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
         "isQuality": true
       },
       {
         "label": "720",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/720/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/720/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
         "isQuality": true
       },
       {
         "label": "480",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/480/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/480/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
         "isQuality": true
       },
       {
         "label": "360",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/360/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/360/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
         "isQuality": true
       }
     ],
@@ -41,35 +41,35 @@
       {
         "label": "1080p50",
         "quality": "1080p50fps",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/1080p50fps/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080p50fps/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
         "ptype": "hls"
       },
       {
         "label": "1080",
         "quality": "1080",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/1080/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
         "ptype": "hls"
       },
       {
         "label": "720",
         "quality": "720",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/720/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/720/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
         "ptype": "hls"
       },
       {
         "label": "480",
         "quality": "480",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/480/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/480/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
         "ptype": "hls"
       },
       {
         "label": "360",
         "quality": "360",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/360/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/360/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
         "ptype": "hls"
       }
     ],
-    "note": "Матч ТВ: прямые HLS-качества заданы вручную, без iframe matchtv.ru."
+    "note": "Матч ТВ: прямые HLS-качества обновлены на проверенный набор free_e014.../1782109052."
   },
   {
     "id": "match-strana",
@@ -97,21 +97,22 @@
     "cat": "main",
     "logo": "https://smotret.tv/images/1-kanal.webp",
     "ptype": "iframe",
-    "src": "https://rutube.ru/play/embed/c58f502c7bb34a8fcdd976b221fca292",
-    "source": "rutube + 1tv",
+    "src": "https://static.1tv.ru/eump/embeds/interactive.html?__paranja=yes&embed=..%2Fembeds%2F1tv_live.html&start=none&muted=no&titleEnabled=no&interactive=no&embed_id=5343434f0f393980c85a19aa",
+    "source": "1tv + rutube_external",
     "source_page": "https://rutube.ru/live/video/c58f502c7bb34a8fcdd976b221fca292/",
     "sources": [
       {
-        "label": "Rutube",
-        "ptype": "iframe",
-        "src": "https://rutube.ru/play/embed/c58f502c7bb34a8fcdd976b221fca292"
-      },
-      {
-        "label": "1tv запасной",
+        "label": "1tv iframe",
         "ptype": "iframe",
         "src": "https://static.1tv.ru/eump/embeds/interactive.html?__paranja=yes&embed=..%2Fembeds%2F1tv_live.html&start=none&muted=no&titleEnabled=no&interactive=no&embed_id=5343434f0f393980c85a19aa"
+      },
+      {
+        "label": "Открыть RuTube",
+        "ptype": "external",
+        "src": "https://rutube.ru/live/video/c58f502c7bb34a8fcdd976b221fca292/"
       }
-    ]
+    ],
+    "note": "RuTube для этого эфира запрещает встраивание: видео можно открыть только на RuTube. Поэтому внутри сайта оставлен 1tv iframe, а RuTube вынесен отдельной кнопкой."
   },
   {
     "id": "rossiya-1",
