@@ -76,68 +76,20 @@
     "name": "Матч! Страна",
     "cat": "sport",
     "logo": "https://matchtv.ru/favicon-32x32.png",
-    "ptype": "matchtv_api_hls",
-    "src": "https://video.matchtv.ru/api/v4/matchtv/player_event.json?sr=14&app_id=matchtv_web_app&ref=https%3A%2F%2Fmatchtv.ru%2Fvideo%2Fchannel%2Fstrana&id=606417",
-    "apiUrl": "https://video.matchtv.ru/api/v4/matchtv/player_event.json?sr=14&app_id=matchtv_web_app&ref=https%3A%2F%2Fmatchtv.ru%2Fvideo%2Fchannel%2Fstrana&id=606417",
-    "matchPage": "https://matchtv.ru/video/channel/strana",
-    "eventId": 606417,
-    "source": "matchtv.ru",
-    "source_page": "https://matchtv.ru/video/channel/strana",
-    "qualities": [
+    "ptype": "hls",
+    "src": "http://ukr.ukrainske.tv/134/keytvainua/video.m3u8",
+    "source": "user_hls",
+    "source_page": "http://ukr.ukrainske.tv/134/keytvainua/video.m3u8",
+    "streams": [
       {
-        "label": "1080p50",
-        "value": "1080p50fps"
-      },
-      {
-        "label": "1080",
-        "value": "1080"
-      },
-      {
-        "label": "720",
-        "value": "720"
-      },
-      {
-        "label": "480",
-        "value": "480"
-      },
-      {
-        "label": "360",
-        "value": "360"
+        "label": "HLS",
+        "src": "http://ukr.ukrainske.tv/134/keytvainua/video.m3u8"
       }
     ],
-    "qualityStreams": [
-      {
-        "label": "1080p50",
-        "quality": "1080p50fps",
-        "ptype": "matchtv_api_hls",
-        "apiUrl": "https://video.matchtv.ru/api/v4/matchtv/player_event.json?sr=14&app_id=matchtv_web_app&ref=https%3A%2F%2Fmatchtv.ru%2Fvideo%2Fchannel%2Fstrana&id=606417"
-      },
-      {
-        "label": "1080",
-        "quality": "1080",
-        "ptype": "matchtv_api_hls",
-        "apiUrl": "https://video.matchtv.ru/api/v4/matchtv/player_event.json?sr=14&app_id=matchtv_web_app&ref=https%3A%2F%2Fmatchtv.ru%2Fvideo%2Fchannel%2Fstrana&id=606417"
-      },
-      {
-        "label": "720",
-        "quality": "720",
-        "ptype": "matchtv_api_hls",
-        "apiUrl": "https://video.matchtv.ru/api/v4/matchtv/player_event.json?sr=14&app_id=matchtv_web_app&ref=https%3A%2F%2Fmatchtv.ru%2Fvideo%2Fchannel%2Fstrana&id=606417"
-      },
-      {
-        "label": "480",
-        "quality": "480",
-        "ptype": "matchtv_api_hls",
-        "apiUrl": "https://video.matchtv.ru/api/v4/matchtv/player_event.json?sr=14&app_id=matchtv_web_app&ref=https%3A%2F%2Fmatchtv.ru%2Fvideo%2Fchannel%2Fstrana&id=606417"
-      },
-      {
-        "label": "360",
-        "quality": "360",
-        "ptype": "matchtv_api_hls",
-        "apiUrl": "https://video.matchtv.ru/api/v4/matchtv/player_event.json?sr=14&app_id=matchtv_web_app&ref=https%3A%2F%2Fmatchtv.ru%2Fvideo%2Fchannel%2Fstrana&id=606417"
-      }
-    ],
-    "note": "Матч! Страна: прямой HLS строится из официального API без iframe. Если не откроется — нужен стабильный прямой источник."
+    "note": "Матч! Страна заменён на прямой HLS-источник, который дал пользователь. Официальный API Match TV для этого канала отдавал недоступный/гео-заблокированный поток.",
+    "status": "user_replaced_match_strana",
+    "browser_status": "user_candidate",
+    "play_priority": "hls"
   },
   {
     "id": "1-kanal",
@@ -145,9 +97,21 @@
     "cat": "main",
     "logo": "https://smotret.tv/images/1-kanal.webp",
     "ptype": "iframe",
-    "src": "https://static.1tv.ru/eump/embeds/interactive.html?__paranja=yes&embed=..%2Fembeds%2F1tv_live.html&start=none&muted=no&titleEnabled=no&interactive=no&embed_id=5343434f0f393980c85a19aa",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/1-kanal"
+    "src": "https://rutube.ru/play/embed/c58f502c7bb34a8fcdd976b221fca292",
+    "source": "rutube + 1tv",
+    "source_page": "https://rutube.ru/live/video/c58f502c7bb34a8fcdd976b221fca292/",
+    "sources": [
+      {
+        "label": "Rutube",
+        "ptype": "iframe",
+        "src": "https://rutube.ru/play/embed/c58f502c7bb34a8fcdd976b221fca292"
+      },
+      {
+        "label": "1tv запасной",
+        "ptype": "iframe",
+        "src": "https://static.1tv.ru/eump/embeds/interactive.html?__paranja=yes&embed=..%2Fembeds%2F1tv_live.html&start=none&muted=no&titleEnabled=no&interactive=no&embed_id=5343434f0f393980c85a19aa"
+      }
+    ]
   },
   {
     "id": "rossiya-1",
@@ -367,25 +331,28 @@
     "name": "СТС",
     "cat": "main",
     "logo": "https://smotret.tv/images/sts.webp",
-    "ptype": "hls",
-    "src": "http://185.46.16.239:8000/STS",
-    "source": "user_hls_checked",
-    "source_page": "http://185.46.16.239:8000/STS",
+    "ptype": "iframe",
+    "src": "https://rutube.ru/play/embed/ffc110c6785e57f4c329179b555547b4",
+    "source": "user_iframe_candidates",
+    "source_page": "https://rutube.ru/live/video/ffc110c6785e57f4c329179b555547b4/",
     "blocked_src": "https://player.mediavitrina.ru/ctc_v2/ctc_ext/smotret_tv_web/player.html",
-    "streams": [
+    "streams": [],
+    "note": "СТС: прежние HLS-источники удалены как нерабочие. Оставлены только Rutube и VK iframe-кандидаты.",
+    "status": "user_replaced_dead_sts_sources",
+    "browser_status": "candidate_geo_limited",
+    "play_priority": "iframe",
+    "sources": [
       {
-        "label": "Основной",
-        "src": "http://185.46.16.239:8000/STS"
+        "label": "Rutube",
+        "ptype": "iframe",
+        "src": "https://rutube.ru/play/embed/ffc110c6785e57f4c329179b555547b4"
       },
       {
-        "label": "Запасной",
-        "src": "https://streaming.thestream.cyou/live/296-req_offset_28000000-req_window_0-1k_v5.m3u8"
+        "label": "VK",
+        "ptype": "iframe",
+        "src": "https://vkvideo.ru/video_ext.php?oid=-18496184&id=456260645&hd=2&autoplay=1"
       }
-    ],
-    "note": "Источник заменён: основной HLS http://185.46.16.239:8000/STS по времени вещает правильно; HTTPS thestream оставлен как запасной.",
-    "status": "user_replaced_forbidden_embed",
-    "browser_status": "user_checked_working_primary_with_backup",
-    "play_priority": "hls"
+    ]
   },
   {
     "id": "sts-love",
