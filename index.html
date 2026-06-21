@@ -589,6 +589,85 @@
   }
   .section-more:hover { color: var(--accent); }
 
+  /* ─── WORLD CUP POSTER ─── */
+  .wc-poster {
+    position: relative; display: block; width: 100%; cursor: pointer;
+    border-radius: 18px; overflow: hidden; margin: 0 0 56px; min-height: 200px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background:
+      radial-gradient(120% 140% at 85% 12%, rgba(229,9,20,0.55), transparent 55%),
+      radial-gradient(120% 160% at 8% 115%, rgba(0,170,85,0.45), transparent 55%),
+      linear-gradient(120deg,#0a1f14 0%, #0c1430 55%, #1a0a12 100%);
+    transition: transform .25s, box-shadow .25s, border-color .25s;
+  }
+  .wc-poster:hover {
+    transform: translateY(-4px); border-color: rgba(229,9,20,0.45);
+    box-shadow: 0 22px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(229,9,20,.18);
+  }
+  .wc-pitch {
+    position: absolute; inset: 0; opacity: .55;
+    background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.04) 0 2px, transparent 2px 64px);
+  }
+  .wc-inner {
+    position: relative; z-index: 2; display: flex; align-items: center;
+    gap: clamp(14px,4vw,46px); padding: clamp(20px,4vw,40px) clamp(20px,5vw,52px);
+  }
+  .wc-art { flex-shrink: 0; width: clamp(94px,15vw,164px); filter: drop-shadow(0 10px 26px rgba(0,0,0,.5)); }
+  .wc-text { flex: 1; min-width: 0; }
+  .wc-kicker {
+    display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase; color: #ffd24d;
+    background: rgba(0,0,0,.28); border: 1px solid rgba(255,210,77,.3);
+    padding: 5px 12px; border-radius: 999px; margin-bottom: 14px;
+  }
+  .wc-kicker::before { content:''; width:7px; height:7px; border-radius:50%; background:#ff3b3b; animation:tvpulse 1.4s infinite; }
+  .wc-title {
+    font-family: 'Bebas Neue', sans-serif; line-height: .92;
+    font-size: clamp(32px,6.5vw,64px); letter-spacing: 1px; color: #fff;
+    text-shadow: 0 4px 24px rgba(0,0,0,.5); margin-bottom: 10px;
+  }
+  .wc-title span { color: #ffd24d; }
+  .wc-sub { font-size: clamp(13px,1.6vw,16px); color: var(--text2); margin-bottom: 20px; max-width: 520px; line-height: 1.55; }
+  .wc-cta {
+    display: inline-flex; align-items: center; gap: 9px; background: var(--accent); color: #fff;
+    font-weight: 700; font-size: 14px; padding: 12px 22px; border-radius: 999px;
+    transition: background .2s, transform .2s;
+  }
+  .wc-poster:hover .wc-cta { background: var(--accent2); transform: translateX(3px); }
+  @media (max-width: 640px) {
+    .wc-inner { flex-direction: column; text-align: center; gap: 16px; }
+    .wc-sub { margin-left: auto; margin-right: auto; }
+  }
+
+  /* ─── POPULAR TV ROW ─── */
+  .tv-pop-row {
+    display: grid; grid-auto-flow: column; grid-auto-columns: minmax(132px,1fr);
+    gap: 14px; overflow-x: auto; padding: 4px 2px 12px; scroll-snap-type: x proximity;
+  }
+  .tv-pop-row::-webkit-scrollbar { height: 6px; }
+  @media (max-width: 680px) { .tv-pop-row { grid-auto-columns: minmax(112px,46%); } }
+  .tv-pop-card {
+    scroll-snap-align: start; position: relative; cursor: pointer;
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px 12px; display: flex; flex-direction: column; align-items: center; gap: 10px;
+    transition: transform .18s, border-color .18s;
+  }
+  .tv-pop-card:hover { transform: translateY(-5px); border-color: rgba(229,9,20,.45); }
+  .tv-pop-logo {
+    width: 60px; height: 60px; border-radius: 14px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center; font-weight: 800; color: #fff;
+    font-size: 18px; letter-spacing: -1px;
+    background: linear-gradient(135deg,var(--accent),var(--accent2));
+  }
+  .tv-pop-logo img { width: 100%; height: 100%; object-fit: contain; padding: 6px; background: rgba(255,255,255,.05); }
+  .tv-pop-name { font-size: 12.5px; font-weight: 600; color: var(--text); text-align: center; line-height: 1.2; }
+  .tv-pop-live {
+    position: absolute; top: 8px; right: 8px; font-size: 8px; font-weight: 700;
+    background: rgba(0,0,0,.5); color: #fff; padding: 2px 6px; border-radius: 5px;
+    display: flex; align-items: center; gap: 3px;
+  }
+  .tv-pop-live::before { content:''; width:5px; height:5px; border-radius:50%; background:#ff3b3b; animation:tvpulse 1.4s infinite; }
+
   /* ─── CARDS ─── */
   .cards {
     display: grid;
@@ -1334,6 +1413,45 @@
 
 <!-- MAIN PAGE -->
 <div id="mainPage">
+  <!-- ═══ ПОСТЕР: ЧЕМПИОНАТ МИРА ПО ФУТБОЛУ 2026 → Матч ТВ ═══ -->
+  <div class="wc-poster" role="button" tabindex="0" onclick="openTVById('matchtv')"
+       onkeydown="if(event.key==='Enter'||event.key===' ')openTVById('matchtv')">
+    <div class="wc-pitch"></div>
+    <div class="wc-inner">
+      <svg class="wc-art" viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="wcg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffe79a"/><stop offset=".5" stop-color="#f5c518"/><stop offset="1" stop-color="#b8860b"/>
+          </linearGradient>
+        </defs>
+        <path d="M28 32 Q8 36 14 62 Q18 80 36 78" fill="none" stroke="url(#wcg)" stroke-width="7" stroke-linecap="round"/>
+        <path d="M92 32 Q112 36 106 62 Q102 80 84 78" fill="none" stroke="url(#wcg)" stroke-width="7" stroke-linecap="round"/>
+        <path d="M30 20 H90 V42 Q90 76 60 86 Q30 76 30 42 Z" fill="url(#wcg)"/>
+        <circle cx="60" cy="48" r="15" fill="#0b0b14"/>
+        <path d="M60 39 l5.6 4 -2.1 6.6 -7 0 -2.1 -6.6 z" fill="#fff"/>
+        <rect x="54" y="84" width="12" height="15" rx="2" fill="url(#wcg)"/>
+        <rect x="40" y="99" width="40" height="9" rx="3" fill="url(#wcg)"/>
+        <rect x="34" y="108" width="52" height="12" rx="4" fill="url(#wcg)"/>
+        <path d="M60 3 l3.4 7 7.6 1 -5.5 5.3 1.3 7.6L60 27l-6.8 3.9 1.3-7.6L49 18l7.6-1z" fill="#ffd24d"/>
+      </svg>
+      <div class="wc-text">
+        <span class="wc-kicker">Прямой эфир · Матч ТВ</span>
+        <h2 class="wc-title">ЧЕМПИОНАТ МИРА<br><span>ПО ФУТБОЛУ 2026</span></h2>
+        <p class="wc-sub">Все матчи мундиаля — прямые трансляции, голы и обзоры. Смотри онлайн бесплатно на Матч ТВ.</p>
+        <span class="wc-cta">▶ Смотреть на Матч ТВ</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ПОПУЛЯРНЫЕ ТВ-КАНАЛЫ ═══ -->
+  <div class="section" id="sectionPopularTV">
+    <div class="section-header">
+      <h2 class="section-title">Популярные ТВ-каналы</h2>
+      <span class="section-more" onclick="showTVPage()">Все →</span>
+    </div>
+    <div class="tv-pop-row" id="popularTVRow"></div>
+  </div>
+
   <div class="section" id="sectionTrending">
     <div class="section-header">
       <h2 class="section-title">В тренде</h2>
@@ -1604,12 +1722,60 @@ async function api(endpoint, params = {}) {
 }
 
 // ═══════════════════════════════════════════════════
+// ПЕРЕХОД НА КОНКРЕТНЫЙ ТВ-КАНАЛ ПО ID (для постера и блока популярных)
+// ═══════════════════════════════════════════════════
+async function openTVById(id){
+  try {
+    await showTVPage();        // открыть раздел ТВ (загрузит каналы, отрисует сетку)
+    await openTVChannel(id);   // открыть плеер нужного канала по его id
+  } catch(e){ console.warn('openTVById error', e); }
+}
+
+// Популярные ТВ-каналы для главной (id совпадает с id в tv_channels.json)
+const POPULAR_TV = [
+  { id:'matchtv',   name:'Матч ТВ',     logo:'https://smotret.tv/images/matchtv.webp' },
+  { id:'1-kanal',   name:'1 канал',     logo:'https://smotret.tv/images/1-kanal.webp' },
+  { id:'rossiya-1', name:'Россия 1',    logo:'https://smotret.tv/images/rossiya-1.webp' },
+  { id:'ntv',       name:'НТВ',         logo:'https://smotret.tv/images/ntv.webp' },
+  { id:'tnt',       name:'ТНТ',         logo:'https://smotret.tv/images/tnt.webp' },
+  { id:'sts',       name:'СТС',         logo:'https://smotret.tv/images/sts.webp' },
+  { id:'ren-tv',    name:'РЕН ТВ',      logo:'https://smotret.tv/images/ren-tv.webp' },
+  { id:'pyatnica',  name:'Пятница!',    logo:'https://smotret.tv/images/pyatnica.webp' },
+  { id:'tv-3',      name:'ТВ-3',        logo:'https://smotret.tv/images/tv-3.webp' },
+  { id:'5-kanal',   name:'Пятый канал', logo:'https://smotret.tv/images/5-kanal.webp' },
+  { id:'zvezda',    name:'Звезда',      logo:'https://smotret.tv/images/zvezda.webp' },
+  { id:'tvc',       name:'ТВЦ',         logo:'https://smotret.tv/images/tvc.webp' }
+];
+
+function tvPopInitials(name){
+  const m = String(name||'').replace(/[^A-Za-zА-Яа-я0-9 ]/g,'').trim().split(/\s+/).filter(Boolean);
+  return (m.slice(0,2).map(w => w[0]).join('') || 'TV').toUpperCase();
+}
+
+function renderPopularTV(){
+  const row = document.getElementById('popularTVRow');
+  if (!row) return;
+  row.innerHTML = POPULAR_TV.map(ch => {
+    const fb = tvPopInitials(ch.name);
+    const logo = ch.logo
+      ? `<img src="${ch.logo}" alt="" loading="lazy" onerror="this.remove();this.parentNode.textContent=this.parentNode.dataset.fb;">`
+      : fb;
+    return `<div class="tv-pop-card" onclick="openTVById('${ch.id}')">
+        <span class="tv-pop-live">LIVE</span>
+        <div class="tv-pop-logo" data-fb="${fb}">${logo}</div>
+        <div class="tv-pop-name">${ch.name}</div>
+      </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
 async function init() {
   try { favorites = JSON.parse(localStorage.getItem('cv_favs') || '[]'); } catch {}
   updateFavBtn();
   loadHero();
+  renderPopularTV();
   loadSection('trendingRow', '/trending/all/day', {}, true);
   loadSection('moviesRow',   '/discover/movie',   { sort_by: 'popularity.desc', 'vote_count.gte': 500, without_genres: '16' }, true);
   loadSection('seriesRow',   '/discover/tv',      { sort_by: 'popularity.desc', 'vote_count.gte': 300, without_genres: '16', without_original_language: 'ja,zh,ko' }, true);
