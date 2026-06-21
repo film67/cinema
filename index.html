@@ -13,7 +13,7 @@
   <!-- Monetag ad scripts -->
   <script src="https://5gvci.com/act/files/tag.min.js?z=11173702" data-cfasync="false" async></script>
   <script>(function(s){s.dataset.zone='11173820',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-  <script>(function(s){s.dataset.zone='11173846',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+  <!-- Vignette-зона 11173846 (n6wxm.com/vignette.min.js) удалена по запросу -->
   <!-- /Monetag ad scripts -->
   <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
@@ -416,6 +416,10 @@
   }
   #searchInput::placeholder { color: var(--text3); }
   .search-icon { display: none; }
+  /* В разделе ТВ скрываем верхний поиск медиатеки и мобильную кнопку 🔍 (у ТВ свой поиск) */
+  body.tv-mode .search-wrap,
+  body.tv-mode .btn-search-mobile { display: none !important; }
+  body.tv-mode .mobile-search-bar { display: none !important; }
   .btn-fav {
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.08);
@@ -3029,6 +3033,7 @@ async function loadCatalogPage(type, page, replace) {
 // PAGES
 // ═══════════════════════════════════════════════════
 function showPage(page, fromHistory = false) {
+  document.body.classList.toggle('tv-mode', page === 'tv');
   document.getElementById('mainPage').style.display   = page === 'main'   ? 'block' : 'none';
   document.getElementById('searchPage').style.display = page === 'search' ? 'block' : 'none';
   document.getElementById('favPage').style.display    = page === 'fav'    ? 'block' : 'none';
@@ -3374,6 +3379,7 @@ async function loadTVChannels(){
 }
 
 async function showTVPage(){
+  document.body.classList.add('tv-mode');
   document.getElementById('mainPage').style.display = 'none';
   document.getElementById('searchPage').style.display = 'none';
   document.getElementById('favPage').style.display = 'none';

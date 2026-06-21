@@ -112,13 +112,13 @@
     "cat": "main",
     "logo": "https://smotret.tv/images/1-kanal.webp",
     "ptype": "iframe",
-    "src": "https://rutube.ru/play/embed/c58f502c7bb34a8fcdd976b221fca292",
-    "source": "user_rutube_live",
-    "source_page": "https://rutube.ru/live/video/c58f502c7bb34a8fcdd976b221fca292/",
-    "note": "Первый канал заменён на обычный Rutube embed, без 1tv iframe и без внешней кнопки.",
+    "src": "https://ok.ru/videoembed/1115050286838?nochat=1&autoplay=1",
+    "source": "user_ok_video",
+    "source_page": "https://ok.ru/videoembed/1115050286838",
+    "note": "Первый канал: OK.ru videoembed (постоянный прямой эфир), ссылку дал пользователь. Rutube embed убран — показывал заглушку «перейдите в Rutube». VK-эфир не используем из-за геоблока в Узбекистане.",
     "play_priority": "iframe",
-    "status": "user_replaced_rutube_embed",
-    "browser_status": "user_candidate"
+    "status": "user_replaced_ok_embed",
+    "browser_status": "user_provided"
   },
   {
     "id": "rossiya-1",
