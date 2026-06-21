@@ -3,93 +3,108 @@
     "id": "matchtv",
     "name": "Матч ТВ",
     "cat": "sport",
-    "logo": "https://matchtv.ru/favicon-32x32.png",
+    "logo": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgMTYwIDE2MCI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHgyPSIxIiB5MT0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ZmMTgyOCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2I2MDAxMiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTYwIiBoZWlnaHQ9IjE2MCIgcng9IjM0IiBmaWxsPSJ1cmwoI2cpIi8+Cjx0ZXh0IHg9IjgwIiB5PSI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLCBIZWx2ZXRpY2EsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmYiPtCc0JDQotCnPC90ZXh0PgoKPC9zdmc+",
     "ptype": "hls",
-    "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080p50fps/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
+    "src": "https://m3u8.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080p50fps/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
     "matchPage": "https://matchtv.ru/video/channel/matchtv",
     "eventId": 606457,
-    "source": "matchtv.ru verified_direct_hls",
+    "source": "matchtv.ru verified_direct_hls_with_fallback_domain",
     "source_page": "https://matchtv.ru/video/channel/matchtv",
     "streams": [
       {
         "label": "1080p50",
-        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080p50fps/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
-        "isQuality": true
+        "quality": "1080p50fps",
+        "src": "https://m3u8.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080p50fps/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
+        "ptype": "hls",
+        "fallbacks": [
+          "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080p50fps/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8"
+        ]
       },
       {
         "label": "1080",
-        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
-        "isQuality": true
+        "quality": "1080",
+        "src": "https://m3u8.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
+        "ptype": "hls",
+        "fallbacks": [
+          "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8"
+        ]
       },
       {
         "label": "720",
-        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/720/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
-        "isQuality": true
+        "quality": "720",
+        "src": "https://m3u8.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/720/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
+        "ptype": "hls",
+        "fallbacks": [
+          "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/720/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8"
+        ]
       },
       {
         "label": "480",
-        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/480/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
-        "isQuality": true
+        "quality": "480",
+        "src": "https://m3u8.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/480/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
+        "ptype": "hls",
+        "fallbacks": [
+          "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/480/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8"
+        ]
       },
       {
         "label": "360",
-        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/360/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
-        "isQuality": true
+        "quality": "360",
+        "src": "https://m3u8.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/360/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
+        "ptype": "hls",
+        "fallbacks": [
+          "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/360/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8"
+        ]
       }
     ],
     "qualityStreams": [
       {
         "label": "1080p50",
         "quality": "1080p50fps",
-        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080p50fps/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
-        "ptype": "hls"
+        "src": "https://m3u8.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080p50fps/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
+        "ptype": "hls",
+        "fallbacks": [
+          "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080p50fps/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8"
+        ]
       },
       {
         "label": "1080",
         "quality": "1080",
-        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
-        "ptype": "hls"
+        "src": "https://m3u8.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
+        "ptype": "hls",
+        "fallbacks": [
+          "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8"
+        ]
       },
       {
         "label": "720",
         "quality": "720",
-        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/720/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
-        "ptype": "hls"
+        "src": "https://m3u8.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/720/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
+        "ptype": "hls",
+        "fallbacks": [
+          "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/720/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8"
+        ]
       },
       {
         "label": "480",
         "quality": "480",
-        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/480/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
-        "ptype": "hls"
+        "src": "https://m3u8.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/480/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
+        "ptype": "hls",
+        "fallbacks": [
+          "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/480/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8"
+        ]
       },
       {
         "label": "360",
         "quality": "360",
-        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/360/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
-        "ptype": "hls"
+        "src": "https://m3u8.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/360/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
+        "ptype": "hls",
+        "fallbacks": [
+          "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/360/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8"
+        ]
       }
     ],
-    "note": "Матч ТВ: прямые HLS-качества обновлены на проверенный набор free_e014.../1782109052."
-  },
-  {
-    "id": "match-strana",
-    "name": "Матч! Страна",
-    "cat": "sport",
-    "logo": "https://matchtv.ru/favicon-32x32.png",
-    "ptype": "hls",
-    "src": "http://ukr.ukrainske.tv/134/keytvainua/video.m3u8",
-    "source": "user_hls",
-    "source_page": "http://ukr.ukrainske.tv/134/keytvainua/video.m3u8",
-    "streams": [
-      {
-        "label": "HLS",
-        "src": "http://ukr.ukrainske.tv/134/keytvainua/video.m3u8"
-      }
-    ],
-    "note": "Матч! Страна заменён на прямой HLS-источник, который дал пользователь. Официальный API Match TV для этого канала отдавал недоступный/гео-заблокированный поток.",
-    "status": "user_replaced_match_strana",
-    "browser_status": "user_candidate",
-    "play_priority": "hls"
+    "note": "Матч ТВ: прямые HLS-качества. Основной домен m3u8.video.matchtv.ru, запасной домен bl.video.matchtv.ru для каждого качества."
   },
   {
     "id": "1-kanal",
@@ -97,22 +112,13 @@
     "cat": "main",
     "logo": "https://smotret.tv/images/1-kanal.webp",
     "ptype": "iframe",
-    "src": "https://static.1tv.ru/eump/embeds/interactive.html?__paranja=yes&embed=..%2Fembeds%2F1tv_live.html&start=none&muted=no&titleEnabled=no&interactive=no&embed_id=5343434f0f393980c85a19aa",
-    "source": "1tv + rutube_external",
+    "src": "https://rutube.ru/play/embed/c58f502c7bb34a8fcdd976b221fca292",
+    "source": "user_rutube_live",
     "source_page": "https://rutube.ru/live/video/c58f502c7bb34a8fcdd976b221fca292/",
-    "sources": [
-      {
-        "label": "1tv iframe",
-        "ptype": "iframe",
-        "src": "https://static.1tv.ru/eump/embeds/interactive.html?__paranja=yes&embed=..%2Fembeds%2F1tv_live.html&start=none&muted=no&titleEnabled=no&interactive=no&embed_id=5343434f0f393980c85a19aa"
-      },
-      {
-        "label": "Открыть RuTube",
-        "ptype": "external",
-        "src": "https://rutube.ru/live/video/c58f502c7bb34a8fcdd976b221fca292/"
-      }
-    ],
-    "note": "RuTube для этого эфира запрещает встраивание: видео можно открыть только на RuTube. Поэтому внутри сайта оставлен 1tv iframe, а RuTube вынесен отдельной кнопкой."
+    "note": "Первый канал заменён на обычный Rutube embed, без 1tv iframe и без внешней кнопки.",
+    "play_priority": "iframe",
+    "status": "user_replaced_rutube_embed",
+    "browser_status": "user_candidate"
   },
   {
     "id": "rossiya-1",
@@ -7370,5 +7376,25 @@
     "src": "https://www.youtube.com/embed/tAWFO8_O_7M?rel=0&modestbranding=1&autoplay=1&showinfo=0&iv_load_policy=3",
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/relax/nasha-sibir"
+  },
+  {
+    "id": "match-strana",
+    "name": "Матч! Страна",
+    "cat": "sport",
+    "logo": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgMTYwIDE2MCI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHgyPSIxIiB5MT0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ZmMTgyOCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2I2MDAxMiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTYwIiBoZWlnaHQ9IjE2MCIgcng9IjM0IiBmaWxsPSJ1cmwoI2cpIi8+Cjx0ZXh0IHg9IjgwIiB5PSI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLCBIZWx2ZXRpY2EsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmYiPtCc0JDQotCnPC90ZXh0Pgo8dGV4dCB4PSI4MCIgeT0iMTEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsIEhlbHZldGljYSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMiIgZm9udC13ZWlnaHQ9IjgwMCIgZmlsbD0iI2ZmZiI+0KHQotCg0JDQndCQPC90ZXh0Pgo8L3N2Zz4=",
+    "ptype": "hls",
+    "src": "http://ukr.ukrainske.tv/134/keytvainua/video.m3u8",
+    "source": "user_hls",
+    "source_page": "http://ukr.ukrainske.tv/134/keytvainua/video.m3u8",
+    "streams": [
+      {
+        "label": "HLS",
+        "src": "http://ukr.ukrainske.tv/134/keytvainua/video.m3u8"
+      }
+    ],
+    "note": "Матч! Страна заменён на прямой HLS-источник, который дал пользователь. Официальный API Match TV для этого канала отдавал недоступный/гео-заблокированный поток.",
+    "status": "user_replaced_match_strana",
+    "browser_status": "user_candidate",
+    "play_priority": "hls"
   }
 ]

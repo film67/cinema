@@ -3322,6 +3322,8 @@ let tvHls = null;
 let tvActiveChannel = null;
 let tvActiveSourceIndex = 0;
 let tvActiveSources = [];
+let tvActiveHlsFallbacks = [];
+let tvActiveHlsFallbackIndex = 0;
 let tvLastQualityLevels = [];
 let tvQualityIndex = null;
 
@@ -3499,7 +3501,8 @@ function tvGetSources(ch){
         src: s.src || s.apiUrl || ch.apiUrl || ch.src,
         apiUrl: s.apiUrl || ch.apiUrl || ch.src,
         quality: s.quality || s.value || s.label || '',
-        isQuality: true
+        isQuality: true,
+        fallbacks: Array.isArray(s.fallbacks) ? s.fallbacks.filter(Boolean) : []
       }));
   }
 
@@ -3540,7 +3543,8 @@ function tvGetSources(ch){
         label: s.label || (s.ptype === 'hls' ? `HLS ${i+1}` : `Плеер ${i+1}`),
         ptype: s.ptype,
         src: s.src,
-        isQuality: !!s.isQuality
+        isQuality: !!s.isQuality,
+        fallbacks: Array.isArray(s.fallbacks) ? s.fallbacks.filter(Boolean) : []
       }));
   }
 
@@ -3552,7 +3556,8 @@ function tvGetSources(ch){
           label: u.label || (i === 0 ? 'HLS' : `HLS ${i+1}`),
           ptype: 'hls',
           src: u.src || u.url,
-          isQuality: !!u.isQuality
+          isQuality: !!u.isQuality,
+          fallbacks: Array.isArray(u.fallbacks) ? u.fallbacks.filter(Boolean) : []
         };
       }
       return {
@@ -3644,7 +3649,7 @@ function tvPlay(ch, sourceIndex = 0){
   }
 
   if (source.ptype === 'hls') {
-    tvPlayHls(ch, source.src);
+    tvPlayHls(ch, source.src, source);
     return;
   }
 
@@ -3698,7 +3703,9 @@ function tvPlayIframe(src){
   setTimeout(() => { loading.style.display = 'none'; }, 4500);
 }
 
-function tvPlayHls(ch, src){
+function tvPlayHls(ch, src, sourceInfo = null){
+  tvActiveHlsFallbacks = sourceInfo && Array.isArray(sourceInfo.fallbacks) ? sourceInfo.fallbacks.filter(Boolean) : [];
+  tvActiveHlsFallbackIndex = 0;
   const video = document.getElementById('tvVideo');
   const loading = document.getElementById('tvPlayerLoading');
   src = tvAbsUrl(src);
@@ -3762,6 +3769,12 @@ function tvFailHls(ch){
   loading.querySelector('span').textContent = 'Пробуем резервный источник...';
 
   tvStopHls();
+
+  if (tvActiveHlsFallbacks.length && tvActiveHlsFallbackIndex < tvActiveHlsFallbacks.length) {
+    const fallbackSrc = tvActiveHlsFallbacks[tvActiveHlsFallbackIndex++];
+    setTimeout(() => tvPlayHls(ch, fallbackSrc, { fallbacks: tvActiveHlsFallbacks.slice(tvActiveHlsFallbackIndex) }), 250);
+    return;
+  }
 
   const nextIndex = tvActiveSources.findIndex((s, i) => i > tvActiveSourceIndex && s && s.src);
   if (nextIndex >= 0) {
