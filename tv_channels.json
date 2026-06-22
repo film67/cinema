@@ -130,19 +130,6 @@
     "source_page": "https://smotret.tv/rossiya-1"
   },
   {
-    "id": "rossiya-rtr",
-    "name": "Россия-РТР",
-    "cat": "main",
-    "logo": "https://smotret.tv/images/rossiya-rtr.webp",
-    "ptype": "hls",
-    "src": "https://player.smotrim.ru/iframe/stream/live_id/3b73bf76-7245-4981-a865-38478e21df1f?007.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/rossiya-rtr",
-    "streams": [
-      "https://player.smotrim.ru/iframe/stream/live_id/3b73bf76-7245-4981-a865-38478e21df1f?007.m3u8"
-    ]
-  },
-  {
     "id": "planeta-rtr",
     "name": "Планета-РТР",
     "cat": "main",
@@ -158,10 +145,9 @@
     "cat": "main",
     "logo": "https://smotret.tv/images/tnt.webp",
     "ptype": "iframe",
-    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239090&hd=2&autoplay=1",
+    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239097&hd=2&autoplay=1",
     "source": "VK Video — источник пользователя",
-    "source_page": "https://vkvideo.ru/video-151139963_456239090",
-    "note": "ТНТ: VK Video embed, ID 456239090 — источник пользователя (22.06.2026)."
+    "source_page": "https://vkvideo.ru/video-151139963_456239097"
   },
   {
     "id": "tnt4",
@@ -169,9 +155,10 @@
     "cat": "main",
     "logo": "https://smotret.tv/images/tnt4.webp",
     "ptype": "iframe",
-    "src": "https://rutube.ru/play/embed/c801a7087e29a097192d74c270fbc6c1",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/tnt4"
+    "src": "https://ok.ru/videoembed/10684591709783?autoplay=1",
+    "source": "OK Video — источник пользователя",
+    "source_page": "https://ok.ru/video/10684591709783",
+    "note": "ТНТ4: OK.ru embed, ID 10684591709783 — источник пользователя (22.06.2026)."
   },
   {
     "id": "ntv",
@@ -199,10 +186,9 @@
     "cat": "main",
     "logo": "https://smotret.tv/images/tv-3.webp",
     "ptype": "iframe",
-    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239088&hd=2&autoplay=1",
+    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239062&hd=2&autoplay=1",
     "source": "VK Video — источник пользователя",
-    "source_page": "https://vkvideo.ru/video-151139963_456239088",
-    "note": "ТВ-3: VK Video embed, ID 456239088 — источник пользователя (22.06.2026)."
+    "source_page": "https://vkvideo.ru/video-151139963_456239062"
   },
   {
     "id": "pyatnica",
@@ -210,10 +196,9 @@
     "cat": "main",
     "logo": "https://smotret.tv/images/pyatnica.webp",
     "ptype": "iframe",
-    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239097&hd=2&autoplay=1",
+    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239088&hd=2&autoplay=1",
     "source": "VK Video — источник пользователя",
-    "source_page": "https://vkvideo.ru/video-151139963_456239097",
-    "note": "Пятница: VK Video embed, ID 456239097 — источник пользователя (22.06.2026)."
+    "source_page": "https://vkvideo.ru/video-151139963_456239088"
   },
   {
     "id": "yu",
@@ -260,13 +245,11 @@
     "name": "РБК",
     "cat": "main",
     "logo": "https://smotret.tv/images/rbk.webp",
-    "ptype": "hls",
-    "src": "https://online-video.rbc.ru/online2/rbctv.m3u8",
-    "streams": [
-      "https://online-video.rbc.ru/online2/rbctv.m3u8"
-    ],
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/rbk"
+    "ptype": "iframe",
+    "src": "https://rutube.ru/play/embed/88f6485ee28d56daf13302ac6fe3d931",
+    "source": "Rutube Live — источник пользователя",
+    "source_page": "https://rutube.ru/live/video/88f6485ee28d56daf13302ac6fe3d931/",
+    "note": "РБК: Rutube embed, ID 88f6485ee28d56daf13302ac6fe3d931 — источник пользователя (22.06.2026)."
   },
   {
     "id": "otr",
@@ -284,10 +267,9 @@
     "cat": "main",
     "logo": "https://smotret.tv/images/tvc.webp",
     "ptype": "iframe",
-    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239062&hd=2&autoplay=1",
+    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239056&hd=2&autoplay=1",
     "source": "VK Video — источник пользователя",
-    "source_page": "https://vkvideo.ru/video-151139963_456239062",
-    "note": "ТВЦ: VK Video embed, ID 456239062 — источник пользователя (22.06.2026)."
+    "source_page": "https://vkvideo.ru/video-151139963_456239056"
   },
   {
     "id": "zvezda",
@@ -340,26 +322,14 @@
     "logo": "https://smotret.tv/images/sts.webp",
     "ptype": "iframe",
     "src": "https://rutube.ru/play/embed/ffc110c6785e57f4c329179b555547b4",
-    "source": "user_iframe_candidates",
+    "source": "Rutube Live — источник пользователя",
     "source_page": "https://rutube.ru/live/video/ffc110c6785e57f4c329179b555547b4/",
     "blocked_src": "https://player.mediavitrina.ru/ctc_v2/ctc_ext/smotret_tv_web/player.html",
     "streams": [],
-    "note": "СТС: прежние HLS-источники удалены как нерабочие. Оставлены только Rutube и VK iframe-кандидаты.",
-    "status": "user_replaced_dead_sts_sources",
-    "browser_status": "candidate_geo_limited",
-    "play_priority": "iframe",
-    "sources": [
-      {
-        "label": "Rutube",
-        "ptype": "iframe",
-        "src": "https://rutube.ru/play/embed/ffc110c6785e57f4c329179b555547b4"
-      },
-      {
-        "label": "VK",
-        "ptype": "iframe",
-        "src": "https://vkvideo.ru/video_ext.php?oid=-18496184&id=456260645&hd=2&autoplay=1"
-      }
-    ]
+    "note": "СТС: оставлен только Rutube embed. VK-источник удалён по решению пользователя; официальный сайт используется только как ориентир, не как источник для сайта.",
+    "status": "user_kept_rutube_removed_vk",
+    "browser_status": "rutube_candidate_kept",
+    "play_priority": "iframe"
   },
   {
     "id": "sts-love",
@@ -928,10 +898,9 @@
     "cat": "music",
     "logo": "https://smotret.tv/images/muz-tv.webp",
     "ptype": "iframe",
-    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239096&hd=2&autoplay=1",
-    "source": "VK Video — источник пользователя",
-    "source_page": "https://vkvideo.ru/video-151139963_456239096",
-    "note": "МУЗ-ТВ: VK Video embed, ID 456239096 — источник пользователя (22.06.2026). Заменён с Rutube."
+    "src": "https://rutube.ru/play/embed/df6fe73494a26f74da51573fd97b9baa",
+    "source": "smotret.tv",
+    "source_page": "https://smotret.tv/music/muz-tv"
   },
   {
     "id": "music-rutv",
@@ -3142,10 +3111,9 @@
     "cat": "kids",
     "logo": "https://smotret.tv/images/karusel.webp",
     "ptype": "iframe",
-    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239056&hd=2&autoplay=1",
+    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239096&hd=2&autoplay=1",
     "source": "VK Video — источник пользователя",
-    "source_page": "https://vkvideo.ru/video-151139963_456239056",
-    "note": "Карусель: VK Video embed, ID 456239056 — источник пользователя (22.06.2026)."
+    "source_page": "https://vkvideo.ru/video-151139963_456239096"
   },
   {
     "id": "detskie-solnce",
