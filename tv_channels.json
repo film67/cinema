@@ -5240,9 +5240,9 @@
     "cat": "region",
     "logo": "https://smotret.tv/images/nts-sevastopol.webp",
     "ptype": "hls",
-    "src": "https://peqk71plnjy.a.trbcdn.net/livemaster/w4kz7pki62_nts_tv/playlist.m3u8",
+    "src": "https://vkvideo.ru/video_ext.php?oid=-117908125&id=456258607",
     "streams": [
-      "https://peqk71plnjy.a.trbcdn.net/livemaster/w4kz7pki62_nts_tv/playlist.m3u8"
+      "https://vkvideo.ru/video_ext.php?oid=-117908125&id=456258607"
     ],
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/region/nts-sevastopol"
