@@ -4237,6 +4237,10 @@ let tvActiveHlsFallbacks = [];
 let tvActiveHlsFallbackIndex = 0;
 let tvLastQualityLevels = [];
 let tvQualityIndex = null;
+let tvAutoMode = false;        // режим «Авто» (адаптация под скорость интернета)
+let tvMasterBlobUrl = null;    // объект-URL синтетического мастер-плейлиста
+let tvLevelMap = [];           // соответствие индекса качества → уровню hls.js
+let tvMQIndex = 0;             // выбранное качество в многокачественном режиме (0 = лучшее)
 
 function tvEsc(s){
   return String(s ?? '').replace(/[&<>"']/g, m => ({
@@ -4398,6 +4402,9 @@ async function openTVChannel(id){
   tvActiveChannel = ch;
   tvActiveSourceIndex = 0;
   tvQualityIndex = null;
+  tvAutoMode = false;          // по умолчанию — лучшее качество, не «Авто»
+  tvLevelMap = [];
+  tvMQIndex = 0;               // лучшее качество по умолчанию
   tvPlay(ch, 0);
 }
 
@@ -4499,6 +4506,8 @@ function tvRenderSwitches(ch, sources, activeIndex, qualityLevels = [], activeQu
 
   const qualityBtns = qualityLevels.length > 1
     ? `<div class="tv-switch-group"><span class="tv-switch-title">Качество:</span>${
+        `<button class="tv-switch-btn ${(activeQuality==null||activeQuality<0)?'active':''}" onclick="tvSetQuality(-1)">Авто</button>`
+      }${
         qualityLevels.map(q => `<button class="tv-switch-btn ${q.index===activeQuality?'active':''}" onclick="tvSetQuality(${q.index})">${tvEsc(q.label)}</button>`).join('')
       }</div>`
     : '';
@@ -4516,6 +4525,7 @@ function tvSetQuality(levelIndex){
 
 function tvStopHls(){
   if (tvHls) { try { tvHls.destroy(); } catch(e){} tvHls = null; }
+  if (tvMasterBlobUrl) { try { URL.revokeObjectURL(tvMasterBlobUrl); } catch(e){} tvMasterBlobUrl = null; }
   tvLastQualityLevels = [];
   tvQualityIndex = null;
 }
@@ -4547,6 +4557,17 @@ function tvPlay(ch, sourceIndex = 0){
 
   tvActiveChannel = ch;
   tvActiveSources = tvGetSources(ch);
+
+  // Многокачественный HLS (как Матч ТВ): отдельные m3u8 на каждое качество.
+  // Собираем синтетический мастер-плейлист → настоящий адаптивный ABR + режим «Авто».
+  const isMultiQ = tvActiveSources.length > 1 &&
+    tvActiveSources.every(s => s && s.isQuality && s.ptype === 'hls' && s.src);
+  if (isMultiQ) {
+    document.getElementById('tvModalName').textContent = ch.name;
+    tvPlayMultiQuality(ch, tvActiveSources, false);
+    return;
+  }
+
   tvActiveSourceIndex = Math.max(0, Math.min(sourceIndex, tvActiveSources.length - 1));
   const source = tvActiveSources[tvActiveSourceIndex];
 
@@ -4613,6 +4634,129 @@ function tvPlayIframe(src){
   frame.src = tvAbsUrl(src);
   frame.onload = () => { loading.style.display = 'none'; };
   setTimeout(() => { loading.style.display = 'none'; }, 4500);
+}
+
+// ─── Многокачественный HLS: синтетический мастер-плейлист + ABR + «Авто» ───
+function tvBuildMasterUrl(sources, useFallback){
+  // примерные битрейты/разрешения по порядку (лучшее → худшее)
+  const bw  = [6500000, 5000000, 3000000, 1500000, 800000];
+  const res = ['1920x1080','1920x1080','1280x720','854x480','640x360'];
+  const fps = ['50','','','',''];
+  let m = '#EXTM3U\n#EXT-X-VERSION:3\n';
+  sources.forEach((s, i) => {
+    let url = (useFallback && Array.isArray(s.fallbacks) && s.fallbacks[0]) ? s.fallbacks[0] : s.src;
+    url = tvAbsUrl(url);
+    const b = bw[i] || Math.max(400000, 6500000 - i * 1200000);
+    let inf = `#EXT-X-STREAM-INF:BANDWIDTH=${b},NAME="${String(s.label||('q'+i)).replace(/"/g,'')}"`;
+    if (res[i]) inf += `,RESOLUTION=${res[i]}`;
+    if (fps[i]) inf += `,FRAME-RATE=${fps[i]}`;
+    m += inf + '\n' + url + '\n';
+  });
+  if (tvMasterBlobUrl) { try { URL.revokeObjectURL(tvMasterBlobUrl); } catch(e){} }
+  tvMasterBlobUrl = URL.createObjectURL(new Blob([m], { type: 'application/vnd.apple.mpegurl' }));
+  return tvMasterBlobUrl;
+}
+
+function tvPlayMultiQuality(ch, sources, useFallback){
+  const video   = document.getElementById('tvVideo');
+  const loading = document.getElementById('tvPlayerLoading');
+  tvResetPlayer();
+  video.style.display = 'block';
+
+  // Safari/iOS (нативный HLS, hls.js не поддерживается): мастер-блоб ABR недоступен —
+  // играем выбранное качество напрямую, перезагружая при переключении. «Авто» скрываем.
+  if (video.canPlayType('application/vnd.apple.mpegurl') && !(window.Hls && Hls.isSupported())) {
+    const idx = Math.max(0, Math.min(tvMQIndex || 0, sources.length - 1));
+    const s = sources[idx];
+    const url = tvAbsUrl(useFallback && s.fallbacks && s.fallbacks[0] ? s.fallbacks[0] : s.src);
+    video.src = url;
+    video.onloadeddata = () => { loading.style.display = 'none'; };
+    video.onerror = () => { if (!useFallback) tvPlayMultiQuality(ch, sources, true); else tvFailHls(ch); };
+    video.play().catch(()=>{});
+    tvRenderQualityBar(ch, sources, true);
+    return;
+  }
+
+  if (window.Hls && Hls.isSupported()) {
+    const master = tvBuildMasterUrl(sources, useFallback);
+    tvHls = new Hls({ enableWorker: true, backBufferLength: 90,
+      startLevel: tvAutoMode ? -1 : (tvMQIndex || 0) });
+    tvHls.loadSource(master);
+    tvHls.attachMedia(video);
+
+    tvHls.on(Hls.Events.MANIFEST_PARSED, () => {
+      loading.style.display = 'none';
+      const levels = tvHls.levels || [];
+      // сопоставляем индекс качества (наш порядок) с уровнем hls.js (по имени/URL)
+      tvLevelMap = sources.map(s => {
+        let idx = levels.findIndex(l => l && l.name && l.name === s.label);
+        if (idx < 0 && s.quality)
+          idx = levels.findIndex(l => l && l.url && l.url[0] && l.url[0].indexOf('/' + s.quality + '/') >= 0);
+        return idx;
+      });
+      if (tvAutoMode) {
+        tvHls.currentLevel = -1;
+      } else {
+        const li = tvLevelMap[tvMQIndex || 0];
+        tvHls.currentLevel = (li != null && li >= 0) ? li : 0;
+      }
+      tvRenderQualityBar(ch, sources, false);
+      video.play().catch(()=>{});
+    });
+
+    // в режиме «Авто» обновляем подпись активного уровня
+    tvHls.on(Hls.Events.LEVEL_SWITCHED, () => { if (tvAutoMode) tvRenderQualityBar(ch, sources, false); });
+
+    let triedFallback = useFallback;
+    tvHls.on(Hls.Events.ERROR, (e, data) => {
+      if (data && data.fatal) {
+        if (!triedFallback) { triedFallback = true; tvStopHls(); setTimeout(() => tvPlayMultiQuality(ch, sources, true), 300); }
+        else tvFailHls(ch);
+      }
+    });
+    tvRenderQualityBar(ch, sources, false);
+    return;
+  }
+
+  tvFailHls(ch);
+}
+
+function tvRenderQualityBar(ch, sources, nativeNoAuto){
+  const box = document.getElementById('tvModalSwitch');
+  if (!box) return;
+  const autoActive = tvAutoMode;
+  const autoBtn = nativeNoAuto ? ''
+    : `<button class="tv-switch-btn ${autoActive ? 'active' : ''}" onclick="tvPickAuto()">Авто${
+        autoActive && tvHls && tvHls.currentLevel >= 0 && tvLevelMap.length
+          ? ' · ' + tvEsc(sources[tvLevelMap.indexOf(tvHls.currentLevel)] ? sources[tvLevelMap.indexOf(tvHls.currentLevel)].label : '') : ''
+      }</button>`;
+  const qBtns = sources.map((s, i) => {
+    const active = !autoActive && (tvMQIndex || 0) === i;
+    return `<button class="tv-switch-btn ${active ? 'active' : ''}" onclick="tvPickQuality(${i})">${tvEsc(s.label || ('Качество ' + (i+1)))}</button>`;
+  }).join('');
+  box.innerHTML = `<div class="tv-switch-group"><span class="tv-switch-title">Качество:</span>${autoBtn}${qBtns}</div>`;
+}
+
+function tvPickQuality(i){
+  tvAutoMode = false;
+  tvMQIndex = i;
+  if (tvHls) {
+    const li = (tvLevelMap && tvLevelMap[i] != null && tvLevelMap[i] >= 0) ? tvLevelMap[i] : i;
+    try { tvHls.currentLevel = li; } catch(e){}
+    tvRenderQualityBar(tvActiveChannel, tvActiveSources, false);
+  } else {
+    tvPlayMultiQuality(tvActiveChannel, tvActiveSources, false); // нативный путь — перезагрузка
+  }
+}
+
+function tvPickAuto(){
+  tvAutoMode = true;
+  if (tvHls) {
+    try { tvHls.currentLevel = -1; } catch(e){}   // включаем встроенный ABR hls.js
+    tvRenderQualityBar(tvActiveChannel, tvActiveSources, false);
+  } else {
+    tvPlayMultiQuality(tvActiveChannel, tvActiveSources, false);
+  }
 }
 
 function tvPlayHls(ch, src, sourceInfo = null){

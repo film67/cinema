@@ -5,20 +5,11 @@
     "cat": "sport",
     "logo": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgMTYwIDE2MCI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHgyPSIxIiB5MT0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ZmMTgyOCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2I2MDAxMiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTYwIiBoZWlnaHQ9IjE2MCIgcng9IjM0IiBmaWxsPSJ1cmwoI2cpIi8+Cjx0ZXh0IHg9IjgwIiB5PSI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLCBIZWx2ZXRpY2EsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmYiPtCc0JDQotCnPC90ZXh0PgoKPC9zdmc+",
     "ptype": "hls",
-    "src": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
+    "src": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080p50fps/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
     "matchPage": "https://matchtv.ru/video/channel/matchtv",
     "source": "matchtv.ru — официальный бесплатный HLS (домен bl.video.matchtv.ru, зеркало m3u8.video.matchtv.ru как запасной на каждое качество)",
     "source_page": "https://matchtv.ru/video/channel/matchtv",
     "streams": [
-      {
-        "label": "1080",
-        "quality": "1080",
-        "ptype": "hls",
-        "src": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
-        "fallbacks": [
-          "https://m3u8.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8"
-        ]
-      },
       {
         "label": "1080 50fps",
         "quality": "1080p50fps",
@@ -26,6 +17,15 @@
         "src": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080p50fps/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
         "fallbacks": [
           "https://m3u8.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080p50fps/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8"
+        ]
+      },
+      {
+        "label": "1080",
+        "quality": "1080",
+        "ptype": "hls",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
+        "fallbacks": [
+          "https://m3u8.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8"
         ]
       },
       {
@@ -58,21 +58,21 @@
     ],
     "qualityStreams": [
       {
-        "label": "1080",
-        "quality": "1080",
-        "ptype": "hls",
-        "src": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
-        "fallbacks": [
-          "https://m3u8.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8"
-        ]
-      },
-      {
         "label": "1080 50fps",
         "quality": "1080p50fps",
         "ptype": "hls",
         "src": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080p50fps/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
         "fallbacks": [
           "https://m3u8.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080p50fps/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8"
+        ]
+      },
+      {
+        "label": "1080",
+        "quality": "1080",
+        "ptype": "hls",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
+        "fallbacks": [
+          "https://m3u8.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8"
         ]
       },
       {
