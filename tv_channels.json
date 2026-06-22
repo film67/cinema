@@ -833,16 +833,6 @@
     ]
   },
   {
-    "id": "ren-tv-international",
-    "name": "REN-TV International",
-    "cat": "main",
-    "logo": "https://smotret.tv/images/ren-tv-international.webp",
-    "ptype": "iframe",
-    "src": "https://ok.ru/videoembed/8917809241827?autoplay=1",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/ren-tv-international"
-  },
-  {
     "id": "rutube-tv",
     "name": "RUTUBE TV",
     "cat": "main",
