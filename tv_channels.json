@@ -5400,19 +5400,29 @@
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/region/trk-ryazan"
   },
-  {
-    "id": "region-volga",
-    "name": "Волга",
-    "cat": "region",
-    "logo": "https://smotret.tv/images/volga.webp",
-    "ptype": "hls",
-    "src": "https://tele2dvrnat01-02.cdnvideo.ru/stream/NAT_Volga/hls/playlist.m3u8",
-    "streams": [
-      "https://tele2dvrnat01-02.cdnvideo.ru/stream/NAT_Volga/hls/playlist.m3u8"
-    ],
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/region/volga"
-  },
+{
+  "id": "region-volga",
+  "name": "Волга",
+  "cat": "region",
+  "logo": "https://smotret.tv/images/volga.webp",
+  "ptype": "hls",
+  "src": "https://tele2dvrnat01-02.cdnvideo.ru/stream/NAT_Volga/hls/playlist.m3u8",
+  "streams": [
+    "https://tele2dvrnat01-02.cdnvideo.ru/stream/NAT_Volga/hls/playlist.m3u8"
+  ],
+  "sources": [
+    {
+      "ptype": "hls",
+      "src": "https://tele2dvrnat01-02.cdnvideo.ru/stream/NAT_Volga/hls/playlist.m3u8"
+    },
+    {
+      "ptype": "iframe",
+      "src": "https://rutube.ru/play/embed/bed2dcda74004e4e9a61966d2848c027"
+    }
+  ],
+  "source": "smotret.tv",
+  "source_page": "https://smotret.tv/region/volga"
+},
   {
     "id": "region-volga-24",
     "name": "Волга 24",
