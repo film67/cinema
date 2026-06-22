@@ -158,9 +158,10 @@
     "cat": "main",
     "logo": "https://smotret.tv/images/tnt.webp",
     "ptype": "iframe",
-    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239097&hd=2&autoplay=1",
+    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239090&hd=2&autoplay=1",
     "source": "VK Video — источник пользователя",
-    "source_page": "https://vkvideo.ru/video-151139963_456239097"
+    "source_page": "https://vkvideo.ru/video-151139963_456239090",
+    "note": "ТНТ: VK Video embed, ID 456239090 — источник пользователя (22.06.2026)."
   },
   {
     "id": "tnt4",
@@ -198,9 +199,10 @@
     "cat": "main",
     "logo": "https://smotret.tv/images/tv-3.webp",
     "ptype": "iframe",
-    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239062&hd=2&autoplay=1",
+    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239088&hd=2&autoplay=1",
     "source": "VK Video — источник пользователя",
-    "source_page": "https://vkvideo.ru/video-151139963_456239062"
+    "source_page": "https://vkvideo.ru/video-151139963_456239088",
+    "note": "ТВ-3: VK Video embed, ID 456239088 — источник пользователя (22.06.2026)."
   },
   {
     "id": "pyatnica",
@@ -208,9 +210,10 @@
     "cat": "main",
     "logo": "https://smotret.tv/images/pyatnica.webp",
     "ptype": "iframe",
-    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239088&hd=2&autoplay=1",
+    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239097&hd=2&autoplay=1",
     "source": "VK Video — источник пользователя",
-    "source_page": "https://vkvideo.ru/video-151139963_456239088"
+    "source_page": "https://vkvideo.ru/video-151139963_456239097",
+    "note": "Пятница: VK Video embed, ID 456239097 — источник пользователя (22.06.2026)."
   },
   {
     "id": "yu",
@@ -281,9 +284,10 @@
     "cat": "main",
     "logo": "https://smotret.tv/images/tvc.webp",
     "ptype": "iframe",
-    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239056&hd=2&autoplay=1",
+    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239062&hd=2&autoplay=1",
     "source": "VK Video — источник пользователя",
-    "source_page": "https://vkvideo.ru/video-151139963_456239056"
+    "source_page": "https://vkvideo.ru/video-151139963_456239062",
+    "note": "ТВЦ: VK Video embed, ID 456239062 — источник пользователя (22.06.2026)."
   },
   {
     "id": "zvezda",
@@ -924,9 +928,10 @@
     "cat": "music",
     "logo": "https://smotret.tv/images/muz-tv.webp",
     "ptype": "iframe",
-    "src": "https://rutube.ru/play/embed/df6fe73494a26f74da51573fd97b9baa",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/music/muz-tv"
+    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239096&hd=2&autoplay=1",
+    "source": "VK Video — источник пользователя",
+    "source_page": "https://vkvideo.ru/video-151139963_456239096",
+    "note": "МУЗ-ТВ: VK Video embed, ID 456239096 — источник пользователя (22.06.2026). Заменён с Rutube."
   },
   {
     "id": "music-rutv",
@@ -3137,9 +3142,10 @@
     "cat": "kids",
     "logo": "https://smotret.tv/images/karusel.webp",
     "ptype": "iframe",
-    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239096&hd=2&autoplay=1",
+    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239056&hd=2&autoplay=1",
     "source": "VK Video — источник пользователя",
-    "source_page": "https://vkvideo.ru/video-151139963_456239096"
+    "source_page": "https://vkvideo.ru/video-151139963_456239056",
+    "note": "Карусель: VK Video embed, ID 456239056 — источник пользователя (22.06.2026)."
   },
   {
     "id": "detskie-solnce",
