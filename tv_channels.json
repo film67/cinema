@@ -5,30 +5,105 @@
     "cat": "sport",
     "logo": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgMTYwIDE2MCI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHgyPSIxIiB5MT0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ZmMTgyOCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2I2MDAxMiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTYwIiBoZWlnaHQ9IjE2MCIgcng9IjM0IiBmaWxsPSJ1cmwoI2cpIi8+Cjx0ZXh0IHg9IjgwIiB5PSI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLCBIZWx2ZXRpY2EsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmYiPtCc0JDQotCnPC90ZXh0PgoKPC9zdmc+",
     "ptype": "hls",
-    "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080p50fps/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
+    "src": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
     "matchPage": "https://matchtv.ru/video/channel/matchtv",
-    "eventId": 606457,
-    "source": "matchtv.ru single_verified_hls",
+    "source": "matchtv.ru — официальный бесплатный HLS (домен bl.video.matchtv.ru, зеркало m3u8.video.matchtv.ru как запасной на каждое качество)",
     "source_page": "https://matchtv.ru/video/channel/matchtv",
     "streams": [
       {
-        "label": "1080p50",
+        "label": "1080",
+        "quality": "1080",
         "ptype": "hls",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
+        "fallbacks": [
+          "https://m3u8.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8"
+        ]
+      },
+      {
+        "label": "1080 50fps",
         "quality": "1080p50fps",
-        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080p50fps/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
-        "fallbacks": []
+        "ptype": "hls",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080p50fps/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
+        "fallbacks": [
+          "https://m3u8.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080p50fps/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8"
+        ]
+      },
+      {
+        "label": "720",
+        "quality": "720",
+        "ptype": "hls",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/720/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
+        "fallbacks": [
+          "https://m3u8.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/720/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8"
+        ]
+      },
+      {
+        "label": "480",
+        "quality": "480",
+        "ptype": "hls",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/480/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
+        "fallbacks": [
+          "https://m3u8.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/480/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8"
+        ]
+      },
+      {
+        "label": "360",
+        "quality": "360",
+        "ptype": "hls",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/360/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
+        "fallbacks": [
+          "https://m3u8.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/360/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8"
+        ]
       }
     ],
     "qualityStreams": [
       {
-        "label": "1080p50",
+        "label": "1080",
+        "quality": "1080",
         "ptype": "hls",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
+        "fallbacks": [
+          "https://m3u8.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8"
+        ]
+      },
+      {
+        "label": "1080 50fps",
         "quality": "1080p50fps",
-        "src": "https://bl.video.matchtv.ru/media/playlist/free_e014b8c1f024d36899037ec731034f9f/17_86669241/1080p50fps/b64489e4eb318f9f137e06a2e1146142/1782109052.m3u8",
-        "fallbacks": []
+        "ptype": "hls",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080p50fps/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
+        "fallbacks": [
+          "https://m3u8.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080p50fps/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8"
+        ]
+      },
+      {
+        "label": "720",
+        "quality": "720",
+        "ptype": "hls",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/720/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
+        "fallbacks": [
+          "https://m3u8.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/720/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8"
+        ]
+      },
+      {
+        "label": "480",
+        "quality": "480",
+        "ptype": "hls",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/480/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
+        "fallbacks": [
+          "https://m3u8.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/480/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8"
+        ]
+      },
+      {
+        "label": "360",
+        "quality": "360",
+        "ptype": "hls",
+        "src": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/360/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
+        "fallbacks": [
+          "https://m3u8.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/360/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8"
+        ]
       }
     ],
-    "note": "Матч ТВ: единственный рабочий HLS-источник."
+    "note": "Матч ТВ: прямые HLS-качества с официального matchtv.ru. В ссылке меняется только сегмент качества (1080 / 1080p50fps / 720 / 480 / 360). 1080p25fps и 576 не используем — по факту отдают 720 и 480. Токен в ссылке (free_..._hd / 17_XXXX / hash / число) периодически истекает — когда канал перестанет открываться, возьми свежую ссылку на matchtv.ru/video/channel/matchtv и замени эти части (сегмент качества трогать не нужно)."
   },
   {
     "id": "1-kanal",
