@@ -2541,19 +2541,6 @@
     "source_page": "https://rutube.ru/live/video/d14fcf59cb7d07a26c48ebc8c6565f44/"
   },
   {
-    "id": "news-tass",
-    "name": "ТАСС",
-    "cat": "news",
-    "logo": "https://smotret.tv/images/tass.webp",
-    "ptype": "hls",
-    "src": "https://tass-hls.servicecdn.ru/httpstreamer/tass-loop-main.stream_480p/playlist.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/news/tass",
-    "streams": [
-      "https://tass-hls.servicecdn.ru/httpstreamer/tass-loop-main.stream_480p/playlist.m3u8"
-    ]
-  },
-  {
     "id": "news-vesti-fm",
     "name": "Вести FM",
     "cat": "news",
