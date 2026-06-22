@@ -5739,7 +5739,7 @@
     "cat": "region",
     "logo": "https://smotret.tv/images/vsya-ufa.webp",
     "ptype": "iframe",
-    "src": "https://rutube.ru/play/embed/5a88a8d75565c5cdebeb11d87bfc61e9&autoplay=1",
+    "src": "https://rutube.ru/play/embed/5a88a8d75565c5cdebeb11d87bfc61e9",
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/region/vsya-ufa"
   },
