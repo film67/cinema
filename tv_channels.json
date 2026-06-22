@@ -502,16 +502,6 @@
     "source_page": "https://rutube.ru/live/video/dd022de9cc6c8af89409513fa0a6117a/"
   },
   {
-    "id": "sankt-peterburg",
-    "name": "Санкт-Петербург",
-    "cat": "main",
-    "logo": "https://smotret.tv/images/sankt-peterburg.webp",
-    "ptype": "iframe",
-    "src": "https://ok.ru/videoembed/443344297617?autoplay=1",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/sankt-peterburg"
-  },
-  {
     "id": "teledom",
     "name": "Теледом",
     "cat": "main",
@@ -550,9 +540,9 @@
     "cat": "main",
     "logo": "https://smotret.tv/images/krasnaya-liniya.webp",
     "ptype": "hls",
-    "src": "https://smotret.tv/iframes/krasnaya-liniya.m3u8",
+    "src": "https://s55766.cdn.ngenix.net/s55766-media-origin/rline_high/tracks-v1a1/mono.m3u8",
     "streams": [
-      "https://smotret.tv/iframes/krasnaya-liniya.m3u8"
+      "https://s55766.cdn.ngenix.net/s55766-media-origin/rline_high/tracks-v1a1/mono.m3u8"
     ],
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/krasnaya-liniya"
