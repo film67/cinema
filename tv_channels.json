@@ -2576,9 +2576,9 @@
     "cat": "news",
     "logo": "https://smotret.tv/images/osn-tv.webp",
     "ptype": "hls",
-    "src": "https://osnmedia.servicecdn.ru/streams/17603_88089/playlist.m3u8",
+    "src": "https://osnmedia.servicecdn.ru/streams/17603_88089/1080n/index.m3u8",
     "streams": [
-      "https://osnmedia.servicecdn.ru/streams/17603_88089/playlist.m3u8"
+      "https://osnmedia.servicecdn.ru/streams/17603_88089/1080n/index.m3u8"
     ],
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/news/osn-tv"
