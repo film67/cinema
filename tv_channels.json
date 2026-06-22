@@ -2270,19 +2270,6 @@
     ]
   },
   {
-    "id": "sport-motoamerica",
-    "name": "MotoAmerica",
-    "cat": "sport",
-    "logo": "https://smotret.tv/images/motoamerica.webp",
-    "ptype": "hls",
-    "src": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=1062",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/sport/motoamerica",
-    "streams": [
-      "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=1062"
-    ]
-  },
-  {
     "id": "news-izvestiya",
     "name": "Известия",
     "cat": "news",
