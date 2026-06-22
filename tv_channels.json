@@ -2726,11 +2726,11 @@
     "cat": "news",
     "logo": "https://smotret.tv/images/uzbekistan-24.webp",
     "ptype": "hls",
-    "src": "https://iptv.itv.uz/hls/live/t/2ndGt8mTvPBRsB6D30LAMg/e/1750748234/1001/index.m3u8?ip=104.28.252.248",
+    "src": "https://stream8.cinerama.uz/1011/tracks-v1a1/mono.m3u8",
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/news/uzbekistan-24",
     "streams": [
-      "https://iptv.itv.uz/hls/live/t/2ndGt8mTvPBRsB6D30LAMg/e/1750748234/1001/index.m3u8?ip=104.28.252.248"
+      "https://stream8.cinerama.uz/1011/tracks-v1a1/mono.m3u8"
     ]
   },
   {
@@ -5739,7 +5739,7 @@
     "cat": "region",
     "logo": "https://smotret.tv/images/vsya-ufa.webp",
     "ptype": "iframe",
-    "src": "https://vkvideo.ru/video_ext.php?oid=-23300507&id=456250470&hash=917aef0d1c466fdb&autoplay=1",
+    "src": "https://rutube.ru/play/embed/5a88a8d75565c5cdebeb11d87bfc61e9&autoplay=1",
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/region/vsya-ufa"
   },
