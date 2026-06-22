@@ -158,9 +158,9 @@
     "cat": "main",
     "logo": "https://smotret.tv/images/tnt.webp",
     "ptype": "iframe",
-    "src": "https://rutube.ru/play/embed/546602986e6a424d74d594876ddb3f04",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/tnt"
+    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239097&hd=2&autoplay=1",
+    "source": "VK Video — источник пользователя",
+    "source_page": "https://vkvideo.ru/video-151139963_456239097"
   },
   {
     "id": "tnt4",
@@ -198,9 +198,9 @@
     "cat": "main",
     "logo": "https://smotret.tv/images/tv-3.webp",
     "ptype": "iframe",
-    "src": "https://rutube.ru/play/embed/7bf12d9c050f9a7ef3728db5730432ae?playerVersion=latest&start=0",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/tv-3"
+    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239062&hd=2&autoplay=1",
+    "source": "VK Video — источник пользователя",
+    "source_page": "https://vkvideo.ru/video-151139963_456239062"
   },
   {
     "id": "pyatnica",
@@ -208,9 +208,9 @@
     "cat": "main",
     "logo": "https://smotret.tv/images/pyatnica.webp",
     "ptype": "iframe",
-    "src": "https://rutube.ru/play/embed/9f87a9a0cecbe773be6fddcbd93585ac",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/pyatnica"
+    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239088&hd=2&autoplay=1",
+    "source": "VK Video — источник пользователя",
+    "source_page": "https://vkvideo.ru/video-151139963_456239088"
   },
   {
     "id": "yu",
@@ -280,13 +280,10 @@
     "name": "ТВЦ",
     "cat": "main",
     "logo": "https://smotret.tv/images/tvc.webp",
-    "ptype": "hls",
-    "src": "https://tvc-hls.cdnvideo.ru/tvc-res/smil:vd9221_2.smil/playlist.m3u8",
-    "streams": [
-      "https://tvc-hls.cdnvideo.ru/tvc-res/smil:vd9221_2.smil/playlist.m3u8"
-    ],
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/tvc"
+    "ptype": "iframe",
+    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239056&hd=2&autoplay=1",
+    "source": "VK Video — источник пользователя",
+    "source_page": "https://vkvideo.ru/video-151139963_456239056"
   },
   {
     "id": "zvezda",
@@ -502,13 +499,10 @@
     "name": "360",
     "cat": "main",
     "logo": "https://smotret.tv/images/360.webp",
-    "ptype": "hls",
-    "src": "https://balancer.facecast.io/evacoder_hls_hi/CkxfR1xNUAJwTgtXTBZTAJli/1080.m3u8",
-    "streams": [
-      "https://balancer.facecast.io/evacoder_hls_hi/CkxfR1xNUAJwTgtXTBZTAJli/1080.m3u8"
-    ],
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/360"
+    "ptype": "iframe",
+    "src": "https://rutube.ru/play/embed/07beff61e617797db550cc3a5f6ad92b",
+    "source": "Rutube Live — источник пользователя",
+    "source_page": "https://rutube.ru/live/video/07beff61e617797db550cc3a5f6ad92b/"
   },
   {
     "id": "rossiya-24",
@@ -529,9 +523,9 @@
     "cat": "main",
     "logo": "https://smotret.tv/images/lentv24.webp",
     "ptype": "iframe",
-    "src": "https://vkvideo.ru/video_ext.php?oid=-184397039&id=456255957&hash=939641800ca7bb21",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/lentv24"
+    "src": "https://rutube.ru/play/embed/dd022de9cc6c8af89409513fa0a6117a",
+    "source": "Rutube Live — источник пользователя",
+    "source_page": "https://rutube.ru/live/video/dd022de9cc6c8af89409513fa0a6117a/"
   },
   {
     "id": "sankt-peterburg",
@@ -1740,7 +1734,7 @@
   },
   {
     "id": "music-nevomusic",
-    "name": "Navo UZ",
+    "name": "Navo uz",
     "cat": "music",
     "logo": "https://smotret.tv/images/nevomusic.webp",
     "ptype": "iframe",
@@ -2828,13 +2822,10 @@
     "name": "360° Новости",
     "cat": "news",
     "logo": "https://smotret.tv/images/360-novosti.webp",
-    "ptype": "hls",
-    "src": "https://balancer.facecast.io/evacoder_hls_hi/UBZfFgtKB1JwTwoDERNQVGGs/1080.m3u8",
-    "streams": [
-      "https://balancer.facecast.io/evacoder_hls_hi/UBZfFgtKB1JwTwoDERNQVGGs/1080.m3u8"
-    ],
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/news/360-novosti"
+    "ptype": "iframe",
+    "src": "https://rutube.ru/play/embed/d14fcf59cb7d07a26c48ebc8c6565f44",
+    "source": "Rutube Live — источник пользователя",
+    "source_page": "https://rutube.ru/live/video/d14fcf59cb7d07a26c48ebc8c6565f44/"
   },
   {
     "id": "news-tass",
@@ -3013,12 +3004,34 @@
     "cat": "news",
     "logo": "https://smotret.tv/images/baku-tv.webp",
     "ptype": "hls",
-    "src": "https://rtmp.baku.tv/hls/bakutv.m3u8",
+    "src": "https://rtmp.baku.tv/hls/bakutv_1080p.m3u8",
     "streams": [
-      "https://rtmp.baku.tv/hls/bakutv.m3u8"
+      "https://rtmp.baku.tv/hls/bakutv_1080p.m3u8",
+      "https://rtmp.baku.tv/hls/bakutv_720p.m3u8",
+      "https://rtmp.baku.tv/hls/bakutv_480p.m3u8"
     ],
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/news/baku-tv"
+    "source": "Baku TV — официальный HLS",
+    "source_page": "https://baku.tv/live",
+    "qualityStreams": [
+      {
+        "label": "1080",
+        "quality": "1080",
+        "ptype": "hls",
+        "src": "https://rtmp.baku.tv/hls/bakutv_1080p.m3u8"
+      },
+      {
+        "label": "720",
+        "quality": "720",
+        "ptype": "hls",
+        "src": "https://rtmp.baku.tv/hls/bakutv_720p.m3u8"
+      },
+      {
+        "label": "480",
+        "quality": "480",
+        "ptype": "hls",
+        "src": "https://rtmp.baku.tv/hls/bakutv_480p.m3u8"
+      }
+    ]
   },
   {
     "id": "news-uzbekistan-24",
@@ -3123,26 +3136,10 @@
     "name": "Карусель",
     "cat": "kids",
     "logo": "https://smotret.tv/images/karusel.webp",
-    "ptype": "hls",
-    "src": "https://zabava-htlive.cdn.ngenix.net/hls/CH_KARUSEL/variant.m3u8?profile=web_auto",
-    "streams": [
-      "https://zabava-htlive.cdn.ngenix.net/hls/CH_KARUSEL/variant.m3u8?profile=web_auto",
-      "https://s5.merlive.am/Karusel/index.m3u8"
-    ],
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/detskie/karusel",
-    "sources": [
-      {
-        "label": "HLS",
-        "ptype": "hls",
-        "src": "https://zabava-htlive.cdn.ngenix.net/hls/CH_KARUSEL/variant.m3u8?profile=web_auto"
-      },
-      {
-        "label": "HLS 2",
-        "ptype": "hls",
-        "src": "https://s5.merlive.am/Karusel/index.m3u8"
-      }
-    ]
+    "ptype": "iframe",
+    "src": "https://vkvideo.ru/video_ext.php?oid=-151139963&id=456239096&hd=2&autoplay=1",
+    "source": "VK Video — источник пользователя",
+    "source_page": "https://vkvideo.ru/video-151139963_456239096"
   },
   {
     "id": "detskie-solnce",
@@ -3179,7 +3176,7 @@
   },
   {
     "id": "detskie-kanal-disney",
-    "name": "Online JTZ",
+    "name": "Online JTX",
     "cat": "kids",
     "logo": "https://smotret.tv/images/kanal-disney.webp",
     "ptype": "iframe",
@@ -6051,10 +6048,13 @@
     "name": "Астрахань 24",
     "cat": "region",
     "logo": "https://smotret.tv/images/astrahan-24.webp",
-    "ptype": "iframe",
-    "src": "https://vkvideo.ru/video_ext.php?oid=-56786071&id=456242958&hd=3",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/region/astrahan-24"
+    "ptype": "hls",
+    "src": "https://streaming.astrakhan.ru/astrakhan24/tracks-v1a1/mono.m3u8",
+    "source": "Астрахань 24 — HLS источник пользователя",
+    "source_page": "https://streaming.astrakhan.ru/astrakhan24/tracks-v1a1/mono.m3u8",
+    "streams": [
+      "https://streaming.astrakhan.ru/astrakhan24/tracks-v1a1/mono.m3u8"
+    ]
   },
   {
     "id": "region-krasnodar",
