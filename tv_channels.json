@@ -484,11 +484,11 @@
     "cat": "main",
     "logo": "https://smotret.tv/images/rossiya-24.webp",
     "ptype": "hls",
-    "src": "https://player.smotrim.ru/iframe/stream/live_id/3214d57c-8651-435a-938c-be13bfd00a04?.m3u8",
+    "src": "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/russia24-hd/index.m3u8",
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/rossiya-24",
     "streams": [
-      "https://player.smotrim.ru/iframe/stream/live_id/3214d57c-8651-435a-938c-be13bfd00a04?.m3u8"
+      "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/russia24-hd/index.m3u8"
     ]
   },
   {
@@ -1511,19 +1511,6 @@
     "source_page": "https://smotret.tv/music/baraza-tv"
   },
   {
-    "id": "music-v2beat-tv",
-    "name": "V2BEAT TV",
-    "cat": "music",
-    "logo": "https://smotret.tv/images/v2beat-tv.webp",
-    "ptype": "hls",
-    "src": "https://abr.de1se01.v2beat.live/playlist.m3u8",
-    "streams": [
-      "https://abr.de1se01.v2beat.live/playlist.m3u8"
-    ],
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/music/v2beat-tv"
-  },
-  {
     "id": "music-company-tv",
     "name": "Company TV",
     "cat": "music",
@@ -1600,19 +1587,6 @@
     ],
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/music/tvm3"
-  },
-  {
-    "id": "music-fresh-tv",
-    "name": "Fresh TV",
-    "cat": "music",
-    "logo": "https://smotret.tv/images/fresh-tv.webp",
-    "ptype": "hls",
-    "src": "https://freshtv-live.ru/FreshTV/index.m3u8?token=livestream",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/music/fresh-tv",
-    "streams": [
-      "https://freshtv-live.ru/FreshTV/index.m3u8?token=livestream"
-    ]
   },
   {
     "id": "music-classic-arts-showcase",
@@ -1716,19 +1690,6 @@
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/music/nevomusic",
     "note": "Переименован: NevoMusic -> Navo UZ по запросу."
-  },
-  {
-    "id": "music-biz-music",
-    "name": "BIZ Music",
-    "cat": "music",
-    "logo": "https://smotret.tv/images/biz-music.webp",
-    "ptype": "hls",
-    "src": "biz-music.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/music/biz-music",
-    "streams": [
-      "biz-music.m3u8"
-    ]
   },
   {
     "id": "music-trace-urban",
@@ -1995,32 +1956,6 @@
     ]
   },
   {
-    "id": "music-the-k-pop",
-    "name": "THE K-POP",
-    "cat": "music",
-    "logo": "https://smotret.tv/images/the-k-pop.webp",
-    "ptype": "hls",
-    "src": "https://live20.bozztv.com/giatv/giatv-kpoptvplay/kpoptvplay/playlist.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/music/the-k-pop",
-    "streams": [
-      "https://live20.bozztv.com/giatv/giatv-kpoptvplay/kpoptvplay/playlist.m3u8"
-    ]
-  },
-  {
-    "id": "music-aiva-tv",
-    "name": "AIVA TV",
-    "cat": "music",
-    "logo": "https://smotret.tv/images/aiva-tv.webp",
-    "ptype": "hls",
-    "src": "https://stream2.cinerama.uz/1268/tracks-v1a1/mono.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/music/aiva-tv",
-    "streams": [
-      "https://stream2.cinerama.uz/1268/tracks-v1a1/mono.m3u8"
-    ]
-  },
-  {
     "id": "music-vh1",
     "name": "VH1",
     "cat": "music",
@@ -2045,16 +1980,6 @@
     "streams": [
       "https://ibgrtv.streaming-pro.com/hls/ibgrlive.m3u8"
     ]
-  },
-  {
-    "id": "music-ritsa-tv",
-    "name": "RITSA TV",
-    "cat": "music",
-    "logo": "https://smotret.tv/images/ritsa-tv.webp",
-    "ptype": "iframe",
-    "src": "https://vkvideo.ru/video_ext.php?oid=-122792749&id=456241869&hd=4",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/music/ritsa-tv"
   },
   {
     "id": "music-mafi2a",
@@ -2087,19 +2012,6 @@
     "source_page": "https://smotret.tv/music/9-volna"
   },
   {
-    "id": "music-sluhay-by",
-    "name": "SLUHAY BY",
-    "cat": "music",
-    "logo": "https://smotret.tv/images/sluhay-by.webp",
-    "ptype": "hls",
-    "src": "https://fs2.persik.by/Sluhay2/index.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/music/sluhay-by",
-    "streams": [
-      "https://fs2.persik.by/Sluhay2/index.m3u8"
-    ]
-  },
-  {
     "id": "music-hits-360",
     "name": "Hits 360",
     "cat": "music",
@@ -2110,19 +2022,6 @@
     "source_page": "https://smotret.tv/music/hits-360",
     "streams": [
       "https://cdn.essastream.com:3023/live/hits360tvlive.m3u8"
-    ]
-  },
-  {
-    "id": "music-sgdf24",
-    "name": "СГДФ24",
-    "cat": "music",
-    "logo": "https://smotret.tv/images/sgdf24.webp",
-    "ptype": "hls",
-    "src": "https://cdnfs.teonvi.com/sgdf/index.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/music/sgdf24",
-    "streams": [
-      "https://cdnfs.teonvi.com/sgdf/index.m3u8"
     ]
   },
   {
@@ -2137,16 +2036,6 @@
     "streams": [
       "https://bozztv.com/dvrfl05/gin-1muscom/tracks-v1a1/mono.m3u8"
     ]
-  },
-  {
-    "id": "music-muzzone",
-    "name": "MuzzOne",
-    "cat": "music",
-    "logo": "https://smotret.tv/images/muzzone.webp",
-    "ptype": "iframe",
-    "src": "https://vkvideo.ru/video_ext.php?oid=-15561055&id=456239290&hash=3195af70f1f2b4a5",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/music/muzzone"
   },
   {
     "id": "sport-start-basket",
@@ -2525,32 +2414,6 @@
     "source_page": "https://smotret.tv/sport/primocanale-sport"
   },
   {
-    "id": "sport-snowy-mountains-television",
-    "name": "Snowy Mountains TV",
-    "cat": "sport",
-    "logo": "https://smotret.tv/images/snowy-mountains-television.webp",
-    "ptype": "hls",
-    "src": "https://stream.ads.ottera.tv/playlist.m3u8?network_id=72",
-    "streams": [
-      "https://stream.ads.ottera.tv/playlist.m3u8?network_id=72"
-    ],
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/sport/snowy-mountains-television"
-  },
-  {
-    "id": "sport-a21-network",
-    "name": "A21 Network",
-    "cat": "sport",
-    "logo": "https://smotret.tv/images/a21-network.webp",
-    "ptype": "hls",
-    "src": "https://tv.a21network.ru/stream/37909/index.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/sport/a21-network",
-    "streams": [
-      "https://tv.a21network.ru/stream/37909/index.m3u8"
-    ]
-  },
-  {
     "id": "sport-rtv",
     "name": "RTV",
     "cat": "sport",
@@ -2574,58 +2437,6 @@
         "ptype": "hls",
         "src": "https://stream.ads.ottera.tv/playlist.m3u8?network_id=1830"
       }
-    ]
-  },
-  {
-    "id": "sport-channel-fight-tv",
-    "name": "Channel Fight TV",
-    "cat": "sport",
-    "logo": "https://smotret.tv/images/channel-fight-tv.webp",
-    "ptype": "hls",
-    "src": "https://origin3.afxp.telemedia.co.za/PremiumFree/sportsconnect/playlist.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/sport/channel-fight-tv",
-    "streams": [
-      "https://origin3.afxp.telemedia.co.za/PremiumFree/sportsconnect/playlist.m3u8"
-    ]
-  },
-  {
-    "id": "sport-swiss-sport-tv",
-    "name": "Swiss Sport TV",
-    "cat": "sport",
-    "logo": "https://smotret.tv/images/swiss-sport-tv.webp",
-    "ptype": "hls",
-    "src": "https://cdn02.upstream-cloud.ch/sstvlinear/ngrp:sstvlinear_all/playlist.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/sport/swiss-sport-tv",
-    "streams": [
-      "https://cdn02.upstream-cloud.ch/sstvlinear/ngrp:sstvlinear_all/playlist.m3u8"
-    ]
-  },
-  {
-    "id": "sport-mma-junkie",
-    "name": "MMA Junkie",
-    "cat": "sport",
-    "logo": "https://smotret.tv/images/mma-junkie.webp",
-    "ptype": "hls",
-    "src": "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/mma-junkie/master.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/sport/mma-junkie",
-    "streams": [
-      "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/mma-junkie/master.m3u8"
-    ]
-  },
-  {
-    "id": "sport-ufa",
-    "name": "UFA",
-    "cat": "sport",
-    "logo": "https://smotret.tv/images/ufa.webp",
-    "ptype": "hls",
-    "src": "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/united-fight-alliance/master.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/sport/ufa",
-    "streams": [
-      "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/united-fight-alliance/master.m3u8"
     ]
   },
   {
@@ -2694,19 +2505,6 @@
     ]
   },
   {
-    "id": "sport-bandw-rally-tv",
-    "name": "BandW Rally TV",
-    "cat": "sport",
-    "logo": "https://smotret.tv/images/bandw-rally-tv.webp",
-    "ptype": "hls",
-    "src": "https://59d7d6f47d7fc.streamlock.net/bandw/bandw/playlist.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/sport/bandw-rally-tv",
-    "streams": [
-      "https://59d7d6f47d7fc.streamlock.net/bandw/bandw/playlist.m3u8"
-    ]
-  },
-  {
     "id": "sport-motoamerica",
     "name": "MotoAmerica",
     "cat": "sport",
@@ -2717,45 +2515,6 @@
     "source_page": "https://smotret.tv/sport/motoamerica",
     "streams": [
       "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=1062"
-    ]
-  },
-  {
-    "id": "sport-motor-racing",
-    "name": "Motor Racing",
-    "cat": "sport",
-    "logo": "https://smotret.tv/images/motor-racing.webp",
-    "ptype": "hls",
-    "src": "https://dai.google.com/linear/hls/event/qI1pC-R_Sma0bVLVjaEOtw/master.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/sport/motor-racing",
-    "streams": [
-      "https://dai.google.com/linear/hls/event/qI1pC-R_Sma0bVLVjaEOtw/master.m3u8"
-    ]
-  },
-  {
-    "id": "sport-bike-tv",
-    "name": "Bike TV",
-    "cat": "sport",
-    "logo": "https://smotret.tv/images/bike-tv.webp",
-    "ptype": "hls",
-    "src": "https://stream.prod-01.milano.nxmedge.net/argocdn/bikechannel/video.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/sport/bike-tv",
-    "streams": [
-      "https://stream.prod-01.milano.nxmedge.net/argocdn/bikechannel/video.m3u8"
-    ]
-  },
-  {
-    "id": "sport-lsn-tv",
-    "name": "LSN TV",
-    "cat": "sport",
-    "logo": "https://smotret.tv/images/lsn-tv.webp",
-    "ptype": "hls",
-    "src": "https://1840769862.rsc.cdn77.org/FTF/LSN_SCTE.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/sport/lsn-tv",
-    "streams": [
-      "https://1840769862.rsc.cdn77.org/FTF/LSN_SCTE.m3u8"
     ]
   },
   {
@@ -2912,19 +2671,6 @@
     "src": "https://vkvideo.ru/video_ext.php?oid=-41082515&id=456242241&hd=4",
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/news/24kz"
-  },
-  {
-    "id": "news-cbc",
-    "name": "СВС",
-    "cat": "news",
-    "logo": "https://smotret.tv/images/cbc.webp",
-    "ptype": "hls",
-    "src": "https://stream.cbctv.az:5443/LiveApp/streams/cbctv.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/news/cbc",
-    "streams": [
-      "https://stream.cbctv.az:5443/LiveApp/streams/cbctv.m3u8"
-    ]
   },
   {
     "id": "news-bloomberg",
@@ -3397,16 +3143,6 @@
     "source_page": "https://smotret.tv/detskie/dmcmusictv"
   },
   {
-    "id": "detskie-skazki-zayki",
-    "name": "Сказки Зайки",
-    "cat": "kids",
-    "logo": "https://smotret.tv/images/skazki-zayki.webp",
-    "ptype": "iframe",
-    "src": "https://ok.ru/videoembed/3646650130104?autoplay=1",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/detskie/skazki-zayki"
-  },
-  {
     "id": "detskie-jetix",
     "name": "Jetix",
     "cat": "kids",
@@ -3418,16 +3154,6 @@
     ],
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/detskie/jetix"
-  },
-  {
-    "id": "detskie-buba-tv",
-    "name": "Буба TV",
-    "cat": "kids",
-    "logo": "https://smotret.tv/images/buba-tv.webp",
-    "ptype": "iframe",
-    "src": "https://www.youtube.com/embed/awZ1CFC-2Ug?rel=0&modestbranding=1&autoplay=1&showinfo=0&iv_load_policy=3",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/detskie/buba-tv"
   },
   {
     "id": "detskie-cyplenok-komo",
@@ -3548,19 +3274,6 @@
     "src": "https://www.youtube.com/embed/?rel=0&modestbranding=1&autoplay=1&showinfo=0&iv_load_policy=3",
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/detskie/multsezon"
-  },
-  {
-    "id": "detskie-sunduchok-istoriy",
-    "name": "Сундучок историй",
-    "cat": "kids",
-    "logo": "https://smotret.tv/images/sunduchok-istoriy.webp",
-    "ptype": "hls",
-    "src": "https://stmv1.srvif.com/retrotv/retrotv/playlist-480p.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/detskie/sunduchok-istoriy",
-    "streams": [
-      "https://stmv1.srvif.com/retrotv/retrotv/playlist-480p.m3u8"
-    ]
   },
   {
     "id": "detskie-dzhigit-tv",
@@ -3865,32 +3578,6 @@
     ],
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/christian/gospel-music"
-  },
-  {
-    "id": "christian-revelation-tv",
-    "name": "Revelation TV",
-    "cat": "christian",
-    "logo": "https://smotret.tv/images/revelation-tv.webp",
-    "ptype": "hls",
-    "src": "https://live.mdc.akamaized.net/hls/live/revelationtv.stream_aac/playlist.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/christian/revelation-tv",
-    "streams": [
-      "https://live.mdc.akamaized.net/hls/live/revelationtv.stream_aac/playlist.m3u8"
-    ]
-  },
-  {
-    "id": "christian-nebesa-tv7",
-    "name": "Небеса ТВ7",
-    "cat": "christian",
-    "logo": "https://smotret.tv/images/nebesa-tv7.webp",
-    "ptype": "hls",
-    "src": "https://vod.tv7.fi/tv7-ru/_definst_/smil:tv7-ru.smil/playlist.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/christian/nebesa-tv7",
-    "streams": [
-      "https://vod.tv7.fi/tv7-ru/_definst_/smil:tv7-ru.smil/playlist.m3u8"
-    ]
   },
   {
     "id": "razvlekatelnye-backus-tv",
@@ -5259,19 +4946,7 @@
       }
     ]
   },
-  {
-    "id": "poznavatelnye-univer-tv",
-    "name": "UNIVER TV",
-    "cat": "edu",
-    "logo": "https://smotret.tv/images/univer-tv.webp",
-    "ptype": "hls",
-    "src": "https://cdn.universmotri.ru/live/smil:univer.smil/playlist.m3u8",
-    "streams": [
-      "https://cdn.universmotri.ru/live/smil:univer.smil/playlist.m3u8"
-    ],
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/poznavatelnye/univer-tv"
-  },
+
   {
     "id": "poznavatelnye-plyus-minus-16",
     "name": "Плюс/Минус 16",
@@ -5319,16 +4994,6 @@
     "source_page": "https://smotret.tv/poznavatelnye/yuurgu-tv"
   },
   {
-    "id": "poznavatelnye-mosobr-tv",
-    "name": "Мособр ТВ",
-    "cat": "edu",
-    "logo": "https://smotret.tv/images/mosobr-tv.webp",
-    "ptype": "iframe",
-    "src": "https://ok.ru/videoembed/3516701089374?autoplay=1",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/poznavatelnye/mosobr-tv"
-  },
-  {
     "id": "poznavatelnye-rzhd-tv",
     "name": "РЖД ТВ",
     "cat": "edu",
@@ -5337,19 +5002,6 @@
     "src": "https://ok.ru/videoembed/6783748742774?autoplay=1",
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/poznavatelnye/rzhd-tv"
-  },
-  {
-    "id": "poznavatelnye-ratnik",
-    "name": "Ратник",
-    "cat": "edu",
-    "logo": "https://smotret.tv/images/ratnik.webp",
-    "ptype": "hls",
-    "src": "https://live-ratnik.cdnvideo.ru/ratnik/ratnik2.sdp/playlist.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/poznavatelnye/ratnik",
-    "streams": [
-      "https://live-ratnik.cdnvideo.ru/ratnik/ratnik2.sdp/playlist.m3u8"
-    ]
   },
   {
     "id": "poznavatelnye-nasa-tv",
@@ -5505,16 +5157,6 @@
     "source_page": "https://smotret.tv/poznavatelnye/yarmarka-tv"
   },
   {
-    "id": "poznavatelnye-synergy-tv",
-    "name": "SYNERGY TV",
-    "cat": "edu",
-    "logo": "https://smotret.tv/images/synergy-tv.webp",
-    "ptype": "iframe",
-    "src": "https://ok.ru/videoembed/4786867805941?autoplay=1",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/poznavatelnye/synergy-tv"
-  },
-  {
     "id": "poznavatelnye-zdorove",
     "name": "Здоровье",
     "cat": "edu",
@@ -5523,16 +5165,6 @@
     "src": "https://www.youtube.com/embed/GDFzLYLKtfI\\u0026pp=0gcJCXYbAYcqIYzv?rel=0&modestbranding=1&autoplay=1&showinfo=0&iv_load_policy=3",
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/poznavatelnye/zdorove"
-  },
-  {
-    "id": "poznavatelnye-doctor-gradus",
-    "name": "Доктор Градус",
-    "cat": "edu",
-    "logo": "https://smotret.tv/images/doctor-gradus.webp",
-    "ptype": "iframe",
-    "src": "https://ok.ru/videoembed/665887121048?autoplay=1",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/poznavatelnye/doctor-gradus"
   },
   {
     "id": "poznavatelnye-uspeh",
@@ -5548,16 +5180,6 @@
     ]
   },
   {
-    "id": "poznavatelnye-mir-vokrug",
-    "name": "Мир вокруг",
-    "cat": "edu",
-    "logo": "https://smotret.tv/images/mir-vokrug.webp",
-    "ptype": "iframe",
-    "src": "https://vk.com/video_ext.php?oid=-151139963&id=456239046&hd=2&autoplay=1",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/poznavatelnye/mir-vokrug"
-  },
-  {
     "id": "poznavatelnye-ege-tv",
     "name": "ЕГЭ ТВ",
     "cat": "edu",
@@ -5566,19 +5188,6 @@
     "src": "https://ok.ru/videoembed/9800467291859?autoplay=1",
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/poznavatelnye/ege-tv"
-  },
-  {
-    "id": "poznavatelnye-hd-media",
-    "name": "HD Media",
-    "cat": "edu",
-    "logo": "https://smotret.tv/images/hd-media.webp",
-    "ptype": "hls",
-    "src": "https://smithsonianaus-samsungau.amagi.tv/playlist480p.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/poznavatelnye/hd-media",
-    "streams": [
-      "https://smithsonianaus-samsungau.amagi.tv/playlist480p.m3u8"
-    ]
   },
   {
     "id": "poznavatelnye-perpetuum-mobile",
@@ -5631,75 +5240,6 @@
     ],
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/poznavatelnye/prosveshenie"
-  },
-  {
-    "id": "poznavatelnye-rodnoy-kanal",
-    "name": "Родной канал",
-    "cat": "edu",
-    "logo": "https://smotret.tv/images/rodnoy-kanal.webp",
-    "ptype": "hls",
-    "src": "https://n1.slavmir.tv/live/ngrp:Cinegy.stream_all/playlist.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/poznavatelnye/rodnoy-kanal",
-    "streams": [
-      "https://n1.slavmir.tv/live/ngrp:Cinegy.stream_all/playlist.m3u8"
-    ]
-  },
-  {
-    "id": "poznavatelnye-nasha-tema",
-    "name": "Наша Тема",
-    "cat": "edu",
-    "logo": "https://smotret.tv/images/nasha-tema.webp",
-    "ptype": "hls",
-    "src": "https://live-3.otcnet.ru/nashatema/index.m3u8",
-    "streams": [
-      "https://live-3.otcnet.ru/nashatema/index.m3u8"
-    ],
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/poznavatelnye/nasha-tema"
-  },
-  {
-    "id": "poznavatelnye-ministerstvo-idey",
-    "name": "Министерство Идей",
-    "cat": "edu",
-    "logo": "https://smotret.tv/images/ministerstvo-idey.webp",
-    "ptype": "hls",
-    "src": "https://live-minidey.cdnvideo.ru/minidey/minidey.sdp/playlist.m3u8",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/poznavatelnye/ministerstvo-idey",
-    "streams": [
-      "https://live-minidey.cdnvideo.ru/minidey/minidey.sdp/playlist.m3u8"
-    ]
-  },
-  {
-    "id": "poznavatelnye-svetloe-tv",
-    "name": "Светлое ТВ",
-    "cat": "edu",
-    "logo": "https://smotret.tv/images/svetloe-tv.webp",
-    "ptype": "iframe",
-    "src": "https://ok.ru/videoembed/380791823951?autoplay=1",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/poznavatelnye/svetloe-tv"
-  },
-  {
-    "id": "poznavatelnye-tv-tur",
-    "name": "ТВТУР",
-    "cat": "edu",
-    "logo": "https://smotret.tv/images/tv-tur.webp",
-    "ptype": "iframe",
-    "src": "https://vkvideo.ru/video_ext.php?oid=-220218074&id=456239108&hd=2&autoplay=1",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/poznavatelnye/tv-tur"
-  },
-  {
-    "id": "poznavatelnye-dayving-tv",
-    "name": "Дайвинг TV",
-    "cat": "edu",
-    "logo": "https://smotret.tv/images/dayving-tv.webp",
-    "ptype": "iframe",
-    "src": "https://ok.ru/videoembed/665237593752?autoplay=1",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/poznavatelnye/dayving-tv"
   },
   {
     "id": "region-1-krymskij",
