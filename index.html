@@ -4408,6 +4408,7 @@ let tvAutoMode = false;        // режим «Авто» (адаптация п
 let tvMasterBlobUrl = null;    // объект-URL синтетического мастер-плейлиста
 let tvLevelMap = [];           // соответствие индекса качества → уровню hls.js
 let tvMQIndex = 0;             // выбранное качество в многокачественном режиме (0 = лучшее)
+let tvWorkerRetried = false;   // была ли уже попытка перезапросить свежий токен у Worker'а
 
 function tvEsc(s){
   return String(s ?? '').replace(/[&<>"']/g, m => ({
@@ -4732,6 +4733,8 @@ function tvResetPlayer(){
 function tvPlay(ch, sourceIndex = 0){
   if (!ch) return;
 
+  if (sourceIndex === 0) tvWorkerRetried = false; // новый канал → разрешаем 1 рефреш токена
+
   tvActiveChannel = ch;
   tvActiveSources = tvGetSources(ch);
 
@@ -4759,6 +4762,14 @@ function tvPlay(ch, sourceIndex = 0){
   }
 
   if (source.ptype === 'hls') {
+    // musical.uz отдаёт токен, привязанный к IP и времени. Прямой src из
+    // tv_channels.json протухает и работает только с «правильного» IP
+    // (отсюда «по WiFi иногда да, по мобильному нет»). Поэтому такие каналы
+    // всегда играем через Worker, который держит свежий токен и проксирует поток.
+    if (ch && ch.id && /(^|\.)musical\.uz/i.test(String(source.src || ''))) {
+      tvPlaySmotretTV(ch, source);
+      return;
+    }
     tvPlayHls(ch, source.src, source);
     return;
   }
@@ -4791,7 +4802,10 @@ function tvPlay(ch, sourceIndex = 0){
   tvPlayFallback(ch, 'Источник этого канала пока не поддерживается.');
 }
 
-// ── smotrettv: KV Worker (токен обновляется автоматически каждые 10 часов) ──
+// ── smotrettv / musical.uz: всё видео идёт через Cloudflare Worker ───────────
+// Worker сам берёт свежий токен (cron + KV), снимает remote= и проксирует
+// и плейлист, и ВСЕ сегменты. Браузер юзера НИКОГДА не ходит на musical.uz
+// напрямую — поэтому работает одинаково на WiFi и мобильном интернете.
 async function tvPlaySmotretTV(ch, source) {
   const loading = document.getElementById('tvPlayerLoading');
   if (loading) loading.style.display = 'flex';
@@ -4801,23 +4815,10 @@ async function tvPlaySmotretTV(ch, source) {
     return;
   }
 
-  try {
-    // Запрашиваем свежий src по id канала — Worker отдаёт из KV (обновляется по cron)
-    const resp = await fetch(SMOTRETTV_WORKER_URL + '?channel=' + encodeURIComponent(ch.id), {
-      signal: AbortSignal.timeout(10000)
-    });
-    if (resp.ok) {
-      const data = await resp.json();
-      if (data.src) {
-        tvPlayHls(ch, data.src, {});
-        return;
-      }
-    }
-  } catch(e) {
-    console.warn('Worker failed:', e.message);
-  }
-
-  tvPlayFallback(ch, t('stream_no_src'));
+  // Плеер тянет m3u8 прямо с Worker'а: ?channel=<id> отдаёт проксированный
+  // плейлист, в котором сегменты уже переписаны на ?proxy=... того же Worker'а.
+  const workerHls = SMOTRETTV_WORKER_URL + '?channel=' + encodeURIComponent(ch.id);
+  tvPlayHls(ch, workerHls, {});
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -5035,6 +5036,20 @@ function tvPlayHls(ch, src, sourceInfo = null){
 function tvFailHls(ch){
   const loading = document.getElementById('tvPlayerLoading');
   loading.style.display = 'flex';
+
+  // Если это канал musical.uz через Worker и токен мог протухнуть —
+  // одна попытка перезапросить свежий поток (Worker берёт новый токен).
+  if (ch && ch.id && !tvWorkerRetried && SMOTRETTV_WORKER_URL &&
+      tvActiveSources[tvActiveSourceIndex] &&
+      /(^|\.)musical\.uz/i.test(String(tvActiveSources[tvActiveSourceIndex].src || ''))) {
+    tvWorkerRetried = true;
+    loading.querySelector('span').textContent = 'Обновляем поток...';
+    tvStopHls();
+    const fresh = SMOTRETTV_WORKER_URL + '?channel=' + encodeURIComponent(ch.id) + '&nocache=1';
+    setTimeout(() => tvPlayHls(ch, fresh, {}), 400);
+    return;
+  }
+
   loading.querySelector('span').textContent = 'Пробуем резервный источник...';
 
   tvStopHls();
