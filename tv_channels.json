@@ -104,106 +104,12 @@
     "name": "Матч ТВ",
     "cat": "sport",
     "logo": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgMTYwIDE2MCI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHgyPSIxIiB5MT0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ZmMTgyOCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2I2MDAxMiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTYwIiBoZWlnaHQ9IjE2MCIgcng9IjM0IiBmaWxsPSJ1cmwoI2cpIi8+Cjx0ZXh0IHg9IjgwIiB5PSI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLCBIZWx2ZXRpY2EsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmYiPtCc0JDQotCnPC90ZXh0PgoKPC9zdmc+",
-    "ptype": "hls",
-    "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/1080p50fps/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
-    "matchPage": "https://matchtv.ru/video/channel/matchtv",
-    "source": "matchtv.ru — официальный бесплатный HLS (домен bl.video.matchtv.ru, зеркало m3u8.video.matchtv.ru как запасной на каждое качество)",
-    "source_page": "https://matchtv.ru/video/channel/matchtv",
-    "streams": [
-      {
-        "label": "1080 50fps",
-        "quality": "1080p50fps",
-        "ptype": "hls",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/1080p50fps/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
-        "fallbacks": [
-          "https://m3u8.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/1080p50fps/32fc3bb655372532d931c611d19387ae/1781362800.m3u8"
-        ]
-      },
-      {
-        "label": "1080",
-        "quality": "1080",
-        "ptype": "hls",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/1080/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
-        "fallbacks": [
-          "https://m3u8.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/1080/32fc3bb655372532d931c611d19387ae/1781362800.m3u8"
-        ]
-      },
-      {
-        "label": "720",
-        "quality": "720",
-        "ptype": "hls",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/720/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
-        "fallbacks": [
-          "https://m3u8.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/720/32fc3bb655372532d931c611d19387ae/1781362800.m3u8"
-        ]
-      },
-      {
-        "label": "480",
-        "quality": "480",
-        "ptype": "hls",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/480/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
-        "fallbacks": [
-          "https://m3u8.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/480/32fc3bb655372532d931c611d19387ae/1781362800.m3u8"
-        ]
-      },
-      {
-        "label": "360",
-        "quality": "360",
-        "ptype": "hls",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/360/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
-        "fallbacks": [
-          "https://m3u8.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/360/32fc3bb655372532d931c611d19387ae/1781362800.m3u8"
-        ]
-      }
-    ],
-    "qualityStreams": [
-      {
-        "label": "1080 50fps",
-        "quality": "1080p50fps",
-        "ptype": "hls",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/1080p50fps/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
-        "fallbacks": [
-          "https://m3u8.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/1080p50fps/32fc3bb655372532d931c611d19387ae/1781362800.m3u8"
-        ]
-      },
-      {
-        "label": "1080",
-        "quality": "1080",
-        "ptype": "hls",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/1080/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
-        "fallbacks": [
-          "https://m3u8.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/1080/32fc3bb655372532d931c611d19387ae/1781362800.m3u8"
-        ]
-      },
-      {
-        "label": "720",
-        "quality": "720",
-        "ptype": "hls",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/720/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
-        "fallbacks": [
-          "https://m3u8.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/720/32fc3bb655372532d931c611d19387ae/1781362800.m3u8"
-        ]
-      },
-      {
-        "label": "480",
-        "quality": "480",
-        "ptype": "hls",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/480/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
-        "fallbacks": [
-          "https://m3u8.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/480/32fc3bb655372532d931c611d19387ae/1781362800.m3u8"
-        ]
-      },
-      {
-        "label": "360",
-        "quality": "360",
-        "ptype": "hls",
-        "src": "https://bl.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/360/32fc3bb655372532d931c611d19387ae/1781362800.m3u8",
-        "fallbacks": [
-          "https://m3u8.video.matchtv.ru/media/playlist/ch_12d087a96d1bd74d08c90c58bf1fe44a/17_86669241/360/32fc3bb655372532d931c611d19387ae/1781362800.m3u8"
-        ]
-      }
-    ],
-    "note": "Матч ТВ: прямые HLS-качества с matchtv.ru (master playlist собирается в плеере). Меняется только сегмент качества: 1080p50fps / 1080 / 720 / 480 / 360 (1080p25fps и 576 НЕ использовать — отдают 720 и 480). ТОКЕН в ссылке (ch_… / 17_… / hash / число) привязан к IP+времени и протухает. Когда канал перестанет открываться: открой matchtv.ru/video/channel/matchtv в браузере, DevTools → Network → фильтр 'm3u8' → скопируй playlist-ссылку и замени 4 части (prefix ch_…, 17_…, hash, число перед .m3u8). Сегмент качества трогать не нужно. Надёжнее — проксировать через Cloudflare Worker (см. чат)."
+    "ptype": "iframe",
+    "src": "https://rutube.ru/play/embed/11bbbec75a2ceb8cf446ad16813c6eec/",
+    "source": "Rutube — официальный круглосуточный прямой эфир «Матч ТВ» (embed, без токена, работает с любого IP)",
+    "source_page": "https://rutube.sport/stream/priamoi-efir-match-tv/",
+    "note": "Матч ТВ через официальный embed Rutube (id 11bbbec75a2ceb8cf446ad16813c6eec). Стабильно, без протухающих токенов. Если когда-нибудь перестанет — открой rutube.sport/stream/priamoi-efir-match-tv, в исходнике найди og:video rutube.ru/play/embed/<НОВЫЙ_ID>/ и замени id в src. Зеркала: VK https://vk.com/matchtv , OK https://ok.ru/matchtvchannel",
+    "embed_provider": "rutube"
   },
   {
     "id": "1-kanal",
