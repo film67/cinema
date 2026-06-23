@@ -4628,6 +4628,7 @@ function tvGetSources(ch){
       ptype: 'smotrettv',
       src: ch.src,
       page: ch.source_page,
+      fallback_src: ch.fallback_src
     }];
   }
 
@@ -4790,33 +4791,30 @@ function tvPlay(ch, sourceIndex = 0){
   tvPlayFallback(ch, 'Источник этого канала пока не поддерживается.');
 }
 
-// ── smotrettv: Worker → musical.uz свежий токен ──────────────────────────
+// ── smotrettv: KV Worker (токен обновляется автоматически каждые 10 часов) ──
 async function tvPlaySmotretTV(ch, source) {
-  const page = ch.source_page || source.page || '';
-
   const loading = document.getElementById('tvPlayerLoading');
   if (loading) loading.style.display = 'flex';
 
-  // Если Worker не настроен
   if (!SMOTRETTV_WORKER_URL || SMOTRETTV_WORKER_URL.includes('YOUR-NAME')) {
     tvPlayFallback(ch, t('stream_no_src'));
     return;
   }
 
-  // Пробуем Worker (получаем свежий токен musical.uz)
-  if (page) {
-    try {
-      const resp = await fetch(SMOTRETTV_WORKER_URL + '?page=' + encodeURIComponent(page), { signal: AbortSignal.timeout(8000) });
-      if (resp.ok) {
-        const data = await resp.json();
-        if (data.src) {
-          tvPlayHls(ch, data.src, {});
-          return;
-        }
+  try {
+    // Запрашиваем свежий src по id канала — Worker отдаёт из KV (обновляется по cron)
+    const resp = await fetch(SMOTRETTV_WORKER_URL + '?channel=' + encodeURIComponent(ch.id), {
+      signal: AbortSignal.timeout(10000)
+    });
+    if (resp.ok) {
+      const data = await resp.json();
+      if (data.src) {
+        tvPlayHls(ch, data.src, {});
+        return;
       }
-    } catch(e) {
-      console.warn('Worker failed:', e.message);
     }
+  } catch(e) {
+    console.warn('Worker failed:', e.message);
   }
 
   tvPlayFallback(ch, t('stream_no_src'));
