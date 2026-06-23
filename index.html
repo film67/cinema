@@ -4622,6 +4622,16 @@ function tvGetSources(ch){
     }];
   }
 
+  if (ch.ptype === 'smotrettv' && ch.src) {
+    return [{
+      label: 'Прямой эфир',
+      ptype: 'smotrettv',
+      src: ch.src,
+      page: ch.source_page,
+      fallback_src: ch.fallback_src
+    }];
+  }
+
   if (Array.isArray(ch.sources) && ch.sources.length) {
     return ch.sources
       .filter(s => s && s.ptype && s.src)
