@@ -1,5 +1,195 @@
 [
   {
+    "id": "zor-tv",
+    "name": "ZO'R TV",
+    "cat": "uzbek",
+    "logo": "https://upload.wikimedia.org/wikipedia/uz/3/3d/Zo%27r_TV_logo.png",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1016/tracks-v1a1/mono.m3u8",
+    "source": "cinerama.uz",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/348-zor-tv.html"
+  },
+  {
+    "id": "sevimli-tv",
+    "name": "Sevimli TV",
+    "cat": "uzbek",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Sevimli_TV_Logo.png",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1017/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/753-sevimli-tv.html"
+  },
+  {
+    "id": "uzbekiston-tv",
+    "name": "O'zbekiston TV",
+    "cat": "uzbek",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/O%27zbekiston_telekanali_logo.svg/200px-O%27zbekiston_telekanali_logo.svg.png",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1001/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/"
+  },
+  {
+    "id": "yoshlar",
+    "name": "Yoshlar",
+    "cat": "uzbek",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Yoshlar_TV_logo.svg/200px-Yoshlar_TV_logo.svg.png",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1002/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/"
+  },
+  {
+    "id": "toshkent-tv",
+    "name": "Toshkent",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1003/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/"
+  },
+  {
+    "id": "sport-uz",
+    "name": "Sport Uzbekistan",
+    "cat": "uzbek",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Sport_TV_Uzbekistan_logo.svg/200px-Sport_TV_Uzbekistan_logo.svg.png",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1006/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz",
+    "source_page": "https://smotrettv.net/tv/sport/347-sport-tv.html"
+  },
+  {
+    "id": "milliy-tv",
+    "name": "Milliy TV",
+    "cat": "uzbek",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Milliy_TV_logo.svg/200px-Milliy_TV_logo.svg.png",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1008/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/"
+  },
+  {
+    "id": "mening-yurtim",
+    "name": "Mening Yurtim",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1009/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/"
+  },
+  {
+    "id": "kinoteatr",
+    "name": "Kinoteatr",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1007/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/"
+  },
+  {
+    "id": "my5",
+    "name": "MY5",
+    "cat": "uzbek",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/My5_Uzbekistan_Logo.png/200px-My5_Uzbekistan_Logo.png",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1014/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/"
+  },
+  {
+    "id": "futbol-tv",
+    "name": "Futbol TV",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1012/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/"
+  },
+  {
+    "id": "uzreport-tv",
+    "name": "UzReport TV",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1015/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/"
+  },
+  {
+    "id": "uzbekistan-24",
+    "name": "Uzbekistan 24",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1011/tracks-v1a1/mono.m3u8",
+    "source": "cinerama.uz",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/"
+  },
+  {
+    "id": "galaxy-tv",
+    "name": "Galaxy TV",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1010/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/"
+  },
+  {
+    "id": "ftv",
+    "name": "FTV",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1013/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/"
+  },
+  {
+    "id": "bolajon",
+    "name": "Bolajon",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1005/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/"
+  },
+  {
+    "id": "navo-tv",
+    "name": "Navo TV",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1004/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/"
+  },
+  {
+    "id": "dunyo-boylab",
+    "name": "Dunyo Boylab",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1018/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/"
+  },
+  {
+    "id": "makon-tv",
+    "name": "Makon TV",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1497/tracks-v1a1/mono.m3u8",
+    "source": "cinerama.uz",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/"
+  },
+  {
     "id": "matchtv",
     "name": "Матч ТВ",
     "cat": "sport",
@@ -152,12 +342,12 @@
   {
     "id": "tnt4",
     "name": "ТНТ4",
-    "cat": "main",
+    "cat": "entertainment",
     "logo": "https://smotret.tv/images/tnt4.webp",
-    "ptype": "iframe",
-    "src": "https://ok.ru/videoembed/10684591709783?autoplay=1",
-    "source": "OK Video — источник пользователя",
-    "source_page": "https://ok.ru/video/10684591709783",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/tnt4/index.m3u8?token=70f959baa68155825bc3fd2d4950738335b3900c-f0295d1a154e9b4f50c0d431a3838e2c-1782205305-1782194505&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/entertainment/39-tnt4.html",
     "note": "ТНТ4: OK.ru embed, ID 10684591709783 — источник пользователя (22.06.2026)."
   },
   {
@@ -233,12 +423,12 @@
   {
     "id": "ctv",
     "name": "ЦТВ",
-    "cat": "main",
+    "cat": "edu",
     "logo": "https://smotret.tv/images/ctv.webp",
-    "ptype": "iframe",
-    "src": "https://ok.ru/videoembed/9809777860214?autoplay=1",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/ctv"
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/centraltv/index.m3u8?token=0d76e7d1ced12b2d5d1f2759ed96d90b31aeda58-bac40d74d0ce750206867c85be15f393-1782205285-1782194485&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/192-ctv.html"
   },
   {
     "id": "rbk",
@@ -334,12 +524,12 @@
   {
     "id": "sts-love",
     "name": "СТС Love",
-    "cat": "main",
+    "cat": "entertainment",
     "logo": "https://smotret.tv/images/sts-love.webp",
-    "ptype": "iframe",
-    "src": "https://rutube.ru/play/embed/32dc45cf878497abe1c9695e228f039b",
-    "source": "user_rutube_live",
-    "source_page": "https://rutube.ru/live/video/32dc45cf878497abe1c9695e228f039b/",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/ctclove_web/index.m3u8?token=6210f468ec3b26a3273ccb6bb122ee72475f9327-41e7da97ef30651b4b7e09dc602f4ab4-1782205298-1782194498&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/entertainment/307-sts-love.html",
     "blocked_src": "https://player.mediavitrina.ru/ctclove_v2/ctc_love_ext/smotret_tv_web/player.html",
     "streams": [],
     "note": "Источник заменён на Rutube Live, чтобы не использовать плеер с запретом размещения на домене kinouz.online.",
@@ -370,12 +560,12 @@
   {
     "id": "che",
     "name": "Че!",
-    "cat": "main",
+    "cat": "entertainment",
     "logo": "https://smotret.tv/images/che.webp",
-    "ptype": "iframe",
-    "src": "https://rutube.ru/play/embed/5bbff90167d1b1d88fda92376ec7a651",
-    "source": "user_rutube_live",
-    "source_page": "https://rutube.ru/live/video/5bbff90167d1b1d88fda92376ec7a651/",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/che-web/index.m3u8?token=d84d730aee7d279fe29c3bfc140bcd15de7d835d-970d5276e3a09465b48489492e11c7eb-1782205307-1782194507&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/entertainment/43-che.html",
     "blocked_src": "https://player.mediavitrina.ru/che_v2/che_ext/smotret_tv_web/player.html",
     "streams": [],
     "note": "Источник заменён на Rutube Live, чтобы не использовать плеер с запретом размещения на домене kinouz.online.",
@@ -416,12 +606,12 @@
   {
     "id": "moskva-doverie",
     "name": "Москва Доверие",
-    "cat": "main",
+    "cat": "entertainment",
     "logo": "https://smotret.tv/images/moskva-doverie.webp",
-    "ptype": "iframe",
-    "src": "https://ok.ru/videoembed/13782122372779?autoplay=1",
-    "source": "smotret.tv",
-    "source_page": "https://smotret.tv/moskva-doverie"
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/moskva-doveria/index.m3u8?token=37cb80a8ec7d3f68a1e89e8bb7e4d24cdc0a553c-795e1a5ba901f2dcd9baf8b6b8b504fd-1782205296-1782194496&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/entertainment/189-moskva-doverie.html"
   },
   {
     "id": "mir",
@@ -4501,7 +4691,6 @@
       }
     ]
   },
-
   {
     "id": "poznavatelnye-plyus-minus-16",
     "name": "Плюс/Минус 16",
@@ -4558,26 +4747,26 @@
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/poznavatelnye/rzhd-tv"
   },
-{
-  "id": "poznavatelnye-nasa-tv",
-  "name": "NASA TV",
-  "cat": "edu",
-  "logo": "https://smotret.tv/images/nasa-tv.webp",
-  "ptype": "iframe",
-  "src": "https://www.youtube.com/embed/uwXgcTc8oY8?rel=0&modestbranding=1&autoplay=1&showinfo=0&iv_load_policy=3",
-  "sources": [
-    {
-      "ptype": "iframe",
-      "src": "https://www.youtube.com/embed/uwXgcTc8oY8?rel=0&modestbranding=1&autoplay=1&showinfo=0&iv_load_policy=3"
-    },
-    {
-      "ptype": "iframe",
-      "src": "https://www.youtube.com/embed/FuuC4dpSQ1M?rel=0&modestbranding=1&autoplay=1&showinfo=0&iv_load_policy=3"
-    }
-  ],
-  "source": "YouTube Live — официальный NASA",
-  "source_page": "https://www.youtube.com/watch?v=uwXgcTc8oY8"
-},
+  {
+    "id": "poznavatelnye-nasa-tv",
+    "name": "NASA TV",
+    "cat": "edu",
+    "logo": "https://smotret.tv/images/nasa-tv.webp",
+    "ptype": "iframe",
+    "src": "https://www.youtube.com/embed/uwXgcTc8oY8?rel=0&modestbranding=1&autoplay=1&showinfo=0&iv_load_policy=3",
+    "sources": [
+      {
+        "ptype": "iframe",
+        "src": "https://www.youtube.com/embed/uwXgcTc8oY8?rel=0&modestbranding=1&autoplay=1&showinfo=0&iv_load_policy=3"
+      },
+      {
+        "ptype": "iframe",
+        "src": "https://www.youtube.com/embed/FuuC4dpSQ1M?rel=0&modestbranding=1&autoplay=1&showinfo=0&iv_load_policy=3"
+      }
+    ],
+    "source": "YouTube Live — официальный NASA",
+    "source_page": "https://www.youtube.com/watch?v=uwXgcTc8oY8"
+  },
   {
     "id": "poznavatelnye-national-geographic",
     "name": "National Geographic",
@@ -4910,29 +5099,29 @@
     "source": "smotret.tv",
     "source_page": "https://smotret.tv/region/trk-ryazan"
   },
-{
-  "id": "region-volga",
-  "name": "Волга",
-  "cat": "region",
-  "logo": "https://smotret.tv/images/volga.webp",
-  "ptype": "hls",
-  "src": "https://tele2dvrnat01-02.cdnvideo.ru/stream/NAT_Volga/hls/playlist.m3u8",
-  "streams": [
-    "https://tele2dvrnat01-02.cdnvideo.ru/stream/NAT_Volga/hls/playlist.m3u8"
-  ],
-  "sources": [
-    {
-      "ptype": "hls",
-      "src": "https://tele2dvrnat01-02.cdnvideo.ru/stream/NAT_Volga/hls/playlist.m3u8"
-    },
-    {
-      "ptype": "iframe",
-      "src": "https://rutube.ru/play/embed/bed2dcda74004e4e9a61966d2848c027"
-    }
-  ],
-  "source": "smotret.tv",
-  "source_page": "https://smotret.tv/region/volga"
-},
+  {
+    "id": "region-volga",
+    "name": "Волга",
+    "cat": "region",
+    "logo": "https://smotret.tv/images/volga.webp",
+    "ptype": "hls",
+    "src": "https://tele2dvrnat01-02.cdnvideo.ru/stream/NAT_Volga/hls/playlist.m3u8",
+    "streams": [
+      "https://tele2dvrnat01-02.cdnvideo.ru/stream/NAT_Volga/hls/playlist.m3u8"
+    ],
+    "sources": [
+      {
+        "ptype": "hls",
+        "src": "https://tele2dvrnat01-02.cdnvideo.ru/stream/NAT_Volga/hls/playlist.m3u8"
+      },
+      {
+        "ptype": "iframe",
+        "src": "https://rutube.ru/play/embed/bed2dcda74004e4e9a61966d2848c027"
+      }
+    ],
+    "source": "smotret.tv",
+    "source_page": "https://smotret.tv/region/volga"
+  },
   {
     "id": "region-volga-24",
     "name": "Волга 24",
@@ -6157,9 +6346,9 @@
     "cat": "sport",
     "logo": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgMTYwIDE2MCI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHgyPSIxIiB5MT0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ZmMTgyOCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2I2MDAxMiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTYwIiBoZWlnaHQ9IjE2MCIgcng9IjM0IiBmaWxsPSJ1cmwoI2cpIi8+Cjx0ZXh0IHg9IjgwIiB5PSI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLCBIZWx2ZXRpY2EsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmYiPtCc0JDQotCnPC90ZXh0Pgo8dGV4dCB4PSI4MCIgeT0iMTEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsIEhlbHZldGljYSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMiIgZm9udC13ZWlnaHQ9IjgwMCIgZmlsbD0iI2ZmZiI+0KHQotCg0JDQndCQPC90ZXh0Pgo8L3N2Zz4=",
     "ptype": "hls",
-    "src": "http://ukr.ukrainske.tv/134/keytvainua/video.m3u8",
-    "source": "user_hls",
-    "source_page": "http://ukr.ukrainske.tv/134/keytvainua/video.m3u8",
+    "src": "https://server.musical.uz/tv/match-strana/index.m3u8?token=797fce2d7e31ec08b10b6d09251b7cdeca906b5a-8ded84132a465172744b9926ebe0f12b-1782205565-1782194765&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/sport/283-match-strana.html",
     "streams": [
       {
         "label": "HLS",
@@ -6170,5 +6359,1275 @@
     "status": "user_replaced_match_strana",
     "browser_status": "user_candidate",
     "play_priority": "hls"
+  },
+  {
+    "id": "360-novosti",
+    "name": "360 Новости FHD",
+    "cat": "news",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/360news_Web/index.m3u8?token=d7bd5db0df609207574f1b3f297f22c3a2cb1b0c-bca6e9e4c7e45c78ed246f9c25e39687-1782205425-1782194625&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/news/169-360-novosti.html"
+  },
+  {
+    "id": "9-kanal-izrail",
+    "name": "9 канал Израиль",
+    "cat": "region",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/channel_9/index.m3u8?token=cea1a80bc39510a81d65bef91e7e3eaf58f63243-7c50ac8e4c59205b6a9c227d6648e3e4-1782205326-1782194526&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/775-9-kanal-izrail.html"
+  },
+  {
+    "id": "amedia-premium",
+    "name": "Amedia Premium HD",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/amedia_premium/index.m3u8?token=bdaef5ffd70796a989a80f94bb88167e6106c16a-f51cc3d45ac956eb183be39288864498-1782205394-1782194594&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/404-amedia-premium.html"
+  },
+  {
+    "id": "animal-planet",
+    "name": "Animal Planet FHD",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/animal-planet_web/index.m3u8?token=011747a75f774bba2e6c99671f9b945ce5cd6efb-55beedda03f44b3e4aa70283e81dcb9d-1782205293-1782194493&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/747-animal-planet.html"
+  },
+  {
+    "id": "bbc-world-news",
+    "name": "BBC World News",
+    "cat": "news",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/bbc/index.m3u8?token=5765b4bffea547e62de2a934d66a130996de9bc3-c5a1437be4c2e75f0d1c4357b7abaa7d-1782205440-1782194640&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/news/782-bbc-world-news.html"
+  },
+  {
+    "id": "black",
+    "name": "Black",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/black_web/index.m3u8?token=cbbddeeb5c4970c839358895186d97190b01c2ac-a5220d518d857542914ee10a70844093-1782205372-1782194572&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/117-black.html"
+  },
+  {
+    "id": "bollywood",
+    "name": "Bollywood HD FHD",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/bollywood_web/index.m3u8?token=d4818354829eb700fa3a19d41d7857f877706151-312c9f50b8f83886b7d33595ad83c611-1782205371-1782194571&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/116-bollywood.html"
+  },
+  {
+    "id": "bridge-classic",
+    "name": "Bridge Classic",
+    "cat": "music",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/bridge_classic_web/index.m3u8?token=34416c5a25d370e3ab8f8847f308bd8cd4bc7323-694433516dd698f1e48e1bb9f7bffe36-1782205409-1782194609&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/music/176-bridge-classic.html"
+  },
+  {
+    "id": "bridge-deluxe",
+    "name": "Bridge Deluxe",
+    "cat": "music",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/bridge_deluxe_web/index.m3u8?token=44b29bafcb01b3e2c1c58c8bafa868cf60d5a8d3-dc279dcbc789736db3c657e6aba14097-1782205410-1782194610&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/music/177-bridge-deluxe.html"
+  },
+  {
+    "id": "bridge-rock",
+    "name": "Bridge Rock",
+    "cat": "music",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/bridge_rock_web/index.m3u8?token=a5a6a36647b0260688935dc6146562530c9521f1-ba803e354b23f723e58da12f52918fb5-1782205411-1782194611&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/music/178-bridge-rock.html"
+  },
+  {
+    "id": "bridge-tv",
+    "name": "Bridge TV",
+    "cat": "music",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/bridgetv_web/index.m3u8?token=9356babe7d1ab8c7b5a5001e9ab18a1eaa3ff0b6-eb1c8edaf29e98aa4b402a4458dd305a-1782205416-1782194616&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/music/51-bridge-tv.html"
+  },
+  {
+    "id": "bridge-tv-hits",
+    "name": "Bridge TV Hits",
+    "cat": "music",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/bridgehits_web/index.m3u8?token=ab2220962fb83e47ba57ad89763742621b581e83-707fcd8d51713ce967357ffa09df5ea8-1782205418-1782194618&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/music/56-bridge-tv-hits.html"
+  },
+  {
+    "id": "bridge-russkij-hit",
+    "name": "Bridge Русский Хит",
+    "cat": "music",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/bridge_rusxit_web/index.m3u8?token=8cdbe0ffd16aff72415294579471b88bbc26a7f8-6bb913dbc33862dd9f77660ace9db854-1782205411-1782194611&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/music/179-bridge-russkij-hit.html"
+  },
+  {
+    "id": "bridge-shljager",
+    "name": "Bridge Шлягер",
+    "cat": "music",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/bridge_shlyager_web/index.m3u8?token=c5829b99cd53b4aa94411b9fd4507e3949fad41e-a8b2dd685a38e4a1c620cf3fac5e66a8-1782205412-1782194612&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/music/180-bridge-shljager.html"
+  },
+  {
+    "id": "cartoon-network",
+    "name": "Cartoon Network",
+    "cat": "kids",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/cartonnet_web/index.m3u8?token=c32db73c2119e203898ecae8edd4046fd952cde6-b98504709b1ff52af6325e61d0bce19e-1782205354-1782194554&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kids/65-cartoon-network.html"
+  },
+  {
+    "id": "cnn-international",
+    "name": "CNN International",
+    "cat": "news",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/cnn/index.m3u8?token=60b98c5690c3bc76bfeaf64cd10922613e453eed-793cc4a4f24d6f822df8a302783d1793-1782205439-1782194639&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/news/781-cnn-international.html"
+  },
+  {
+    "id": "comedy-central",
+    "name": "Comedy Central",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/paramount_web/index.m3u8?token=794a92d8b90c365565328b623a2d6c6e3b486fe7-93c6a3de2cd1803128212083cfa87cea-1782205303-1782194503&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/entertainment/37-comedy-central.html"
+  },
+  {
+    "id": "discovery-science",
+    "name": "Discovery Science",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/discovery_science-web/index.m3u8?token=0cdc659554f34974fd65c51c37845236bd6356cd-aff38bc58edc10023d6902f09810cd3a-1782205280-1782194480&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/175-discovery-science.html"
+  },
+  {
+    "id": "fox",
+    "name": "Fox FHD",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/fox_web/index.m3u8?token=10e4d99bf2d621d2885ac3d56bc31211632ed26b-816813cb84ac136cada8cd8223d32a28-1782205362-1782194562&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/103-fox.html"
+  },
+  {
+    "id": "gulli-girl",
+    "name": "Gulli Girl",
+    "cat": "kids",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/gulli_girl_Web/index.m3u8?token=4ef7b20a348e605ad5b0c320ba2875cd1e4b294c-9d9446a33f62e05ce4ff7c1cd8817783-1782205336-1782194536&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kids/172-gulli-girl.html"
+  },
+  {
+    "id": "hollywood",
+    "name": "Hollywood HD",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/hollywd_web/index.m3u8?token=e21d0b35717e88aeb415a84739ee0118903879e6-9fe18ccbe3470b78d24ad4099c7a0a10-1782205365-1782194565&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/107-hollywood.html"
+  },
+  {
+    "id": "musicbox-gold",
+    "name": "MusicBox Gold",
+    "cat": "music",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/music_box_gold_web/index.m3u8?token=baba4297882382320d19288d98d554f2ddeb4b2c-01a0cf5e8b72eb388e4c44531dc0ec7a-1782205408-1782194608&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/music/173-musicbox-gold.html"
+  },
+  {
+    "id": "nat-geo-wild",
+    "name": "Nat Geo Wild FHD",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/nat-geowild_web/index.m3u8?token=1ac14eef5d5acf2a850b9c69c4c61c703b00ea84-616cca9e41134c7ffd946ee70c761685-1782205277-1782194477&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/164-nat-geo-wild.html"
+  },
+  {
+    "id": "national-geographic",
+    "name": "National Geographic FHD",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/nat-geo_web/index.m3u8?token=41f0a9e40e9a994e4f4974319f97cfb1c6da51d3-4e30e2cb3332350b45c7eb6a03698042-1782205276-1782194476&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/163-national-geographic.html"
+  },
+  {
+    "id": "nick-jr",
+    "name": "Nick Jr",
+    "cat": "kids",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/nick-jr_web/index.m3u8?token=c5286332a797f28d98dbd9121a41870662d5744f-66bb19148a5fe11b359dc123ce76eae4-1782205351-1782194551&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kids/328-nick-jr.html"
+  },
+  {
+    "id": "nickelodeon",
+    "name": "Nickelodeon FHD",
+    "cat": "kids",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/nick_web/index.m3u8?token=83831d7289b8c6e926cc05ad8050ab18fbb14cd7-a665c67dceb40ecd32bce14e57fa8fc7-1782205349-1782194549&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kids/312-nickelodeon.html"
+  },
+  {
+    "id": "qazaqstan",
+    "name": "Qazaqstan FHD",
+    "cat": "region",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/qazaqstan/index.m3u8?token=eda265042149795182ef10779ae88f70aee1ebd2-9b492404a6ecb354f18613360238b44e-1782205313-1782194513&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/1153-qazaqstan.html"
+  },
+  {
+    "id": "red",
+    "name": "Red",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/red_web/index.m3u8?token=edca6eed45e7ad31c69ee5d28128392acd1d845a-fa164195f689ce2471826911aaed0fd8-1782205374-1782194574&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/118-red.html"
+  },
+  {
+    "id": "reshet-13-izrail",
+    "name": "Reshet 13 Израиль HD",
+    "cat": "region",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/channel_13/index.m3u8?token=7628e2822acb9f0dfd4040ef298b10b1c38c52f5-2d012f9816cff39677730c773581627a-1782205328-1782194528&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/787-reshet-13-izrail.html"
+  },
+  {
+    "id": "rtvi",
+    "name": "RTVi FHD",
+    "cat": "news",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/rtvi/index.m3u8?token=34994a686fe39b70dea1c26785f56850cc764ebf-e8ab911b09fed3cbd42029a6e857a991-1782205427-1782194627&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/news/186-rtvi.html"
+  },
+  {
+    "id": "sci-fi",
+    "name": "Sci fi",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/scifi_web/index.m3u8?token=35f29f365e4cadad7e4e830edb8eaadb988e3a0c-26f4a83becb84229df80f1b7bc6ab466-1782205375-1782194575&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/119-sci-fi.html"
+  },
+  {
+    "id": "sport-tv",
+    "name": "Sport TV FHD",
+    "cat": "region",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/sport-tv-uz/index.m3u8?token=282dea184472fa8886df2fccddc2bbdf7470d5ec-d5eea5c40ac40bc01608a891d20a12df-1782205320-1782194520&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/347-sport-tv.html"
+  },
+  {
+    "id": "tlc",
+    "name": "TLC FHD",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/tlc/index.m3u8?token=18e83087b3e063859b67b5b436dba37e4ac68481-8fa200c900de4febd29c219d3f8308b9-1782205294-1782194494&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/entertainment/1167-tlc.html"
+  },
+  {
+    "id": "viju-explore",
+    "name": "Viasat Explorer",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/viju-explore_web/index.m3u8?token=9391ac2c177407757d23e968aa98b6a68e7cfc19-f44e357d243a5bddaea910e911e2b610-1782205290-1782194490&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/240-viju-explore.html"
+  },
+  {
+    "id": "viju-nature",
+    "name": "Viasat Nature FHD",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/viju_nature_web/index.m3u8?token=80b292a73b7dd8003f2636b17fbe907c7b33d6fb-1914ec242bc4bcd315ae8eec528459a7-1782205288-1782194488&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/237-viju-nature.html"
+  },
+  {
+    "id": "viju-history",
+    "name": "Viju History",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/viju_history_web/index.m3u8?token=00ad8dcda854af80d2537ea7de9d1ef6634db27b-fa43158e3d7a0450fa0ff0ff2ee524fb-1782205289-1782194489&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/239-viju-history.html"
+  },
+  {
+    "id": "viju-planet",
+    "name": "Viju Planet",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/viasat_planet_web/index.m3u8?token=9273614d7b3db4c1b6c385b04ff56922010f6d05-91c9188cb66758033eac2642ea61c3b4-1782205289-1782194489&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/238-viju-planet.html"
+  },
+  {
+    "id": "viju-sport",
+    "name": "Viju Sport",
+    "cat": "sport",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/vijusport_web/index.m3u8?token=0f853532dbf0eea4e718876983df04cab8f923e4-686079fd41877f510c60e9c783a6d62c-1782205556-1782194756&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/sport/133-viju-sport.html"
+  },
+  {
+    "id": "avto-pljus",
+    "name": "Авто плюс тв",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/avto_plus_web/index.m3u8?token=a5d4277e8d219f809d8c68b8b50d8947aa161ee5-d157ea8b0a3fe5d3cb332bbd5f84ceb5-1782205279-1782194479&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/170-avto-pljus.html"
+  },
+  {
+    "id": "amedia-1",
+    "name": "Амедиа 1 FHD",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/amedia1/index.m3u8?token=1e90656b888382f7f2f465723c60ee0e42c1081c-29a676abe3ade2e1ab01d8fc5df451af-1782205392-1782194592&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/402-amedia-1.html"
+  },
+  {
+    "id": "amedia-2",
+    "name": "Амедиа 2 FHD",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/amedia2/index.m3u8?token=e9eec78812daf5e53fe66624983eb7ab8b69936a-c1054f51ed0c0e01e0df8c9fbac93042-1782205393-1782194593&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/403-amedia-2.html"
+  },
+  {
+    "id": "anekdot-tv",
+    "name": "Анекдот ТВ",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/anekdot/index.m3u8?token=915c2eb6eea226219a872851dbf25b6b8f1c8bcd-74c9347297f093c0a78a6852a5e6fc9c-1782205302-1782194502&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/entertainment/341-anekdot-tv.html"
+  },
+  {
+    "id": "arsenal",
+    "name": "Арсенал FHD",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/arsenal/index.m3u8?token=b3f380c1a300f33318ad5c1ebfe35cb0e517d36d-fdafe0cf9dcbafc9a504655fda292758-1782205282-1782194482&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/185-arsenal.html"
+  },
+  {
+    "id": "belarus-24",
+    "name": "Беларусь 24 FHD",
+    "cat": "news",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/belarus24_web/index.m3u8?token=64c39d99754c191e268570543bd7c5c71848dfcf-712d6b663669763d0dd565948ac0ba1c-1782205424-1782194624&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/news/132-belarus-24.html"
+  },
+  {
+    "id": "belarus-5",
+    "name": "Беларусь 5 HD",
+    "cat": "sport",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/belarus5_web/index.m3u8?token=bb7d564573260070286ccc49683a2234c4b83225-b90b79f67baaa81aa75a3b0b4cd7de70-1782205564-1782194764&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/sport/214-belarus-5.html"
+  },
+  {
+    "id": "bober-tv",
+    "name": "Бобер ТВ",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/bober_tv_web/index.m3u8?token=18a56637dbfde172cdc7f597d4e48e814cdc0cf4-41eba35629fc61d57f703ff29a08b219-1782205273-1782194473&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/158-bober-tv.html"
+  },
+  {
+    "id": "v-mire-zhivotnyh",
+    "name": "В мире животных FHD",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/vmirejivotnix_web/index.m3u8?token=6b5520db0bfcb4d10cfe21b2312a12781150ef64-bdeaf3bf49a139b5edd247bd3dc0a547-1782205270-1782194470&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/149-v-mire-zhivotnyh.html"
+  },
+  {
+    "id": "detskij-mir",
+    "name": "Детский мир",
+    "cat": "kids",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/detmir_web/index.m3u8?token=34899f77044b2dc70c9cdcc00680379d42b0379d-f3e25e6081a9f112b39ff5322dcf05ec-1782205358-1782194558&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kids/70-detskij-mir.html"
+  },
+  {
+    "id": "discovery-channel",
+    "name": "Дискавери FHD",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/discovery_web/index.m3u8?token=9424717fd2ffbff1a842c1eb019a6957853f99ce-f4477ac71c5ae6150a45e3478c7a3666-1782205280-1782194480&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/174-discovery-channel.html"
+  },
+  {
+    "id": "disney-channel",
+    "name": "Дисней FHD",
+    "cat": "kids",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/dsn_web/index.m3u8?token=bea2f92090e644a25b7039328c7a0d891705c55f-b6483a917e569be74549381c3160377e-1782205359-1782194559&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kids/73-disney-channel.html"
+  },
+  {
+    "id": "dom-kino",
+    "name": "Дом кино",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/domkino_web/index.m3u8?token=5225e13cd48bb43bfe69527682fbccb3539927bb-2b1e243a6e4fd4a1f38f5cf069e4aa03-1782205387-1782194587&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/317-dom-kino.html"
+  },
+  {
+    "id": "dom-kino-premium",
+    "name": "Дом кино Премиум FHD",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/dom-kino-premium_web/index.m3u8?token=405da3a8914b705010105f9466b22ce6560722ff-24ab87a6e6945a01bef04f8980b90bbf-1782205368-1782194568&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/112-dom-kino-premium.html"
+  },
+  {
+    "id": "dorama",
+    "name": "Дорама тв FHD",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/dorama/index.m3u8?token=117b922d23d70228e772ce6197d176fce02d45a7-db290b28975ebd47710699794fdc0656-1782205384-1782194584&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/309-dorama.html"
+  },
+  {
+    "id": "evrokino",
+    "name": "Еврокино FHD",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/euro-kino_web/index.m3u8?token=247f84b7dacd06f215d7b54d5a1f6c592fd7ebf5-b7311d2a5fd35365b619a82f7cef8808-1782205370-1782194570&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/115-evrokino.html"
+  },
+  {
+    "id": "euronews",
+    "name": "Евроньюс",
+    "cat": "news",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/euronews/index.m3u8?token=83c0dca18848ef8f030ace573bfaa1bde3f0c097-e1d5611a0345de5a1f9b090ec3ebcef2-1782205435-1782194635&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/news/305-euronews.html"
+  },
+  {
+    "id": "evrosport-1",
+    "name": "Евроспорт 1 FHD",
+    "cat": "sport",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/cheurosport1ch/index.m3u8?token=2f7a1c38116910da4c603ea5889f2e133d6243b9-990f779405da8234ab28446c25ce6749-1782205475-1782194675&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/sport/1216-evrosport-1.html"
+  },
+  {
+    "id": "evrosport-2",
+    "name": "Евроспорт 2 FHD",
+    "cat": "sport",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/cheurosport2ch/index.m3u8?token=aa4d532b8280480092e5abe8ad74520539bcb9e6-46ca4d73652a27bb3431386c244cd6ae-1782205565-1782194765&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/sport/306-evrosport-2.html"
+  },
+  {
+    "id": "zhivaja-planeta",
+    "name": "Живая Планета",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/jivaya-planeta_web/index.m3u8?token=4edf60c6a3fd3cc3ec7668c34b4868cfa2ef95db-df52069c9c5f4c75ce52827e332ecd72-1782205291-1782194491&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/242-zhivaja-planeta.html"
+  },
+  {
+    "id": "zagorodnaja-zhizn",
+    "name": "Загородная жизнь FHD",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/zagorodniy_jizn_web/index.m3u8?token=9480cb9ef0f3cc6ef5678ba716b6a572177bb52a-d56550c9004d7e9a140aef036feb11f6-1782205268-1782194468&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/147-zagorodnaja-zhizn.html"
+  },
+  {
+    "id": "zoo-tv",
+    "name": "Зоо ТВ",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/zootv_web/index.m3u8?token=cde37a1df2b6ff0158fe077ddfc0ce342c43d8f9-9aeee25b241377a8a1102c6094ab11b9-1782205274-1782194474&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/161-zoo-tv.html"
+  },
+  {
+    "id": "istorija",
+    "name": "История",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/istoriya_web/index.m3u8?token=77cb670cc40c2effc7dce8eb801c1f7f19c6aa9f-b85e235b8c3f0176a58ce4b8c911787c-1782205274-1782194474&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/160-istorija.html"
+  },
+  {
+    "id": "qazsport",
+    "name": "Казспорт FHD",
+    "cat": "sport",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/qazsport/index.m3u8?token=afd54529af5365824a3e75c301d10599e818aec2-dbefa0d98373825771dbf1673ccdf3b9-1782205567-1782194767&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/sport/785-qazsport.html"
+  },
+  {
+    "id": "kan-11-izrail",
+    "name": "Канал Kan 11 Израиль FHD",
+    "cat": "region",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/kan11/index.m3u8?token=45e8de06cc72cf37ef47878d6addb9d4493ad17a-2b5b0c1ef4681cf321c16424aedc478c-1782205329-1782194529&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/788-kan-11-izrail.html"
+  },
+  {
+    "id": "solnce",
+    "name": "канал Солнце",
+    "cat": "kids",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/solnce/index.m3u8?token=37cf033a62d92a2c48d1f81c1f7454214e6444ee-230afee3568e03dee4d9a9eff755e7d0-1782205352-1782194552&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kids/62-solnce.html"
+  },
+  {
+    "id": "kanal-ju",
+    "name": "Канал ю",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/utv_web/index.m3u8?token=ea9e06484c5265e97251de0f432881cf83f1f753-e6c4bff66fc43a0f43f5625bb986b6d2-1782205308-1782194508&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/entertainment/44-kanal-ju.html"
+  },
+  {
+    "id": "karusel",
+    "name": "Карусель",
+    "cat": "kids",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/karusel_web/index.m3u8?token=193ed3323b7b830fc7557e620e50e05d25002002-847c7367f43803c13c01f59341d0960c-1782205348-1782194548&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kids/311-karusel.html"
+  },
+  {
+    "id": "kino-tv",
+    "name": "Кино ТВ",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/kinotv_web/index.m3u8?token=bc2e7cf8c7be309f5b1d78c533642a5c0bce76f0-19237687801c5f6351c96a398a1539ea-1782205386-1782194586&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/315-kino-tv.html"
+  },
+  {
+    "id": "kinopokaz",
+    "name": "Кинопоказ",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/kino-pokaz_web/index.m3u8?token=433318897610f716e73d07a8386c08e842aea9a5-13f5a78466ff81184f8d3b0ae8c570cb-1782205378-1782194578&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/222-kinopokaz.html"
+  },
+  {
+    "id": "kinosat",
+    "name": "КиноСат",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/kinosat_web/index.m3u8?token=c4572e8ba4e09041d744b800a3a40c74affc192a-f0b8283e4bf10047191dd029f7b2c0ec-1782205360-1782194560&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/100-kinosat.html"
+  },
+  {
+    "id": "kinosezon",
+    "name": "КиноСезон",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/kino-sezon/index.m3u8?token=182ab6c354c9f585d6fc1f19f29d6f3c039971cf-46166b9d1421f8cd07ec5dbff7fe304a-1782205391-1782194591&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/353-kinosezon.html"
+  },
+  {
+    "id": "kinouzhas",
+    "name": "Киноужас FHD",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/kinoujas/index.m3u8?token=cf45423e91f4f59a656edd6e5eed4906cf0fff3e-11e34bbc5dc2cd4abbbf1af2c198237f-1782205380-1782194580&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/249-kinouzhas.html"
+  },
+  {
+    "id": "klassika-kino",
+    "name": "Классика Кино",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/klassika-kino/index.m3u8?token=39321fc88dc9fda608eaddbc815401ee0c56bf34-f7468963a7c6e7b72692c469a1737888-1782205390-1782194590&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/352-klassika-kino.html"
+  },
+  {
+    "id": "konnyj-mir",
+    "name": "Конный Мир",
+    "cat": "sport",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/kon_mir_web/index.m3u8?token=203d92a744bdf6e4b7cb4011371dbc7902b0eda5-7a3920fd949a04f7ee63bad5a99242d9-1782205478-1782194678&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/sport/130-konnyj-mir.html"
+  },
+  {
+    "id": "krasnaja-linija",
+    "name": "Красная линия",
+    "cat": "main",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/red_line/index.m3u8?token=18a5fdcec5b63d58c47cfb3556751b4fb417c6ef-86366c9c5fc8631a6e649a921864a53d-1782205450-1782194650&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/public/233-krasnaja-linija.html"
+  },
+  {
+    "id": "ljubimoe-kino",
+    "name": "Любимое кино",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/lyubimoe-kin/index.m3u8?token=6710fddb053b29a3444c072dd3e9b259d894c0b3-52b9f13bfbc65009581f69eefe2df2c9-1782205388-1782194588&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/350-ljubimoe-kino.html"
+  },
+  {
+    "id": "mir-seriala",
+    "name": "Мир сериала",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/mir-seriala_web/index.m3u8?token=fc12389e24eb6bdd096a17def1e9b5bfa345154a-6df2e08ac03d66b32d8fa939d6d836e0-1782205369-1782194569&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/113-mir-seriala.html"
+  },
+  {
+    "id": "mma-tv",
+    "name": "ММА тв",
+    "cat": "sport",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/mma-tv_web/index.m3u8?token=4a3c22e068427ca838e7dc33975cb78cda9c4cd9-c6fc0e4c5830d7297c8db592218216ee-1782205559-1782194759&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/sport/138-mma-tv.html"
+  },
+  {
+    "id": "mosfilm-zolotaja-kollekcija",
+    "name": "Мосфильм Золотая Коллекция FHD",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/mos-film_web/index.m3u8?token=5db6e91207e0a360ff4a0a03841df972c2603f13-b181bd5186fc4d1cd9a2506fc398e43e-1782205397-1782194597&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/737-mosfilm-zolotaja-kollekcija.html"
+  },
+  {
+    "id": "moja-planeta",
+    "name": "Моя Планета",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/moya-planeta_web/index.m3u8?token=db3e8d1343a64deebe30b3480102ca0c70370e71-a21647fda73acf81c6bcc18f641b2dee-1782205293-1782194493&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/731-moja-planeta.html"
+  },
+  {
+    "id": "muzhskoj",
+    "name": "Мужской FHD",
+    "cat": "sport",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/mujskotv_web/index.m3u8?token=dbc41523994e7dc5265bc5a23a876b4ed16f9a4e-2eab55930834328f0395599a619422ac-1782205558-1782194758&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/sport/136-muzhskoj.html"
+  },
+  {
+    "id": "muz-tv",
+    "name": "Муз ТВ",
+    "cat": "music",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/muz-tv_web/index.m3u8?token=a1ab904435eb85441c1ffc972781916da7e1a47e-01fff98b1c87199c7bbbbb0721410f77-1782205414-1782194614&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/music/49-muz-tv.html"
+  },
+  {
+    "id": "mult-tv",
+    "name": "Мульт тв",
+    "cat": "kids",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/multv_web/index.m3u8?token=26201d494cffe026985eca902939eeb9bbc94958-63496015547c8c6591ed46a9000e527d-1782205347-1782194547&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kids/243-mult-tv.html"
+  },
+  {
+    "id": "nauka-20",
+    "name": "Наука 2.0",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/nauka20_web/index.m3u8?token=951d45eac2fddecb59a8889f303e165857569c70-f44afa5c4ac9666c252e70df9bb82e25-1782205287-1782194487&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/227-nauka-20.html"
+  },
+  {
+    "id": "nba-tv",
+    "name": "НБА",
+    "cat": "sport",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/nbatv/index.m3u8?token=60dbc86cd0e73c0b58533fbe80d55a2d6c105315-dbe6613bb17cc6716dd6475403886cd3-1782205563-1782194763&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/sport/207-nba-tv.html"
+  },
+  {
+    "id": "nst",
+    "name": "НСТ",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/nct_Web/index.m3u8?token=8eb1830843179d0873f77c746437bc38c29901ff-27968d5328d0250109f66b9697f056a0-1782205376-1782194576&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/121-nst.html"
+  },
+  {
+    "id": "ntv-mir",
+    "name": "НТВ Мир",
+    "cat": "main",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/ntv_mir/index.m3u8?token=55e9ffc34ec084ebc233a19a63553ee260193828-9bd47b7dfb6747a532d30392975a960e-1782205444-1782194644&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/public/1162-ntv-mir.html"
+  },
+  {
+    "id": "ntv-pravo",
+    "name": "нтв право",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/ntv_pravo/index.m3u8?token=6bc7e4d3b567364153e4cdfbf81490772cc500e0-c5726d6386a72afb0cb3d94dbb398785-1782205284-1782194484&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/188-ntv-pravo.html"
+  },
+  {
+    "id": "ntv-serial",
+    "name": "НТВ Сериал",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/ntv_serial_web/index.m3u8?token=303474125ba3123242e902dee448b5864a9ffe89-93163eb08233b3561737a810fb9519fd-1782205406-1782194606&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/98-ntv-serial.html"
+  },
+  {
+    "id": "ntv-stil",
+    "name": "нтв стиль",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/ntv_stil/index.m3u8?token=93af0f423cb3e32e5631ad0f2a280b22f7b238bc-0dcdf3bdf65bb7bd7146f34f4f752007-1782205283-1782194483&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/187-ntv-stil.html"
+  },
+  {
+    "id": "ntv-hit",
+    "name": "НТВ Хит",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/ntvxit_web/index.m3u8?token=515c8e947560f77255b21619f48360bc6fc7d6d5-444576e14d5a7d3083473bba6fcf4bc0-1782205385-1782194585&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/314-ntv-hit.html"
+  },
+  {
+    "id": "ntk",
+    "name": "НТК",
+    "cat": "region",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/ntk/index.m3u8?token=77641732e2c6004a422fc17ceb898826c5528907-7f53f6a633d6733150d141cd973b43b0-1782205314-1782194514&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/1155-ntk.html"
+  },
+  {
+    "id": "oruzhie",
+    "name": "Оружие",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/orujiye/index.m3u8?token=580cec816a886a0d06d9df784f87428e9484ecf9-eca900157453ef5ebf5a86489bae7206-1782205281-1782194481&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/181-oruzhie.html"
+  },
+  {
+    "id": "ohota-i-rybalka",
+    "name": "Охота и рыбалка",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/oxota_i_ribalka_web/index.m3u8?token=f19b5dcc0f94d3181267b2a6cb364c8a117a43a6-fe378c02cc0028c644a9b5edbc3d7b65-1782205272-1782194472&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/151-ohota-i-rybalka.html"
+  },
+  {
+    "id": "ohotnik-i-rybolov",
+    "name": "Охотник и рыболов телеканал FHD",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/oxotniki_ribolov_web/index.m3u8?token=68500f3db593abb13d909b3c9c3e66ab828063e4-ded43b601371f7a36005a7931184dc88-1782205271-1782194471&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/150-ohotnik-i-rybolov.html"
+  },
+  {
+    "id": "pervyj-kanal-evrazija",
+    "name": "Первый канал Евразия",
+    "cat": "region",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/1tv_euroasia/index.m3u8?token=d4cb39a92bb30a1326324529363b841c833e685e-5561fa440b4d902a889a4d916ebe9201-1782205332-1782194532&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/824-pervyj-kanal-evrazija.html"
+  },
+  {
+    "id": "pervyj-muzykalnyj",
+    "name": "Первый музыкальный",
+    "cat": "music",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/perviy_muzikalniy/index.m3u8?token=2758f3c4e5ff09418d1776e54596f02d5395694e-dafbd8a1cf6e9923842ee333d1b25017-1782205419-1782194619&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/music/57-pervyj-muzykalnyj.html"
+  },
+  {
+    "id": "pobeda",
+    "name": "Победа",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/pobeda/index.m3u8?token=c235886371e8ee87c9c0945a960ce9e6c2841c60-2936524b5fe67ec7c4406848886bb2ca-1782205382-1782194582&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/257-pobeda.html"
+  },
+  {
+    "id": "prikljuchenija-hd",
+    "name": "Приключения HD FHD",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/prikluchenia_web/index.m3u8?token=51e8841376ddac92008bb2878c5f78ade6fe0dd2-43987cdba8859a0715f9420d115bd0fa-1782205275-1782194475&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/162-prikljuchenija-hd.html"
+  },
+  {
+    "id": "retro-tv",
+    "name": "Ретро тв",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/retrotv_web/index.m3u8?token=67a90979cc18f3d0349fccbb2c57c12f300813a2-2b7f2573fcf5706d4a9295c5cddadcf0-1782205377-1782194577&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/125-retro-tv.html"
+  },
+  {
+    "id": "romantichnoe-hd",
+    "name": "Романтичное HD FHD",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/romantichnoe_hd/index.m3u8?token=a4092b393fd254ff3ce810b1553318f2d1921ad4-ceba77fbdb356bdc585459776a56e5a5-1782205373-1782194573&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/1176-romantichnoe-hd.html"
+  },
+  {
+    "id": "rossija-kultura",
+    "name": "Россия культура",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/russia-k/index.m3u8?token=38120afd736ea47a4e12838f65f20ceacb9f1a18-353036687b86e1e99c8b24777ab43fe3-1782205285-1782194485&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/216-rossija-kultura.html"
+  },
+  {
+    "id": "russkij-bestseller",
+    "name": "Русский бестселлер",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/rus_bestseller_web/index.m3u8?token=57b808bf99d4c143686d6b83c85bc58d5af9cb3f-2a981d47b1f7eb3d2dd3c28f30c95d47-1782205396-1782194596&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/728-russkij-bestseller.html"
+  },
+  {
+    "id": "russkij-detektiv",
+    "name": "Русский Детектив",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/rus_detektiv_web/index.m3u8?token=9e634a0e196f391cc46fb00194df876512494810-16bf1adb6ca33ffd192a425679512935-1782205367-1782194567&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/1073-russkij-detektiv.html"
+  },
+  {
+    "id": "russkij-illjuzion",
+    "name": "Русский иллюзион",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/rusiluzion_web/index.m3u8?token=0226ecfd2dc2fed5b12a9edde17b875e5950e327-a4701888e8b14ec0c6bc18c8defd718c-1782205363-1782194563&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/106-russkij-illjuzion.html"
+  },
+  {
+    "id": "russkij-roman",
+    "name": "Русский роман",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/rus_roman_web/index.m3u8?token=9e8d0c671f96f737849b0cabcd9d681e8fc305a4-377445fb4e076df0eabac6ccefba08c3-1782205366-1782194566&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/1072-russkij-roman.html"
+  },
+  {
+    "id": "sapfir",
+    "name": "Сапфир",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/saphir/index.m3u8?token=4fca039bcce3b129e07cced9b42b8f72b6c7222b-d0ee36a89394bf9fb4259b70d6f77abf-1782205383-1782194583&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/262-sapfir.html"
+  },
+  {
+    "id": "sarafan",
+    "name": "Сарафан",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/sarafan_web/index.m3u8?token=805ed768977fdccda3396c7e0719b4afe6eba1d3-c34f5c95da140f261ce2e07b0556e59e-1782205297-1782194497&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/entertainment/225-sarafan.html"
+  },
+  {
+    "id": "sedmoj-kanal",
+    "name": "Седьмой канал",
+    "cat": "region",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/7-channel-kz/index.m3u8?token=92b3392bc745cfa75f55140c73a62b6cf585b223-12d60d7a2ac9aa5f43b3217ad840269b-1782205310-1782194510&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/foreign-tv/1136-sedmoj-kanal.html"
+  },
+  {
+    "id": "setanta-sports-1",
+    "name": "Сетанта спорт 1 FHD",
+    "cat": "sport",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/setanta1_web/index.m3u8?token=9693fd544e28114a61a1807888a010fdafa5bf02-8e4967e89fec3f66e06d13348769b79c-1782205474-1782194674&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/sport/1210-setanta-sports-1.html"
+  },
+  {
+    "id": "setanta-sports-2",
+    "name": "Сетанта спорт 2 FHD",
+    "cat": "sport",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/setanta2/index.m3u8?token=d1ec19ca8d783475b601dcb1743ff82cb9226c44-a1a8343a5f5199196a7b25393eda10f8-1782205561-1782194761&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/sport/145-setanta-sports-2.html"
+  },
+  {
+    "id": "setanta-qazaqstan",
+    "name": "Сетанта Спорт Казахстан FHD",
+    "cat": "sport",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/setanta-kz/index.m3u8?token=6bba0f5344d1a3734a10288d907b29b2ac8e7222-a1f4e34bb1e055a8a4eed548d8f7dfed-1782205560-1782194760&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/sport/143-setanta-qazaqstan.html"
+  },
+  {
+    "id": "cinema",
+    "name": "Синема",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/cinem_web/index.m3u8?token=80138ac12733e5f6f4d80ec946776c25e0af483c-72d39bb1698d6f0dec18ad5064b81179-1782205379-1782194579&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/223-cinema.html"
+  },
+  {
+    "id": "sovetskie-multfilmy",
+    "name": "Советские мультфильмы",
+    "cat": "kids",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/sovetmul_web/index.m3u8?token=fdab2435d94944b6c8e81fe4780b29c4ce5aa044-599418909d47cbfc29e897d90ce08b15-1782205355-1782194555&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kids/66-sovetskie-multfilmy.html"
+  },
+  {
+    "id": "sovetskoe-kino",
+    "name": "Советское кино",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/sovet-kino/index.m3u8?token=900bdf08449a0ffff41e0197e175f80fc9f4e279-82f387bce192a58fb455e9fbca20e14e-1782205389-1782194589&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/351-sovetskoe-kino.html"
+  },
+  {
+    "id": "solovev-live",
+    "name": "Соловьев Лайф FHD",
+    "cat": "news",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/solovev-live/index.m3u8?token=1dbcf5a8f07f481cb0432e190e8838bf2b387a7f-9b1a9c0012abd2db945ea4feb76a073e-1782205436-1782194636&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/news/313-solovev-live.html"
+  },
+  {
+    "id": "start-triumf",
+    "name": "Старт Триумф",
+    "cat": "sport",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/start_triumf_web/index.m3u8?token=51eb286d1c17c4e00fcbcd3a3b93a378fbb6813e-83586301bbe615cd525fa39b06a04a60-1782205477-1782194677&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/sport/129-start-triumf.html"
+  },
+  {
+    "id": "strashnoe-hd",
+    "name": "Страшное HD FHD",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/strashnoe_hd/index.m3u8?token=316d893d495fbb3cfc1bed3b8f0bceed17c43b36-44834617bcaa70e18e3b8c70f3509773-1782205401-1782194601&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/85-strashnoe-hd.html"
+  },
+  {
+    "id": "sts-kids",
+    "name": "СТС Kids",
+    "cat": "kids",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/ctck_web/index.m3u8?token=98f5c2e49080745c271907ed8c81181b35919e70-1067b7e5c13faf2bd426e78ff287a6a7-1782205350-1782194550&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kids/327-sts-kids.html"
+  },
+  {
+    "id": "telekafe",
+    "name": "Телекафе",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/telekafe-web/index.m3u8?token=5f10636b44851daa8cf52f391e1cc5f72c9485c2-f31264106ed6958daa1dd3854aa86638-1782205301-1782194501&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/entertainment/34-telekafe.html"
+  },
+  {
+    "id": "tehno-24",
+    "name": "Техно 24",
+    "cat": "edu",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/texno24_web/index.m3u8?token=20e3e939e49c75eac734d8d2ccecff3d60c04300-c32044f5bc2f2e9ac3ce958946c39690-1782205292-1782194492&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/educational/244-tehno-24.html"
+  },
+  {
+    "id": "tochka-otryva",
+    "name": "Точка отрыва",
+    "cat": "sport",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/tochka_otriva/index.m3u8?token=e870733e75c176c4d6c2efe23e10e8d4cdcd7b4f-49aea976783df0ec61ec4350fc88f727-1782205473-1782194673&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/sport/1192-tochka-otryva.html"
+  },
+  {
+    "id": "udar",
+    "name": "Удар FHD",
+    "cat": "sport",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/udar/index.m3u8?token=46332a4343ac919f4bcbaa6a21967996ebdd7896-e051123d8e87d942c447dd97e5df8ef8-1782205566-1782194766&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/sport/771-udar.html"
+  },
+  {
+    "id": "fantastika-hd",
+    "name": "Фантастика HD FHD",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/fantastikahd/index.m3u8?token=74b73a4f7f5ef65d069e5e3a51ff03759be2d54f-5eb0685ea64b4966813b09665b3647d9-1782205407-1782194607&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/99-fantastika-hd.html"
+  },
+  {
+    "id": "fox-life",
+    "name": "Фокс лайф FHD",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/fox_life_web/index.m3u8?token=154b02ef438d79b7c9deaba8c15e9dbc89a25021-eb9060718154d6a4e77e4af2c230e3c6-1782205361-1782194561&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/102-fox-life.html"
+  },
+  {
+    "id": "futbol",
+    "name": "Футбол",
+    "cat": "sport",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/futbol_tv/index.m3u8?token=4ca007fe84e4afb790a58ff5193ca772b3d37f94-0614c16e8bb8739a4cdbbeaa5733467f-1782205559-1782194759&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/sport/140-futbol.html"
+  },
+  {
+    "id": "shokirujuschee-hd",
+    "name": "Шокирующее HD",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/shokiruyushee/index.m3u8?token=0a6b32857aaa580a94d40affe811ad43c999739b-0de02d89a2abd3ea9ea022480aa73e7e-1782205402-1782194602&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/kino/86-shokirujuschee-hd.html"
+  },
+  {
+    "id": "juvelirochka",
+    "name": "Ювелирочка FHD",
+    "cat": "entertainment",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://server.musical.uz/tv/yuverlirocha/index.m3u8?token=cc1ec629f85c29f82edce3b93b78719042191969-36db066d4495ce5c44bb66b1669d94ab-1782205300-1782194500&remote=213.230.118.112",
+    "source": "smotrettv.net → musical.uz HLS",
+    "source_page": "https://smotrettv.net/tv/entertainment/332-juvelirochka.html"
   }
 ]
