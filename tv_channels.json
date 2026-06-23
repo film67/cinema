@@ -30,7 +30,7 @@
     "src": "https://server.musical.uz/tv/ftv/index.m3u8?token=a479021325d876e379759b15e7490d2f9ecd3e9b-5fad58a1c834bead3b6eb14ed244a575-1782205333-1782194533&remote=213.230.118.112",
     "source": "smotrettv.net → musical.uz HLS",
     "source_page": "https://smotrettv.net/tv/foreign-tv/848-ftv.html",
-    "fallback_src": "https://stream8.cinerama.uz/1013/tracks-v1a1/playlist.m3u8"
+    "fallback_src": "https://stream8.cinerama.uz/1018/playlist.m3u8"
   },
   {
     "id": "futbol-tv",
@@ -63,7 +63,7 @@
     "src": "https://server.musical.uz/tv/kinoteatr/index.m3u8?token=0e614209365afcb7e6acfc9cfc24ff612a98a3be-db7db1c230af7c611427f83bf9f553de-1782205334-1782194534&remote=213.230.118.112",
     "source": "smotrettv.net → musical.uz HLS",
     "source_page": "https://smotrettv.net/tv/foreign-tv/849-kinoteatr.html",
-    "fallback_src": "https://stream8.cinerama.uz/1007/tracks-v1a1/playlist.m3u8"
+    "fallback_src": "https://stream8.cinerama.uz/1009/tracks-v1a1/playlist.m3u8"
   },
   {
     "id": "milliy-tv",
@@ -74,7 +74,7 @@
     "src": "https://server.musical.uz/tv/milliy-tv/index.m3u8?token=d1b704247f104738e9a0eee79284fc88e3d97fad-6034c53359a9264c2121094eb102963b-1782205324-1782194524&remote=213.230.118.112",
     "source": "smotrettv.net → musical.uz HLS",
     "source_page": "https://smotrettv.net/tv/foreign-tv/754-milliy-tv.html",
-    "fallback_src": "https://stream8.cinerama.uz/1008/tracks-v1a1/playlist.m3u8"
+    "fallback_src": "https://stream8.cinerama.uz/1014/tracks-v1a1/playlist.m3u8"
   },
   {
     "id": "my5",
@@ -85,7 +85,7 @@
     "src": "https://server.musical.uz/tv/my5/index.m3u8?token=5b0f2f7543ffc4563fec9159002306d87d9519a4-12d1f1542490489d57593be426080a67-1782205325-1782194525&remote=213.230.118.112",
     "source": "smotrettv.net → musical.uz HLS",
     "source_page": "https://smotrettv.net/tv/foreign-tv/755-my5.html",
-    "fallback_src": "https://stream8.cinerama.uz/1014/tracks-v1a1/playlist.m3u8"
+    "fallback_src": "https://stream8.cinerama.uz/1217/tracks-v1a1/playlist.m3u8"
   },
   {
     "id": "uzbekistan-24",
@@ -96,7 +96,7 @@
     "src": "https://server.musical.uz/tv/uzb24/index.m3u8?token=7b62a8164f8e261e05059a6fc6a3e122a24cbcec-7e303f35c0cea85f8045abc4ca24782f-1782205312-1782194512&remote=213.230.118.112",
     "source": "smotrettv.net → musical.uz HLS",
     "source_page": "https://smotrettv.net/tv/foreign-tv/1138-uzbekistan-24.html",
-    "fallback_src": "https://stream8.cinerama.uz/1011/tracks-v1a1/mono.m3u8"
+    "fallback_src": "https://stream8.cinerama.uz/1011/tracks-v1a1/playlist.m3u8"
   },
   {
     "id": "uzreport-tv",
@@ -7549,5 +7549,158 @@
     "src": "https://server.musical.uz/tv/yuverlirocha/index.m3u8?token=cc1ec629f85c29f82edce3b93b78719042191969-36db066d4495ce5c44bb66b1669d94ab-1782205300-1782194500&remote=213.230.118.112",
     "source": "smotrettv.net → musical.uz HLS",
     "source_page": "https://smotrettv.net/tv/entertainment/332-juvelirochka.html"
+  },
+  {
+    "id": "ozbekiston",
+    "name": "O'zbekiston",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1001/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz (TAS-IX)"
+  },
+  {
+    "id": "yoshlar",
+    "name": "Yoshlar",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1002/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz (TAS-IX)"
+  },
+  {
+    "id": "toshkent",
+    "name": "Toshkent",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1003/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz (TAS-IX)"
+  },
+  {
+    "id": "madaniyat-va-marifat",
+    "name": "Madaniyat va ma'rifat",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1005/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz (TAS-IX)"
+  },
+  {
+    "id": "dunyo-boylab",
+    "name": "Dunyo bo'ylab",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1006/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz (TAS-IX)"
+  },
+  {
+    "id": "bolajon",
+    "name": "Bolajon",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1007/playlist.m3u8",
+    "source": "cinerama.uz (TAS-IX)"
+  },
+  {
+    "id": "navo",
+    "name": "Navo",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1008/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz (TAS-IX)"
+  },
+  {
+    "id": "mahalla",
+    "name": "Mahalla",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1013/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz (TAS-IX)"
+  },
+  {
+    "id": "ozbekiston-tarixi",
+    "name": "O'zbekiston Tarixi",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1209/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz (TAS-IX)"
+  },
+  {
+    "id": "dasturxon-tv",
+    "name": "Dasturxon TV",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1206/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz (TAS-IX)"
+  },
+  {
+    "id": "qaraqalpaqstan",
+    "name": "Qaraqalpaqstan",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1467/playlist.m3u8",
+    "source": "cinerama.uz (TAS-IX)"
+  },
+  {
+    "id": "renessans-tv",
+    "name": "Renessans TV",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1221/tracks-v1a1/playlist.m3u8",
+    "source": "cinerama.uz (TAS-IX)"
+  },
+  {
+    "id": "makon-tv",
+    "name": "Makon TV",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1497/tracks-v1a1/mono.m3u8",
+    "source": "cinerama.uz (TAS-IX)"
+  },
+  {
+    "id": "navoiy-mtrk",
+    "name": "Navoiy MTRK",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1460/tracks-v1a1/mono.m3u8",
+    "source": "cinerama.uz (TAS-IX)"
+  },
+  {
+    "id": "buxoro-mtrk",
+    "name": "Buxoro MTRK",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1459/tracks-v1a1/mono.m3u8",
+    "source": "cinerama.uz (TAS-IX)"
+  },
+  {
+    "id": "fargona-mtrk",
+    "name": "Farg'ona MTRK",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1458/tracks-v1a1/mono.m3u8",
+    "source": "cinerama.uz (TAS-IX)"
+  },
+  {
+    "id": "andijon-mtrk",
+    "name": "Andijon MTRK",
+    "cat": "uzbek",
+    "logo": "",
+    "ptype": "hls",
+    "src": "https://stream8.cinerama.uz/1457/tracks-v1a1/mono.m3u8",
+    "source": "cinerama.uz (TAS-IX)"
   }
 ]
