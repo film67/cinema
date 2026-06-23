@@ -4812,7 +4812,13 @@ async function tvPlaySmotretTV(ch, source) {
       const resp = await fetch(SMOTRETTV_WORKER_URL + '?page=' + encodeURIComponent(page), { signal: AbortSignal.timeout(8000) });
       if (resp.ok) {
         const data = await resp.json();
-        if (data.src) { tvPlayHls(ch, data.src, {}); return; }
+        if (data.src) {
+          // Передаём cinerama как fallback самому tvPlayHls: если этот поток
+          // ответил, но реально не воспроизвёлся (HLS-ошибка/протух/регион),
+          // tvFailHls автоматически переключится на cinerama сам, без перезапроса Worker.
+          tvPlayHls(ch, data.src, { fallbacks: fallback ? [fallback] : [] });
+          return;
+        }
       }
     } catch(e) {
       console.warn('Worker failed, trying cinerama fallback:', e.message);
