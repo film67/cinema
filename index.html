@@ -1360,7 +1360,7 @@
   .wc-title { font-family: 'Bebas Neue', sans-serif; line-height: .92;
     font-size: clamp(32px,6.5vw,64px); letter-spacing: 1px; color: #fff;
     text-shadow: 0 4px 24px rgba(0,0,0,.5); margin-bottom: 10px; }
-  .wc-title span { color: #ffd24d; }
+  .wc-title .wc-accent { color: #ffd24d; }
   .wc-sub { font-size: clamp(13px,1.6vw,16px); color: var(--text2); margin-bottom: 20px; max-width: 520px; line-height: 1.55; }
   .wc-cta { display: inline-flex; align-items: center; gap: 9px; background: var(--accent); color: #fff;
     font-weight: 700; font-size: 14px; padding: 12px 22px; border-radius: 999px; transition: background .2s, transform .2s; }
@@ -1890,18 +1890,16 @@
     .modal-poster { width:100px; height:150px; margin-top:-50px; }
   }
   @media (max-width:768px) {
-    nav { height:54px; }
+    nav { height:54px; gap:10px; padding:0 12px; }
     .nav-links { display:none; }
-    .btn-search-mobile { display:none; }
+    /* На мобильном инлайн-поиск и кнопку «Избранное» убираем из шапки,
+       чтобы гарантированно влез бургер. Поиск — через 🔍, избранное — в бургер-меню. */
+    .search-wrap { display:none !important; }
+    .btn-fav { display:none !important; }
+    .btn-search-mobile { display:flex; }
     .btn-menu { display:flex; }
-    #searchInput {
-      display:block;
-      width: 140px;
-      font-size: 12px;
-      padding: 7px 11px;
-    }
-    #searchInput:focus { width: 180px; }
-    .btn-fav { padding:5px 10px; font-size:11px; }
+    .nav-right { gap:6px; margin-left:auto; }
+    .lang-switcher { flex-shrink:0; }
     #hero { min-height:420px; padding:0 12px 32px; }
     .hero-title { font-size:clamp(30px,6vw,46px); }
     .modal-backdrop { height:180px; }
@@ -2137,6 +2135,7 @@
   <a onclick="filterAndShow('anime'); closeMobileMenu()" data-i18n="nav_anime">Аниме</a>
   <a onclick="filterAndShow('dorama'); closeMobileMenu()" data-i18n="nav_dorama">Дорамы</a>
   <a onclick="showTVPage(); closeMobileMenu()" data-i18n="nav_tv">ТВ</a>
+  <a onclick="showPage('fav'); closeMobileMenu()" data-i18n="nav_fav_label">Избранное</a>
 </div>
 <div class="mobile-search-bar" id="mobileSearchBar">
   <input type="text" placeholder="Поиск фильмов и сериалов..." oninput="onSearch(this.value)" id="mobileSearchInput">
@@ -2147,7 +2146,7 @@
 <section id="hero">
   <div id="heroBg"></div>
   <div class="hero-content">
-    <div class="hero-badge"><div class="hero-badge-dot"></div> Сейчас в тренде</div>
+    <div class="hero-badge"><div class="hero-badge-dot"></div> <span data-i18n="hero_badge">Сейчас в тренде</span></div>
     <h1 class="hero-title" id="heroTitle">Загрузка...</h1>
     <div class="hero-meta">
       <span id="heroYear">2024</span>
@@ -2156,8 +2155,8 @@
     </div>
     <p class="hero-overview" id="heroOverview"></p>
     <div class="hero-btns">
-      <button class="btn-play" id="heroPlayBtn">▶ Смотреть</button>
-      <button class="btn-info" id="heroInfoBtn">ℹ Подробнее</button>
+      <button class="btn-play" id="heroPlayBtn" data-i18n="btn_watch">▶ Смотреть</button>
+      <button class="btn-info" id="heroInfoBtn" data-i18n="btn_more">ℹ Подробнее</button>
     </div>
   </div>
   <button class="hero-nav-btn hero-nav-prev" id="heroPrevBtn" type="button" aria-label="Предыдущий баннер">‹</button>
@@ -2190,10 +2189,10 @@
         <path d="M60 3 l3.4 7 7.6 1 -5.5 5.3 1.3 7.6L60 27l-6.8 3.9 1.3-7.6L49 18l7.6-1z" fill="#ffd24d"/>
       </svg>
       <div class="wc-text">
-        <span class="wc-kicker">Прямой эфир · Матч ТВ</span>
-        <h2 class="wc-title">ЧЕМПИОНАТ МИРА<br><span>ПО ФУТБОЛУ 2026</span></h2>
-        <p class="wc-sub">Все матчи мундиаля — прямые трансляции, голы и обзоры. Смотри онлайн бесплатно на Матч ТВ.</p>
-        <span class="wc-cta">▶ Смотреть на Матч ТВ</span>
+        <span class="wc-kicker" data-i18n="wc_kicker">Прямой эфир · Матч ТВ</span>
+        <h2 class="wc-title"><span data-i18n="wc_title1">ЧЕМПИОНАТ МИРА</span><br><span class="wc-accent" data-i18n="wc_title2">ПО ФУТБОЛУ 2026</span></h2>
+        <p class="wc-sub" data-i18n="wc_sub">Все матчи мундиаля — прямые трансляции, голы и обзоры. Смотри онлайн бесплатно на Матч ТВ.</p>
+        <span class="wc-cta" data-i18n="wc_cta">▶ Смотреть на Матч ТВ</span>
       </div>
     </div>
   </div>
@@ -2201,66 +2200,66 @@
   <!-- ═══ ПОПУЛЯРНЫЕ ТВ-КАНАЛЫ ═══ -->
   <div class="section" id="sectionPopularTV">
     <div class="section-header">
-      <h2 class="section-title">Популярные ТВ-каналы</h2>
-      <span class="section-more" onclick="showTVPage()">Все →</span>
+      <h2 class="section-title" data-i18n="sec_popular_tv">Популярные ТВ-каналы</h2>
+      <span class="section-more" onclick="showTVPage()" data-i18n="sec_all">Все →</span>
     </div>
     <div class="tv-pop-row" id="popularTVRow"></div>
   </div>
 
   <div class="section" id="sectionTrending">
     <div class="section-header">
-      <h2 class="section-title">В тренде</h2>
-      <span class="section-more" onclick="filterAndShow('trending')">Все →</span>
+      <h2 class="section-title" data-i18n="sec_trending">В тренде</h2>
+      <span class="section-more" onclick="filterAndShow('trending')" data-i18n="sec_all">Все →</span>
     </div>
     <div class="cards" id="trendingRow"></div>
   </div>
   <div class="section" id="sectionMovies">
     <div class="section-header">
-      <h2 class="section-title">Популярные Фильмы</h2>
-      <span class="section-more" onclick="filterAndShow('movie')">Все →</span>
+      <h2 class="section-title" data-i18n="sec_popular_movies">Популярные Фильмы</h2>
+      <span class="section-more" onclick="filterAndShow('movie')" data-i18n="sec_all">Все →</span>
     </div>
     <div class="cards" id="moviesRow"></div>
   </div>
   <div class="section" id="sectionSeries">
     <div class="section-header">
-      <h2 class="section-title">Популярные Сериалы</h2>
-      <span class="section-more" onclick="filterAndShow('tv')">Все →</span>
+      <h2 class="section-title" data-i18n="sec_popular_series">Популярные Сериалы</h2>
+      <span class="section-more" onclick="filterAndShow('tv')" data-i18n="sec_all">Все →</span>
     </div>
     <div class="cards" id="seriesRow"></div>
   </div>
   <div class="section" id="sectionAnime">
     <div class="section-header">
-      <h2 class="section-title">Аниме</h2>
-      <span class="section-more" onclick="filterAndShow('anime')">Все →</span>
+      <h2 class="section-title" data-i18n="nav_anime">Аниме</h2>
+      <span class="section-more" onclick="filterAndShow('anime')" data-i18n="sec_all">Все →</span>
     </div>
     <div class="cards" id="animeRow"></div>
   </div>
   <div class="section" id="sectionDorama">
     <div class="section-header">
-      <h2 class="section-title">Дорамы</h2>
-      <span class="section-more" onclick="filterAndShow('dorama')">Все →</span>
+      <h2 class="section-title" data-i18n="nav_dorama">Дорамы</h2>
+      <span class="section-more" onclick="filterAndShow('dorama')" data-i18n="sec_all">Все →</span>
     </div>
     <div class="cards" id="doramaRow"></div>
   </div>
 
   <!-- ═══ SEO-ФУТЕР (видимый, для индексации каналов и описания сайта) ═══ -->
   <footer class="seo-footer">
-    <h2 class="seo-h2">KINOUZ.online — фильмы, сериалы, аниме, дорамы и ТВ онлайн бесплатно</h2>
-    <p class="seo-about">KINOUZ.online — бесплатный онлайн-кинотеатр и ТВ онлайн. Смотрите фильмы, сериалы, аниме, корейские и турецкие дорамы и мультфильмы онлайн бесплатно в хорошем качестве HD 1080p без регистрации, а также более 600 ТВ-каналов в прямом эфире. Новинки кино 2024–2025 и популярные жанры: боевики, комедии, мелодрамы, фэнтези, ужасы, фантастика, триллеры, драмы и документальные фильмы. В разделе ТВ — федеральные, спортивные, новостные, музыкальные, детские, познавательные и региональные каналы: Первый канал, Россия 1, НТВ, Матч ТВ, ТНТ, СТС, РЕН ТВ и другие — смотреть прямой эфир онлайн бесплатно.</p>
-    <h3 class="seo-h3">ТВ-каналы онлайн — прямой эфир бесплатно</h3>
+    <h2 class="seo-h2" data-i18n="footer_h2">KINOUZ.online — фильмы, сериалы, аниме, дорамы и ТВ онлайн бесплатно</h2>
+    <p class="seo-about" data-i18n="footer_about">KINOUZ.online — бесплатный онлайн-кинотеатр и ТВ онлайн. Смотрите фильмы, сериалы, аниме, корейские и турецкие дорамы и мультфильмы онлайн бесплатно в хорошем качестве HD 1080p без регистрации, а также более 600 ТВ-каналов в прямом эфире. Новинки кино 2024–2025 и популярные жанры: боевики, комедии, мелодрамы, фэнтези, ужасы, фантастика, триллеры, драмы и документальные фильмы. В разделе ТВ — федеральные, спортивные, новостные, музыкальные, детские, познавательные и региональные каналы: Первый канал, Россия 1, НТВ, Матч ТВ, ТНТ, СТС, РЕН ТВ и другие — смотреть прямой эфир онлайн бесплатно.</p>
+    <h3 class="seo-h3" data-i18n="footer_tv_h3">ТВ-каналы онлайн — прямой эфир бесплатно</h3>
     <div class="seo-cats">
-      <div class="seo-cat"><span class="seo-cat-h">Федеральные:</span> <a class="seo-chip" onclick="openTVById('1-kanal')">1 канал</a><a class="seo-chip" onclick="openTVById('rossiya-1')">Россия 1</a><a class="seo-chip" onclick="openTVById('rossiya-rtr')">Россия-РТР</a><a class="seo-chip" onclick="openTVById('planeta-rtr')">Планета-РТР</a><a class="seo-chip" onclick="openTVById('tnt')">ТНТ</a><a class="seo-chip" onclick="openTVById('tnt4')">ТНТ4</a><a class="seo-chip" onclick="openTVById('ntv')">НТВ</a><a class="seo-chip" onclick="openTVById('subbota')">Суббота!</a><a class="seo-chip" onclick="openTVById('tv-3')">ТВ-3</a><a class="seo-chip" onclick="openTVById('pyatnica')">Пятница!</a><a class="seo-chip" onclick="openTVById('yu')">Телеканал Ю</a><a class="seo-chip" onclick="openTVById('tvoe-tv')">Твоё ТВ</a><a class="seo-chip" onclick="openTVById('tvoe-tv-yumor')">Твоё ТВ Юмор</a><a class="seo-chip" onclick="openTVById('ctv')">ЦТВ</a><a class="seo-chip" onclick="openTVById('rbk')">РБК</a><a class="seo-chip" onclick="openTVById('otr')">ОТР</a></div>
-      <div class="seo-cat"><span class="seo-cat-h">Спортивные:</span> <a class="seo-chip" onclick="openTVById('matchtv')">Матч ТВ</a><a class="seo-chip" onclick="openTVById('sport-start-basket')">Старт Баскет</a><a class="seo-chip" onclick="openTVById('sport-vital-sport-drive')">Vital Sport Drive</a><a class="seo-chip" onclick="openTVById('sport-volleyball')">Волейбол</a><a class="seo-chip" onclick="openTVById('sport-tv-sport')">ТВ Спорт</a><a class="seo-chip" onclick="openTVById('sport-myach')">Мяч</a><a class="seo-chip" onclick="openTVById('sport-hokkey-tv')">Хоккей ТВ</a><a class="seo-chip" onclick="openTVById('sport-futbol-tv')">Futbol TV</a></div>
-      <div class="seo-cat"><span class="seo-cat-h">Новостные:</span> <a class="seo-chip" onclick="openTVById('news-izvestiya')">Известия</a><a class="seo-chip" onclick="openTVById('news-mir-24')">Мир 24</a><a class="seo-chip" onclick="openTVById('news-moskva-24')">Москва-24</a><a class="seo-chip" onclick="openTVById('news-360-novosti')">360° Новости</a><a class="seo-chip" onclick="openTVById('news-tass')">ТАСС</a><a class="seo-chip" onclick="openTVById('news-vesti-fm')">Вести FM</a><a class="seo-chip" onclick="openTVById('news-tsargrad-tv')">Царьград ТВ</a></div>
-      <div class="seo-cat"><span class="seo-cat-h">Музыкальные:</span> <a class="seo-chip" onclick="openTVById('music-muz-tv')">МУЗ-ТВ</a><a class="seo-chip" onclick="openTVById('music-rutv')">RU.TV</a><a class="seo-chip" onclick="openTVById('music-tnt-music')">ТНТ Music</a><a class="seo-chip" onclick="openTVById('music-music-box-gold')">Music Box Gold</a><a class="seo-chip" onclick="openTVById('music-music-box-russia')">Music Box Russia</a><a class="seo-chip" onclick="openTVById('music-o2tv')">О2ТВ</a></div>
-      <div class="seo-cat"><span class="seo-cat-h">Детские:</span> <a class="seo-chip" onclick="openTVById('detskie-karusel')">Карусель</a><a class="seo-chip" onclick="openTVById('detskie-solnce')">Солнце</a><a class="seo-chip" onclick="openTVById('detskie-fox-kids')">Fox Kids</a><a class="seo-chip" onclick="openTVById('detskie-bibigon')">Бибигон</a><a class="seo-chip" onclick="openTVById('detskie-kanal-disney')">Disney</a><a class="seo-chip" onclick="openTVById('detskie-cartoon-network')">Cartoon Network</a></div>
-      <div class="seo-cat"><span class="seo-cat-h">Развлекательные:</span> <a class="seo-chip" onclick="openTVById('razvlekatelnye-backus-tv')">BACKUS TV</a><a class="seo-chip" onclick="openTVById('razvlekatelnye-backus-tv-dark')">BACKUS TV dark</a><a class="seo-chip" onclick="openTVById('razvlekatelnye-backus-tv-comedy')">BACKUS TV comedy</a><a class="seo-chip" onclick="openTVById('razvlekatelnye-marvel-filmy')">Марвел фильмы</a><a class="seo-chip" onclick="openTVById('razvlekatelnye-netflix-filmy-serialy')">Нетфликс фильмы</a><a class="seo-chip" onclick="openTVById('razvlekatelnye-voennye-filmy')">Военные фильмы</a></div>
-      <div class="seo-cat"><span class="seo-cat-h">Познавательные:</span> <a class="seo-chip" onclick="openTVById('poznavatelnye-v-mire-zhivotnyh')">В мире животных</a><a class="seo-chip" onclick="openTVById('poznavatelnye-bolshaya-aziya')">Большая Азия</a><a class="seo-chip" onclick="openTVById('poznavatelnye-znanie-tv')">Знание.ТВ</a><a class="seo-chip" onclick="openTVById('poznavatelnye-kitay-tv')">Китай ТВ</a></div>
-      <div class="seo-cat"><span class="seo-cat-h">Региональные:</span> <a class="seo-chip" onclick="openTVById('region-1-krymskij')">Первый Крымский</a><a class="seo-chip" onclick="openTVById('region-krym-24')">Крым 24</a><a class="seo-chip" onclick="openTVById('region-nts-sevastopol')">НТС Севастополь</a><a class="seo-chip" onclick="openTVById('region-yamal-region')">Ямал-Регион</a></div>
-      <div class="seo-cat"><span class="seo-cat-h">Христианские:</span> <a class="seo-chip" onclick="openTVById('christian-spas')">Спас</a><a class="seo-chip" onclick="openTVById('christian-soyuz')">Союз</a></div>
-      <div class="seo-cat"><span class="seo-cat-h">Релакс:</span> <a class="seo-chip" onclick="openTVById('relax-animals')">Животные</a><a class="seo-chip" onclick="openTVById('relax-dozhd')">Дождь</a></div>
+      <div class="seo-cat"><span class="seo-cat-h" data-i18n="cat_federal">Федеральные:</span> <a class="seo-chip" onclick="openTVById('1-kanal')">1 канал</a><a class="seo-chip" onclick="openTVById('rossiya-1')">Россия 1</a><a class="seo-chip" onclick="openTVById('rossiya-rtr')">Россия-РТР</a><a class="seo-chip" onclick="openTVById('planeta-rtr')">Планета-РТР</a><a class="seo-chip" onclick="openTVById('tnt')">ТНТ</a><a class="seo-chip" onclick="openTVById('tnt4')">ТНТ4</a><a class="seo-chip" onclick="openTVById('ntv')">НТВ</a><a class="seo-chip" onclick="openTVById('subbota')">Суббота!</a><a class="seo-chip" onclick="openTVById('tv-3')">ТВ-3</a><a class="seo-chip" onclick="openTVById('pyatnica')">Пятница!</a><a class="seo-chip" onclick="openTVById('yu')">Телеканал Ю</a><a class="seo-chip" onclick="openTVById('tvoe-tv')">Твоё ТВ</a><a class="seo-chip" onclick="openTVById('tvoe-tv-yumor')">Твоё ТВ Юмор</a><a class="seo-chip" onclick="openTVById('ctv')">ЦТВ</a><a class="seo-chip" onclick="openTVById('rbk')">РБК</a><a class="seo-chip" onclick="openTVById('otr')">ОТР</a></div>
+      <div class="seo-cat"><span class="seo-cat-h" data-i18n="cat_sport">Спортивные:</span> <a class="seo-chip" onclick="openTVById('matchtv')">Матч ТВ</a><a class="seo-chip" onclick="openTVById('sport-start-basket')">Старт Баскет</a><a class="seo-chip" onclick="openTVById('sport-vital-sport-drive')">Vital Sport Drive</a><a class="seo-chip" onclick="openTVById('sport-volleyball')">Волейбол</a><a class="seo-chip" onclick="openTVById('sport-tv-sport')">ТВ Спорт</a><a class="seo-chip" onclick="openTVById('sport-myach')">Мяч</a><a class="seo-chip" onclick="openTVById('sport-hokkey-tv')">Хоккей ТВ</a><a class="seo-chip" onclick="openTVById('sport-futbol-tv')">Futbol TV</a></div>
+      <div class="seo-cat"><span class="seo-cat-h" data-i18n="cat_news">Новостные:</span> <a class="seo-chip" onclick="openTVById('news-izvestiya')">Известия</a><a class="seo-chip" onclick="openTVById('news-mir-24')">Мир 24</a><a class="seo-chip" onclick="openTVById('news-moskva-24')">Москва-24</a><a class="seo-chip" onclick="openTVById('news-360-novosti')">360° Новости</a><a class="seo-chip" onclick="openTVById('news-tass')">ТАСС</a><a class="seo-chip" onclick="openTVById('news-vesti-fm')">Вести FM</a><a class="seo-chip" onclick="openTVById('news-tsargrad-tv')">Царьград ТВ</a></div>
+      <div class="seo-cat"><span class="seo-cat-h" data-i18n="cat_music">Музыкальные:</span> <a class="seo-chip" onclick="openTVById('music-muz-tv')">МУЗ-ТВ</a><a class="seo-chip" onclick="openTVById('music-rutv')">RU.TV</a><a class="seo-chip" onclick="openTVById('music-tnt-music')">ТНТ Music</a><a class="seo-chip" onclick="openTVById('music-music-box-gold')">Music Box Gold</a><a class="seo-chip" onclick="openTVById('music-music-box-russia')">Music Box Russia</a><a class="seo-chip" onclick="openTVById('music-o2tv')">О2ТВ</a></div>
+      <div class="seo-cat"><span class="seo-cat-h" data-i18n="cat_kids">Детские:</span> <a class="seo-chip" onclick="openTVById('detskie-karusel')">Карусель</a><a class="seo-chip" onclick="openTVById('detskie-solnce')">Солнце</a><a class="seo-chip" onclick="openTVById('detskie-fox-kids')">Fox Kids</a><a class="seo-chip" onclick="openTVById('detskie-bibigon')">Бибигон</a><a class="seo-chip" onclick="openTVById('detskie-kanal-disney')">Disney</a><a class="seo-chip" onclick="openTVById('detskie-cartoon-network')">Cartoon Network</a></div>
+      <div class="seo-cat"><span class="seo-cat-h" data-i18n="cat_entertainment">Развлекательные:</span> <a class="seo-chip" onclick="openTVById('razvlekatelnye-backus-tv')">BACKUS TV</a><a class="seo-chip" onclick="openTVById('razvlekatelnye-backus-tv-dark')">BACKUS TV dark</a><a class="seo-chip" onclick="openTVById('razvlekatelnye-backus-tv-comedy')">BACKUS TV comedy</a><a class="seo-chip" onclick="openTVById('razvlekatelnye-marvel-filmy')">Марвел фильмы</a><a class="seo-chip" onclick="openTVById('razvlekatelnye-netflix-filmy-serialy')">Нетфликс фильмы</a><a class="seo-chip" onclick="openTVById('razvlekatelnye-voennye-filmy')">Военные фильмы</a></div>
+      <div class="seo-cat"><span class="seo-cat-h" data-i18n="cat_edu">Познавательные:</span> <a class="seo-chip" onclick="openTVById('poznavatelnye-v-mire-zhivotnyh')">В мире животных</a><a class="seo-chip" onclick="openTVById('poznavatelnye-bolshaya-aziya')">Большая Азия</a><a class="seo-chip" onclick="openTVById('poznavatelnye-znanie-tv')">Знание.ТВ</a><a class="seo-chip" onclick="openTVById('poznavatelnye-kitay-tv')">Китай ТВ</a></div>
+      <div class="seo-cat"><span class="seo-cat-h" data-i18n="cat_region">Региональные:</span> <a class="seo-chip" onclick="openTVById('region-1-krymskij')">Первый Крымский</a><a class="seo-chip" onclick="openTVById('region-krym-24')">Крым 24</a><a class="seo-chip" onclick="openTVById('region-nts-sevastopol')">НТС Севастополь</a><a class="seo-chip" onclick="openTVById('region-yamal-region')">Ямал-Регион</a></div>
+      <div class="seo-cat"><span class="seo-cat-h" data-i18n="cat_christian">Христианские:</span> <a class="seo-chip" onclick="openTVById('christian-spas')">Спас</a><a class="seo-chip" onclick="openTVById('christian-soyuz')">Союз</a></div>
+      <div class="seo-cat"><span class="seo-cat-h" data-i18n="cat_relax">Релакс:</span> <a class="seo-chip" onclick="openTVById('relax-animals')">Животные</a><a class="seo-chip" onclick="openTVById('relax-dozhd')">Дождь</a></div>
     </div>
-    <p class="seo-note">Все каналы и фильмы доступны для просмотра онлайн бесплатно без регистрации в HD. <span onclick="showTVPage()" class="seo-link">Открыть все ТВ-каналы →</span></p>
+    <p class="seo-note"><span data-i18n="footer_note">Все каналы и фильмы доступны для просмотра онлайн бесплатно без регистрации в HD.</span> <span onclick="showTVPage()" class="seo-link" data-i18n="footer_open_all">Открыть все ТВ-каналы →</span></p>
   </footer>
 </div>
 
@@ -2271,23 +2270,23 @@
     <p class="page-count" id="searchCount"></p>
   </div>
   <div id="filterBar">
-    <span class="filter-label">Сортировка:</span>
+    <span class="filter-label" data-i18n="filter_sort">Сортировка:</span>
     <select class="filter-select" id="sortSelect" onchange="applyFilters()">
-      <option value="popularity.desc">🔥 По популярности</option>
-      <option value="vote_average.desc">⭐ По рейтингу TMDB/IMDb</option>
-      <option value="revenue.desc">💰 По кассовым сборам</option>
-      <option value="primary_release_date.desc">🆕 Сначала новые</option>
-      <option value="primary_release_date.asc">📅 Сначала старые</option>
+      <option value="popularity.desc" data-i18n="sort_pop">🔥 По популярности</option>
+      <option value="vote_average.desc" data-i18n="sort_rating">⭐ По рейтингу TMDB/IMDb</option>
+      <option value="revenue.desc" data-i18n="sort_revenue">💰 По кассовым сборам</option>
+      <option value="primary_release_date.desc" data-i18n="sort_new">🆕 Сначала новые</option>
+      <option value="primary_release_date.asc" data-i18n="sort_old">📅 Сначала старые</option>
     </select>
     <div class="filter-sep"></div>
-    <span class="filter-label">Жанр:</span>
+    <span class="filter-label" data-i18n="filter_genre">Жанр:</span>
     <select class="filter-select" id="genreSelect" onchange="applyFilters()">
-      <option value="">Все жанры</option>
+      <option value="" data-i18n="filter_all_genres">Все жанры</option>
     </select>
     <div class="filter-sep"></div>
-    <span class="filter-label">Год:</span>
+    <span class="filter-label" data-i18n="filter_year">Год:</span>
     <select class="filter-select" id="yearSelect" onchange="applyFilters()">
-      <option value="">Все годы</option>
+      <option value="" data-i18n="filter_all_years">Все годы</option>
     </select>
   </div>
   <div id="sortHint" style="display:none; font-size:11px; color:var(--text3); padding:0 0 14px; margin-top:-10px;">
@@ -2301,7 +2300,7 @@
 <!-- FAV PAGE -->
 <div id="favPage">
   <div class="page-header">
-    <h2 class="page-title">Избранное</h2>
+    <h2 class="page-title" data-i18n="page_fav">Избранное</h2>
   </div>
   <div id="favResults"></div>
 </div>
@@ -2309,16 +2308,16 @@
 <!-- TV PAGE -->
 <div id="tvPage">
   <div class="page-header">
-    <h2 class="page-title">ТВ — прямой эфир</h2>
+    <h2 class="page-title" data-i18n="page_tv">ТВ — прямой эфир</h2>
     <p class="page-count" id="tvCount"></p>
   </div>
   <div class="tv-tools">
     <div class="tv-search-wrap">
       <span class="tv-search-ico">⌕</span>
-      <input id="tvSearchInput" type="search" autocomplete="off" placeholder="Поиск канала по названию..." oninput="tvSetSearch(this.value)">
+      <input id="tvSearchInput" type="search" autocomplete="off" placeholder="Поиск канала по названию..." data-i18n-placeholder="tv_search_ph" oninput="tvSetSearch(this.value)">
       <button id="tvSearchClear" class="tv-search-clear" type="button" onclick="tvClearSearch()" aria-label="Очистить поиск">×</button>
     </div>
-    <span class="tv-search-hint">Ищи по названию канала</span>
+    <span class="tv-search-hint" data-i18n="tv_search_hint">Ищи по названию канала</span>
   </div>
   <div id="tvCatBar"></div>
   <div id="tvGrid"></div>
@@ -2337,16 +2336,16 @@
         <div class="modal-meta" id="modalMeta"></div>
         <p class="modal-desc" id="modalOverview"></p>
         <div class="modal-btns">
-          <button class="modal-btn" id="modalWatchBtn">▶ Смотреть</button>
-          <button class="modal-btn" id="modalFavBtn">♡ В избранное</button>
+          <button class="modal-btn" id="modalWatchBtn" data-i18n="btn_watch">▶ Смотреть</button>
+          <button class="modal-btn" id="modalFavBtn" data-i18n="modal_fav_add">♡ В избранное</button>
         </div>
       </div>
     </div>
     <div class="modal-body">
       <div class="modal-tabs">
-        <button class="modal-tab active" onclick="switchModalTab('info', this)">Описание</button>
-        <button class="modal-tab" onclick="openPlayerTabGuarded(this)">Смотреть</button>
-        <button class="modal-tab" onclick="switchModalTab('similar', this)">Похожее</button>
+        <button class="modal-tab active" onclick="switchModalTab('info', this)" data-i18n="tab_info">Описание</button>
+        <button class="modal-tab" onclick="openPlayerTabGuarded(this)" data-i18n="tab_watch">Смотреть</button>
+        <button class="modal-tab" onclick="switchModalTab('similar', this)" data-i18n="tab_similar">Похожее</button>
       </div>
 
       <!-- TAB: Описание -->
@@ -2358,14 +2357,14 @@
       <div class="modal-tab-content" id="tabPlayer">
         <div id="playerSources"></div>
         <div id="episodeSelector">
-          <span class="ep-label" id="seasonLabel">Часть / Сезон:</span>
+          <span class="ep-label" id="seasonLabel" data-i18n="season_label">Часть / Сезон:</span>
           <select class="ep-select" id="seasonSelect" onchange="onSeasonChange()"></select>
         </div>
         <div id="playerWrap" style="display:none">
           <div id="playerLoading">
             <div class="spinner"></div>
-            <span>Загрузка плеера...</span>
-            <p>Если долго грузит — попробуйте другой источник</p>
+            <span data-i18n="player_loading">Загрузка плеера...</span>
+            <p data-i18n="player_hint">Если долго грузит — попробуйте другой источник</p>
           </div>
 <iframe id="playerFrame"
   allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer"
@@ -2378,7 +2377,7 @@
 
       <!-- TAB: Похожее -->
       <div class="modal-tab-content" id="tabSimilar">
-        <div class="similar-title" id="similarTitle" style="display:none">Похожее</div>
+        <div class="similar-title" id="similarTitle" style="display:none" data-i18n="tab_similar">Похожее</div>
         <div id="similarRow"></div>
       </div>
     </div>
@@ -2394,7 +2393,7 @@
       <iframe id="tvFrame"
         allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
         referrerpolicy="no-referrer-when-downgrade"></iframe>
-      <div id="tvPlayerLoading"><div class="spinner"></div><span>Подключение к эфиру...</span></div>
+      <div id="tvPlayerLoading"><div class="spinner"></div><span data-i18n="stream_loading">Подключение к эфиру...</span></div>
     </div>
     <div id="tvModalBar">
       <span id="tvModalName"></span>
@@ -2599,12 +2598,13 @@ async function loadHero() {
       document.getElementById('heroTitle').textContent    = item.title || item.name || '';
       document.getElementById('heroYear').textContent     = (item.release_date || item.first_air_date || '').slice(0,4);
       document.getElementById('heroRating').textContent   = '★ ' + (item.vote_average||0).toFixed(1);
-      document.getElementById('heroType').textContent     = item.media_type === 'tv' ? 'Сериал' : 'Фильм';
+      document.getElementById('heroType').textContent     = t(item.media_type === 'tv' ? 'type_series' : 'type_movie');
       document.getElementById('heroOverview').textContent = item.overview || '';
       document.getElementById('heroPlayBtn').onclick = () => openModal(item.id);
       document.getElementById('heroInfoBtn').onclick = () => openModal(item.id);
       setActiveDot();
     }
+    window.heroRerender = () => render(heroIdx);
 
     function goHero(nextIdx, manual = false) {
       heroIdx = (nextIdx + items.length) % items.length;
@@ -2946,13 +2946,13 @@ function fillModalBasic(item) {
 
   document.getElementById('modalPoster').src = poster;
   document.getElementById('modalTitle').textContent = item.title || item.name || '';
-  document.getElementById('modalOverview').textContent = item.overview || 'Описание загружается...';
+  document.getElementById('modalOverview').textContent = item.overview || '';
   if (backdrop) document.getElementById('modalBackdrop').style.backgroundImage = backdrop;
 
   const isFav = favorites.some(f => f.id === item.id);
   const favBtn = document.getElementById('modalFavBtn');
   favBtn.classList.toggle('active', isFav);
-  favBtn.textContent = isFav ? '♥ В избранном' : '♡ В избранное';
+  favBtn.textContent = isFav ? t('modal_fav_added') : t('modal_fav_add');
   favBtn.onclick = toggleFavModal;
 
   const year = (item.release_date || item.first_air_date || '').slice(0,4);
@@ -2960,7 +2960,7 @@ function fillModalBasic(item) {
   document.getElementById('modalMeta').innerHTML = [
     year ? `<span class="modal-meta-item">📅 ${year}</span>` : '',
     rating ? `<span class="modal-meta-item modal-rating">★ ${rating}</span>` : '',
-    `<span class="modal-meta-item">${type === 'tv' ? '📺 Сериал' : '🎬 Фильм'}</span>`
+    `<span class="modal-meta-item">${type === 'tv' ? '📺 ' + t('type_series') : '🎬 ' + t('type_movie')}</span>`
   ].filter(Boolean).join('');
 
   const src = document.getElementById('playerSources');
@@ -3680,7 +3680,7 @@ function updateFavBtn() {
   if (!btn) return;
   const has = favorites.length > 0;
   btn.classList.toggle('has-favs', has);
-  btn.textContent = has ? '♥ Избранное' : '♡ Избранное';
+  btn.textContent = (has ? '♥ ' : '♡ ') + t('nav_fav_label');
 }
 
 function toggleFav(btn, item) {
@@ -3689,12 +3689,12 @@ function toggleFav(btn, item) {
     favorites.splice(idx, 1);
     btn.textContent = '♡';
     btn.classList.remove('active');
-    showToast('Удалено из избранного');
+    showToast(t('toast_fav_removed'));
   } else {
     favorites.push(item);
     btn.textContent = '♥';
     btn.classList.add('active');
-    showToast('Добавлено в избранное ♥');
+    showToast(t('toast_fav_add'));
   }
   saveFavs();
 }
@@ -3706,13 +3706,13 @@ function toggleFavModal() {
   if (idx >= 0) {
     favorites.splice(idx, 1);
     btn.classList.remove('active');
-    btn.textContent = '♡ В избранное';
-    showToast('Удалено из избранного');
+    btn.textContent = t('modal_fav_add');
+    showToast(t('toast_fav_removed'));
   } else {
     favorites.push(currentItem);
     btn.classList.add('active');
-    btn.textContent = '♥ В избранном';
-    showToast('Добавлено в избранное ♥');
+    btn.textContent = t('modal_fav_added');
+    showToast(t('toast_fav_add'));
   }
   saveFavs();
 }
@@ -3732,8 +3732,9 @@ async function doSearch(val) {
   if (!val.trim()) return;
   isSearchMode = true;
   showPage('search');
-  document.getElementById('pageTitle').textContent = `Результаты: "${val}"`;
-  document.getElementById('searchCount').textContent = 'Поиск...';
+  document.getElementById('pageTitle').textContent = `${t('res_prefix')} "${val}"`;
+  window.__pageState = { mode: 'search', query: val };
+  document.getElementById('searchCount').textContent = t('loading');
   document.getElementById('filterBar').classList.remove('visible');
   catalogDone = true;
 
@@ -3809,9 +3810,10 @@ async function filterAndShow(type, fromHistory = false) {
 
   if (!fromHistory) pushState('search', type);
   showPage('search', true);
-  const labels = { movie:'Фильмы', tv:'Сериалы', anime:'Аниме', dorama:'Дорамы', trending:'В тренде' };
-  document.getElementById('pageTitle').textContent = labels[type] || type;
-  document.getElementById('searchCount').textContent = 'Загрузка...';
+  window.__pageState = { mode: 'filter', type };
+  const labels = { movie:'nav_movies', tv:'nav_series', anime:'nav_anime', dorama:'nav_dorama', trending:'sec_trending' };
+  document.getElementById('pageTitle').textContent = labels[type] ? t(labels[type]) : type;
+  document.getElementById('searchCount').textContent = t('loading');
 
   const filterBar = document.getElementById('filterBar');
   if (type !== 'trending') {
@@ -4276,6 +4278,62 @@ const I18N = {
     stream_loading:    'Подключение к эфиру...',
     stream_error:      'Не удалось получить стрим. Пробуем резервный источник...',
     stream_no_src:     'Источник канала недоступен.',
+    nav_fav_label:     'Избранное',
+    hero_badge:        'Сейчас в тренде',
+    btn_watch:         '▶ Смотреть',
+    btn_more:          'ℹ Подробнее',
+    type_movie:        'Фильм',
+    type_series:       'Сериал',
+    wc_kicker:         'Прямой эфир · Матч ТВ',
+    wc_title1:         'ЧЕМПИОНАТ МИРА',
+    wc_title2:         'ПО ФУТБОЛУ 2026',
+    wc_sub:            'Все матчи мундиаля — прямые трансляции, голы и обзоры. Смотри онлайн бесплатно на Матч ТВ.',
+    wc_cta:            '▶ Смотреть на Матч ТВ',
+    sec_all:           'Все →',
+    sec_popular_tv:    'Популярные ТВ-каналы',
+    sec_trending:      'В тренде',
+    sec_popular_movies:'Популярные Фильмы',
+    sec_popular_series:'Популярные Сериалы',
+    page_fav:          'Избранное',
+    page_tv:           'ТВ — прямой эфир',
+    tv_search_hint:    'Ищи по названию канала',
+    tab_info:          'Описание',
+    tab_watch:         'Смотреть',
+    tab_similar:       'Похожее',
+    season_label:      'Часть / Сезон:',
+    player_loading:    'Загрузка плеера...',
+    player_hint:       'Если долго грузит — попробуйте другой источник',
+    modal_fav_add:     '♡ В избранное',
+    modal_fav_added:   '♥ В избранном',
+    toast_fav_add:     'Добавлено в избранное ♥',
+    toast_fav_removed: 'Удалено из избранного',
+    res_prefix:        'Результаты:',
+    loading:           'Загрузка...',
+    filter_sort:       'Сортировка:',
+    filter_genre:      'Жанр:',
+    filter_year:       'Год:',
+    filter_all_genres: 'Все жанры',
+    filter_all_years:  'Все годы',
+    sort_pop:          '🔥 По популярности',
+    sort_rating:       '⭐ По рейтингу TMDB/IMDb',
+    sort_revenue:      '💰 По кассовым сборам',
+    sort_new:          '🆕 Сначала новые',
+    sort_old:          '📅 Сначала старые',
+    footer_h2:         'KINOUZ.online — фильмы, сериалы, аниме, дорамы и ТВ онлайн бесплатно',
+    footer_about:      'KINOUZ.online — бесплатный онлайн-кинотеатр и ТВ онлайн. Смотрите фильмы, сериалы, аниме, корейские и турецкие дорамы и мультфильмы онлайн бесплатно в хорошем качестве HD 1080p без регистрации, а также более 600 ТВ-каналов в прямом эфире. Новинки кино 2024–2025 и популярные жанры: боевики, комедии, мелодрамы, фэнтези, ужасы, фантастика, триллеры, драмы и документальные фильмы. В разделе ТВ — федеральные, спортивные, новостные, музыкальные, детские, познавательные и региональные каналы: Первый канал, Россия 1, НТВ, Матч ТВ, ТНТ, СТС, РЕН ТВ и другие — смотреть прямой эфир онлайн бесплатно.',
+    footer_tv_h3:      'ТВ-каналы онлайн — прямой эфир бесплатно',
+    footer_note:       'Все каналы и фильмы доступны для просмотра онлайн бесплатно без регистрации в HD.',
+    footer_open_all:   'Открыть все ТВ-каналы →',
+    cat_federal:       'Федеральные:',
+    cat_sport:         'Спортивные:',
+    cat_news:          'Новостные:',
+    cat_music:         'Музыкальные:',
+    cat_kids:          'Детские:',
+    cat_entertainment: 'Развлекательные:',
+    cat_edu:           'Познавательные:',
+    cat_region:        'Региональные:',
+    cat_christian:     'Христианские:',
+    cat_relax:         'Релакс:',
     meta_title:        'Смотреть фильмы, сериалы, аниме, дорамы и ТВ онлайн бесплатно HD — KINOUZ.online',
     meta_desc:         '🎬 KINOUZ.online — смотреть фильмы, сериалы, аниме, дорамы и мультфильмы онлайн бесплатно в HD 1080p без регистрации, а также 600+ ТВ-каналов в прямом эфире. Новинки 2025, корейские дорамы, турецкие сериалы — всё в одном месте!',
     tv_cats: {
@@ -4311,6 +4369,62 @@ const I18N = {
     stream_loading:    "Efirga ulanilmoqda...",
     stream_error:      "Strim yuklanmadi. Zaxira manba sinab ko\u2019rilmoqda...",
     stream_no_src:     "Kanal manbai mavjud emas.",
+    nav_fav_label:     "Sevimlilar",
+    hero_badge:        "Hozir trendda",
+    btn_watch:         "\u25B6 Tomosha qilish",
+    btn_more:          "\u2139 Batafsil",
+    type_movie:        "Film",
+    type_series:       "Serial",
+    wc_kicker:         "Jonli efir \u00B7 Match TV",
+    wc_title1:         "JAHON CHEMPIONATI",
+    wc_title2:         "FUTBOL 2026",
+    wc_sub:            "Mundialning barcha o\u2018yinlari \u2014 jonli translyatsiyalar, gollar va sharhlar. Match TV\u2019da onlayn bepul tomosha qiling.",
+    wc_cta:            "\u25B6 Match TV\u2019da tomosha qilish",
+    sec_all:           "Barchasi \u2192",
+    sec_popular_tv:    "Mashhur TV kanallar",
+    sec_trending:      "Trendda",
+    sec_popular_movies:"Mashhur Filmlar",
+    sec_popular_series:"Mashhur Seriallar",
+    page_fav:          "Sevimlilar",
+    page_tv:           "TV \u2014 jonli efir",
+    tv_search_hint:    "Kanal nomi bo\u2018yicha qidiring",
+    tab_info:          "Tavsif",
+    tab_watch:         "Tomosha qilish",
+    tab_similar:       "O\u2018xshash",
+    season_label:      "Qism / Mavsum:",
+    player_loading:    "Pleyer yuklanmoqda...",
+    player_hint:       "Uzoq yuklansa \u2014 boshqa manbani sinab ko\u2018ring",
+    modal_fav_add:     "\u2661 Sevimlilarga",
+    modal_fav_added:   "\u2665 Sevimlilarda",
+    toast_fav_add:     "Sevimlilarga qo\u2018shildi \u2665",
+    toast_fav_removed: "Sevimlilardan o\u2018chirildi",
+    res_prefix:        "Natijalar:",
+    loading:           "Yuklanmoqda...",
+    filter_sort:       "Saralash:",
+    filter_genre:      "Janr:",
+    filter_year:       "Yil:",
+    filter_all_genres: "Barcha janrlar",
+    filter_all_years:  "Barcha yillar",
+    sort_pop:          "\uD83D\uDD25 Mashhurligi bo\u2018yicha",
+    sort_rating:       "\u2B50 Reyting bo\u2018yicha (TMDB/IMDb)",
+    sort_revenue:      "\uD83D\uDCB0 Kassa tushumi bo\u2018yicha",
+    sort_new:          "\uD83C\uDD95 Avval yangilari",
+    sort_old:          "\uD83D\uDCC5 Avval eskilari",
+    footer_h2:         "KINOUZ.online \u2014 filmlar, seriallar, anime, dramalar va TV onlayn bepul",
+    footer_about:      "KINOUZ.online \u2014 bepul onlayn kinoteatr va onlayn TV. Filmlar, seriallar, anime, koreys va turk dramalari hamda multfilmlarni HD 1080p sifatida ro\u2018yxatdan o\u2018tmasdan bepul tomosha qiling, shuningdek 600 dan ortiq TV kanal jonli efirda. 2024\u20132025 kino yangiliklari va mashhur janrlar: jangari, komediya, melodrama, fantastika, qo\u2018rqinchli, triller, drama va hujjatli filmlar. TV bo\u2018limida \u2014 federal, sport, yangiliklar, musiqa, bolalar, ta\u2019limiy va mintaqaviy kanallar: Pervyy kanal, Rossiya 1, NTV, Match TV, TNT, STS, REN TV va boshqalar \u2014 jonli efirni onlayn bepul tomosha qiling.",
+    footer_tv_h3:      "TV kanallar onlayn \u2014 jonli efir bepul",
+    footer_note:       "Barcha kanallar va filmlar HD sifatida ro\u2018yxatdan o\u2018tmasdan onlayn bepul tomosha qilish uchun ochiq.",
+    footer_open_all:   "Barcha TV kanallarni ochish \u2192",
+    cat_federal:       "Federal:",
+    cat_sport:         "Sport:",
+    cat_news:          "Yangiliklar:",
+    cat_music:         "Musiqa:",
+    cat_kids:          "Bolalar:",
+    cat_entertainment: "Ko\u2018ngilochar:",
+    cat_edu:           "Ta\u2019limiy:",
+    cat_region:        "Mintaqaviy:",
+    cat_christian:     "Diniy:",
+    cat_relax:         "Relaks:",
     meta_title:        "Filmlar, seriallar, anime, dramalar va TV onlayn bepul HD \u2014 KINOUZ.online",
     meta_desc:         "\uD83C\uDFAC KINOUZ.online \u2014 filmlar, seriallar, anime, dramalar va multfilmlarni HD 1080p da bepul, ruyxatdan o\u2019tmasdan tomosha qiling. 600+ TV kanallar jonli efirda. 2025 yangiliklari, koreys va turk seriallari!",
     tv_cats: {
@@ -4376,6 +4490,24 @@ function applyLang() {
   // TV категории — перерисовываем если загружены
   if (typeof renderTVCats === 'function') renderTVCats();
   if (typeof renderTVGrid === 'function') renderTVGrid();
+
+  // Динамические элементы, которые ставит JS
+  if (typeof updateFavBtn === 'function') updateFavBtn();
+  if (typeof window.heroRerender === 'function') window.heroRerender();
+  if (typeof refreshPageTitle === 'function') refreshPageTitle();
+}
+
+// Перевод заголовка активной страницы каталога/поиска при смене языка
+function refreshPageTitle() {
+  const st = window.__pageState;
+  const el = document.getElementById('pageTitle');
+  if (!st || !el) return;
+  if (st.mode === 'search') {
+    el.textContent = `${t('res_prefix')} "${st.query}"`;
+  } else if (st.mode === 'filter') {
+    const labels = { movie:'nav_movies', tv:'nav_series', anime:'nav_anime', dorama:'nav_dorama', trending:'sec_trending' };
+    el.textContent = labels[st.type] ? t(labels[st.type]) : st.type;
+  }
 }
 // ────────────────────────────────────────────────────────────────────────────
 
@@ -4536,7 +4668,7 @@ function renderTVGrid(){
 
   const list = tvGetFilteredChannels();
   const q = tvSearchQuery.trim();
-  document.getElementById('tvCount').textContent = list.length + ' каналов' + (q ? ' найдено' : '');
+  document.getElementById('tvCount').textContent = t('tv_count')(list.length, !!q);
 
   if (!list.length) {
     grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><p>' + (tvSearchQuery.trim() ? 'Каналы по этому запросу не найдены' : 'В этой категории пока нет каналов') + '</p></div>';
