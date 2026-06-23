@@ -4628,7 +4628,6 @@ function tvGetSources(ch){
       ptype: 'smotrettv',
       src: ch.src,
       page: ch.source_page,
-      fallback_src: ch.fallback_src
     }];
   }
 
@@ -4791,45 +4790,33 @@ function tvPlay(ch, sourceIndex = 0){
   tvPlayFallback(ch, 'Источник этого канала пока не поддерживается.');
 }
 
-// ── smotrettv: Worker (основной) → cinerama.uz (запасной) ────────────────
+// ── smotrettv: Worker → musical.uz свежий токен ──────────────────────────
 async function tvPlaySmotretTV(ch, source) {
   const page = ch.source_page || source.page || '';
-  const fallback = ch.fallback_src || source.fallback_src || '';
 
   const loading = document.getElementById('tvPlayerLoading');
   if (loading) loading.style.display = 'flex';
 
-  // Если Worker не настроен — сразу идём на cinerama
+  // Если Worker не настроен
   if (!SMOTRETTV_WORKER_URL || SMOTRETTV_WORKER_URL.includes('YOUR-NAME')) {
-    if (fallback) { tvPlayHls(ch, fallback, {}); return; }
     tvPlayFallback(ch, t('stream_no_src'));
     return;
   }
 
-  // Пробуем Worker (musical.uz свежий токен)
+  // Пробуем Worker (получаем свежий токен musical.uz)
   if (page) {
     try {
       const resp = await fetch(SMOTRETTV_WORKER_URL + '?page=' + encodeURIComponent(page), { signal: AbortSignal.timeout(8000) });
       if (resp.ok) {
         const data = await resp.json();
         if (data.src) {
-          // Передаём cinerama как fallback самому tvPlayHls: если этот поток
-          // ответил, но реально не воспроизвёлся (HLS-ошибка/протух/регион),
-          // tvFailHls автоматически переключится на cinerama сам, без перезапроса Worker.
-          tvPlayHls(ch, data.src, { fallbacks: fallback ? [fallback] : [] });
+          tvPlayHls(ch, data.src, {});
           return;
         }
       }
     } catch(e) {
-      console.warn('Worker failed, trying cinerama fallback:', e.message);
+      console.warn('Worker failed:', e.message);
     }
-  }
-
-  // Запасной — cinerama.uz
-  if (fallback) {
-    console.log('Using cinerama fallback for', ch.name);
-    tvPlayHls(ch, fallback, {});
-    return;
   }
 
   tvPlayFallback(ch, t('stream_no_src'));
