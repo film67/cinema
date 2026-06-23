@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" id="htmlRoot">
 <head>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-0ZK0X92TM5"></script>
@@ -38,12 +38,12 @@
   <!-- ═══════════════════════════════════════════════════════════════
        TITLE — содержит главные поисковые запросы (≤60 символов Google)
   ═══════════════════════════════════════════════════════════════ -->
-  <title>Смотреть фильмы, сериалы, аниме, дорамы и ТВ онлайн бесплатно HD — KINOUZ.online</title>
+  <title id="metaTitle">Смотреть фильмы, сериалы, аниме, дорамы и ТВ онлайн бесплатно HD — KINOUZ.online</title>
 
   <!-- ═══════════════════════════════════════════════════════════════
        DESCRIPTION — 150-160 символов, максимально кликабельный
   ═══════════════════════════════════════════════════════════════ -->
-  <meta name="description" content="🎬 KINOUZ.online — смотреть фильмы, сериалы, аниме, дорамы и мультфильмы онлайн бесплатно в HD 1080p без регистрации, а также 600+ ТВ-каналов в прямом эфире: Первый канал, Россия 1, НТВ, Матч ТВ, ТНТ, СТС, РЕН ТВ онлайн бесплатно. Новинки 2025, корейские дорамы, турецкие сериалы — всё в одном месте!">
+  <meta name="description" id="metaDesc" content="🎬 KINOUZ.online — смотреть фильмы, сериалы, аниме, дорамы и мультфильмы онлайн бесплатно в HD 1080p без регистрации, а также 600+ ТВ-каналов в прямом эфире: Первый канал, Россия 1, НТВ, Матч ТВ, ТНТ, СТС, РЕН ТВ онлайн бесплатно. Новинки 2025, корейские дорамы, турецкие сериалы — всё в одном месте!">
 
   <!-- ═══════════════════════════════════════════════════════════════
        KEYWORDS — расширенный список (RU + UZ + EN + KO + TR темы)
@@ -2069,7 +2069,35 @@
     #tvPlayerBox { border-radius:0; }
     #tvModalBar { padding:10px 14px; }
   }
-</style>
+
+  /* ── Переключатель языка ── */
+  .lang-switcher {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 8px;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .lang-btn {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.45);
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 2px 4px;
+    border-radius: 5px;
+    transition: color .2s;
+    font-family: inherit;
+  }
+  .lang-btn.active { color: #fff; }
+  .lang-btn:hover { color: #fff; }
+  .lang-sep { color: rgba(255,255,255,0.25); font-size: 10px; }
+
+  </style>
 </head>
 <body>
 
@@ -2079,30 +2107,36 @@
     <span class="logo-kino">KINO</span><span class="logo-main">UZ</span><span class="logo-suffix">.online</span>
   </div>
   <ul class="nav-links">
-    <li><a id="navMovies" onclick="filterAndShow('movie')">Фильмы</a></li>
-    <li><a id="navSeries" onclick="filterAndShow('tv')">Сериалы</a></li>
-    <li><a id="navAnime" onclick="filterAndShow('anime')">Аниме</a></li>
-    <li><a id="navDorama" onclick="filterAndShow('dorama')">Дорамы</a></li>
-    <li><a id="navTV" onclick="showTVPage()">ТВ</a></li>
+    <li><a id="navMovies" onclick="filterAndShow('movie')" data-i18n="nav_movies">Фильмы</a></li>
+    <li><a id="navSeries" onclick="filterAndShow('tv')" data-i18n="nav_series">Сериалы</a></li>
+    <li><a id="navAnime" onclick="filterAndShow('anime')" data-i18n="nav_anime">Аниме</a></li>
+    <li><a id="navDorama" onclick="filterAndShow('dorama')" data-i18n="nav_dorama">Дорамы</a></li>
+    <li><a id="navTV" onclick="showTVPage()" data-i18n="nav_tv">ТВ</a></li>
   </ul>
   <div class="nav-right">
     <div class="search-wrap">
-      <input id="searchInput" type="text" placeholder="Поиск..." oninput="onSearch(this.value)">
+      <input id="searchInput" type="text" placeholder="Поиск..." data-i18n-placeholder="search_placeholder" oninput="onSearch(this.value)">
       <span class="search-icon">🔍</span>
     </div>
     <button class="btn-search-mobile" onclick="toggleMobileSearch()">🔍</button>
-    <button class="btn-fav" id="favBtn" onclick="showPage('fav')">♡ Избранное</button>
+    <button class="btn-fav" id="favBtn" onclick="showPage('fav')" data-i18n="nav_fav">♡ Избранное</button>
+    <!-- Переключатель языка -->
+    <div class="lang-switcher" id="langSwitcher">
+      <button class="lang-btn active" id="langRu" onclick="setLang('ru')">RU</button>
+      <span class="lang-sep">|</span>
+      <button class="lang-btn" id="langUz" onclick="setLang('uz')">UZ</button>
+    </div>
     <button class="btn-menu" onclick="toggleMobileMenu()">☰</button>
   </div>
 </nav>
 
 <!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobileMenu">
-  <a onclick="filterAndShow('movie'); closeMobileMenu()">Фильмы</a>
-  <a onclick="filterAndShow('tv'); closeMobileMenu()">Сериалы</a>
-  <a onclick="filterAndShow('anime'); closeMobileMenu()">Аниме</a>
-  <a onclick="filterAndShow('dorama'); closeMobileMenu()">Дорамы</a>
-  <a onclick="showTVPage(); closeMobileMenu()">ТВ</a>
+  <a onclick="filterAndShow('movie'); closeMobileMenu()" data-i18n="nav_movies">Фильмы</a>
+  <a onclick="filterAndShow('tv'); closeMobileMenu()" data-i18n="nav_series">Сериалы</a>
+  <a onclick="filterAndShow('anime'); closeMobileMenu()" data-i18n="nav_anime">Аниме</a>
+  <a onclick="filterAndShow('dorama'); closeMobileMenu()" data-i18n="nav_dorama">Дорамы</a>
+  <a onclick="showTVPage(); closeMobileMenu()" data-i18n="nav_tv">ТВ</a>
 </div>
 <div class="mobile-search-bar" id="mobileSearchBar">
   <input type="text" placeholder="Поиск фильмов и сериалов..." oninput="onSearch(this.value)" id="mobileSearchInput">
@@ -4199,6 +4233,9 @@ setTimeout(checkAdBlock, 500);
 setTimeout(checkAdBlock, 2200);
 init();
 restoreFromURL();
+// applyLang определена во втором скрипте — вызываем через setTimeout(0), 
+// чтобы дождаться её определения
+setTimeout(() => { if (typeof applyLang === 'function') applyLang(); }, 0);
 </script>
 
 <!-- hls.js for direct HLS channels -->
@@ -4213,19 +4250,148 @@ let TV_CHANNELS = [];
 let tvChannelsLoaded = false;
 let tvChannelsLoading = null;
 
+// ── Cloudflare Worker URL (замените после деплоя) ───────────────────────────
+// Инструкция: https://workers.cloudflare.com → New Worker → вставить worker.js → Deploy
+// После деплоя скопировать URL и вставить сюда:
+const SMOTRETTV_WORKER_URL = 'https://morning-heart-a3f5.timurhodjaev4.workers.dev';
+// ────────────────────────────────────────────────────────────────────────────
+
+// ── i18n переводы ────────────────────────────────────────────────────────────
+const I18N = {
+  ru: {
+    nav_movies:        'Фильмы',
+    nav_series:        'Сериалы',
+    nav_anime:         'Аниме',
+    nav_dorama:        'Дорамы',
+    nav_tv:            'ТВ',
+    nav_fav:           '♡ Избранное',
+    nav_fav_active:    '♥ Избранное',
+    search_placeholder:'Поиск...',
+    tv_search_ph:      'Поиск канала по названию...',
+    tv_loading:        'Загрузка каналов...',
+    tv_count:          (n, q) => n + ' каналов' + (q ? ' найдено' : ''),
+    tv_empty_cat:      'В этой категории пока нет каналов',
+    tv_empty_search:   'Каналы по этому запросу не найдены',
+    player_loading:    'Загрузка плеера...',
+    stream_loading:    'Подключение к эфиру...',
+    stream_error:      'Не удалось получить стрим. Пробуем резервный источник...',
+    stream_no_src:     'Источник канала недоступен.',
+    meta_title:        'Смотреть фильмы, сериалы, аниме, дорамы и ТВ онлайн бесплатно HD — KINOUZ.online',
+    meta_desc:         '🎬 KINOUZ.online — смотреть фильмы, сериалы, аниме, дорамы и мультфильмы онлайн бесплатно в HD 1080p без регистрации, а также 600+ ТВ-каналов в прямом эфире. Новинки 2025, корейские дорамы, турецкие сериалы — всё в одном месте!',
+    tv_cats: {
+      all:           'Все',
+      uzbek:         '🇺🇿 Узбекистан',
+      main:          'Основные',
+      news:          'Новости',
+      sport:         'Спорт',
+      music:         'Музыка',
+      kids:          'Детские',
+      entertainment: 'Развлечения',
+      edu:           'Познавательные',
+      region:        'Региональные',
+      christian:     'Духовные',
+      relax:         'Релакс',
+    },
+  },
+  uz: {
+    nav_movies:        "Filmlar",
+    nav_series:        "Seriallar",
+    nav_anime:         "Anime",
+    nav_dorama:        "Dramalar",
+    nav_tv:            "TV",
+    nav_fav:           "\u2661 Sevimlilar",
+    nav_fav_active:    "\u2665 Sevimlilar",
+    search_placeholder:"Qidirish...",
+    tv_search_ph:      "Kanal nomini qidirish...",
+    tv_loading:        "Kanallar yuklanmoqda...",
+    tv_count:          (n, q) => n + " kanal" + (q ? " topildi" : ""),
+    tv_empty_cat:      "Bu bo\u2019limda hali kanallar yo\u2019q",
+    tv_empty_search:   "So\u2019rovingiz bo\u2019yicha kanallar topilmadi",
+    player_loading:    "Pleyer yuklanmoqda...",
+    stream_loading:    "Efirga ulanilmoqda...",
+    stream_error:      "Strim yuklanmadi. Zaxira manba sinab ko\u2019rilmoqda...",
+    stream_no_src:     "Kanal manbai mavjud emas.",
+    meta_title:        "Filmlar, seriallar, anime, dramalar va TV onlayn bepul HD \u2014 KINOUZ.online",
+    meta_desc:         "\uD83C\uDFAC KINOUZ.online \u2014 filmlar, seriallar, anime, dramalar va multfilmlarni HD 1080p da bepul, ruyxatdan o\u2019tmasdan tomosha qiling. 600+ TV kanallar jonli efirda. 2025 yangiliklari, koreys va turk seriallari!",
+    tv_cats: {
+      all:           "Barchasi",
+      uzbek:         "\uD83C\uDDFA\uD83C\uDDFF O\u2019zbekiston",
+      main:          "Asosiy",
+      news:          "Yangiliklar",
+      sport:         "Sport",
+      music:         "Musiqa",
+      kids:          "Bolalar",
+      entertainment: "Ko\u2019ngilochar",
+      edu:           "Ta\u2019limiy",
+      region:        "Mintaqaviy",
+      christian:     "Ma\u2019naviy",
+      relax:         "Relaks",
+    },
+  },
+}; // закрываем I18N
+
+let currentLang = localStorage.getItem('lang') || 'ru';
+
+function t(key) {
+  return (I18N[currentLang] || I18N.ru)[key] || (I18N.ru)[key] || key;
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('lang', lang);
+  applyLang();
+}
+
+function applyLang() {
+  const L = I18N[currentLang] || I18N.ru;
+
+  // html lang attr
+  document.getElementById('htmlRoot').lang = currentLang;
+
+  // Кнопки переключателя
+  document.getElementById('langRu').classList.toggle('active', currentLang === 'ru');
+  document.getElementById('langUz').classList.toggle('active', currentLang === 'uz');
+
+  // data-i18n элементы
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (L[key]) el.textContent = L[key];
+  });
+
+  // placeholders
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (L[key]) el.placeholder = L[key];
+  });
+
+  // TV search placeholder
+  const tvSearch = document.getElementById('tvSearchInput');
+  if (tvSearch) tvSearch.placeholder = L.tv_search_ph;
+
+  // Мета-теги
+  document.getElementById('metaTitle').textContent = L.meta_title;
+  document.title = L.meta_title;
+  document.getElementById('metaDesc').setAttribute('content', L.meta_desc);
+
+  // TV категории — перерисовываем если загружены
+  if (typeof renderTVCats === 'function') renderTVCats();
+  if (typeof renderTVGrid === 'function') renderTVGrid();
+}
+// ────────────────────────────────────────────────────────────────────────────
+
 const TV_CATS = [
-  { id:'all',           label:'Все' },
-  { id:'uzbek',         label:'🇺🇿 Узбекистан' },
-  { id:'main',          label:'Основные' },
-  { id:'news',          label:'Новости' },
-  { id:'sport',         label:'Спорт' },
-  { id:'music',         label:'Музыка' },
-  { id:'kids',          label:'Детские' },
-  { id:'entertainment', label:'Развлечения' },
-  { id:'edu',           label:'Познавательные' },
-  { id:'region',        label:'Региональные' },
-  { id:'christian',     label:'Духовные' },
-  { id:'relax',         label:'Релакс' },
+  { id:'all',           get label(){ return t('tv_cats') ? (I18N[currentLang]||I18N.ru).tv_cats.all           : 'Все' } },
+  { id:'uzbek',         get label(){ return t('tv_cats') ? (I18N[currentLang]||I18N.ru).tv_cats.uzbek         : '🇺🇿 Узбекистан' } },
+  { id:'main',          get label(){ return t('tv_cats') ? (I18N[currentLang]||I18N.ru).tv_cats.main          : 'Основные' } },
+  { id:'news',          get label(){ return t('tv_cats') ? (I18N[currentLang]||I18N.ru).tv_cats.news          : 'Новости' } },
+  { id:'sport',         get label(){ return t('tv_cats') ? (I18N[currentLang]||I18N.ru).tv_cats.sport         : 'Спорт' } },
+  { id:'music',         get label(){ return t('tv_cats') ? (I18N[currentLang]||I18N.ru).tv_cats.music         : 'Музыка' } },
+  { id:'kids',          get label(){ return t('tv_cats') ? (I18N[currentLang]||I18N.ru).tv_cats.kids          : 'Детские' } },
+  { id:'entertainment', get label(){ return t('tv_cats') ? (I18N[currentLang]||I18N.ru).tv_cats.entertainment : 'Развлечения' } },
+  { id:'edu',           get label(){ return t('tv_cats') ? (I18N[currentLang]||I18N.ru).tv_cats.edu          : 'Познавательные' } },
+  { id:'region',        get label(){ return t('tv_cats') ? (I18N[currentLang]||I18N.ru).tv_cats.region        : 'Региональные' } },
+  { id:'christian',     get label(){ return t('tv_cats') ? (I18N[currentLang]||I18N.ru).tv_cats.christian     : 'Духовные' } },
+  { id:'relax',         get label(){ return t('tv_cats') ? (I18N[currentLang]||I18N.ru).tv_cats.relax         : 'Релакс' } },
 ];
 
 let tvActiveCat = 'all';
@@ -4607,8 +4773,53 @@ function tvPlay(ch, sourceIndex = 0){
     return;
   }
 
+  if (source.ptype === 'smotrettv') {
+    tvPlaySmotretTV(ch, source);
+    return;
+  }
+
   tvPlayFallback(ch, 'Источник этого канала пока не поддерживается.');
 }
+
+// ── smotrettv: Worker (основной) → cinerama.uz (запасной) ────────────────
+async function tvPlaySmotretTV(ch, source) {
+  const page = ch.source_page || source.page || '';
+  const fallback = ch.fallback_src || source.fallback_src || '';
+
+  const loading = document.getElementById('tvPlayerLoading');
+  if (loading) loading.style.display = 'flex';
+
+  // Если Worker не настроен — сразу идём на cinerama
+  if (!SMOTRETTV_WORKER_URL || SMOTRETTV_WORKER_URL.includes('YOUR-NAME')) {
+    if (fallback) { tvPlayHls(ch, fallback, {}); return; }
+    tvPlayFallback(ch, t('stream_no_src'));
+    return;
+  }
+
+  // Пробуем Worker (musical.uz свежий токен)
+  if (page) {
+    try {
+      const resp = await fetch(SMOTRETTV_WORKER_URL + '?page=' + encodeURIComponent(page), { signal: AbortSignal.timeout(8000) });
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data.src) { tvPlayHls(ch, data.src, {}); return; }
+      }
+    } catch(e) {
+      console.warn('Worker failed, trying cinerama fallback:', e.message);
+    }
+  }
+
+  // Запасной — cinerama.uz
+  if (fallback) {
+    console.log('Using cinerama fallback for', ch.name);
+    tvPlayHls(ch, fallback, {});
+    return;
+  }
+
+  tvPlayFallback(ch, t('stream_no_src'));
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 
 function tvPlayExternal(ch, source){
   const url = source && source.src ? tvAbsUrl(source.src) : '';
@@ -4987,6 +5198,9 @@ function closeTVModal(){
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && document.getElementById('tvModal')?.classList.contains('open')) closeTVModal();
 });
+
+// Применяем язык после инициализации всех функций
+applyLang();
 </script>
 
 </body>
